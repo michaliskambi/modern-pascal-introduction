@@ -577,4 +577,4 @@ Copyright Michalis Kamburelis.
 
 Permission to redistribute and modify this document freely, under the _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_ or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_, just like Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights .
 
-The source code is in AsciiDoc, I'll upload it somewhere shortly:)
+The source code is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction .
