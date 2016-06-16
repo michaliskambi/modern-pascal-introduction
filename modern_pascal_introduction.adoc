@@ -22,23 +22,45 @@ This introduction is mostly directed at programmers who already have experience 
 
 ## Basics
 
+### "Hello world" program
+
+[source,pascal]
+----
+{$mode objfpc}{$H+} // Just use this line in all modern sources
+
+program MyProgram; // Save this file as myprogram.lpr
+begin
+  Writeln('Hello world!');
+end.
+----
+
+This is a complete program that you can _compile_ and _run_.
+
+* If you use the command-line FPC, just create a new file `myprogram.lpr` and execute `fpc myprogram.lpr`.
+* If you use _Lazarus_, create a new project (menu _Project_ -> _New Project_ -> _Simple Program_). Save it as `myprogram` and paste this source code as the main file. Compile using the menu item _Run -> Compile_.
+* This is a command-line program, so in either case -- just run the compiled executable from the command-line.
+
+The rest of this article talks about the Object Pascal language, so don't expect to see anything more fancy than the command-line stuff. If you want to see something cool, just create a new GUI project in _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
+//Play around, drop some buttons on the form, handle their events (like `OnClick`).
+Voila -- a working GUI application, cross-platform, with native look everywhere, using a comfortable visual component library. The _Lazarus_ and _Free Pascal Compiler_ come with lots of ready units for networking, GUI, database, file formats (XML, json, images...), and everything else you may need. I already mentioned my cool _Castle Game Engine_ earlier:)
+// The libraries created in other languages (dll, so, dylib) can be easily used from FPC too (and for most of them, you'll find ready "header" units, and even units that wrap them in more modern object-oriented API).
+
 ### Functions, procedures, primitive types
 
 [source,pascal]
 ----
-// In short, use this for all modern code in FPC
 {$mode objfpc}{$H+}
 
-program MyProgram; // Save this file as myprogram.lpr
+program MyProgram;
 
 procedure MyProcedure(const A: Integer);
 begin
-  Writeln('A + 10 is:', A + 10);
+  Writeln('A + 10 is: ', A + 10);
 end;
 
 function MyFunction(const S: string): string;
 begin
-  Result := S + ' string are automatically managed';
+  Result := S + ' strings are automatically managed';
 end;
 
 var
@@ -105,7 +127,7 @@ end;
 
 ## Units
 
-Normal programs are saved as `myprogram.lpr` files (lpr = Lazarus program file; in Delphi you would use `.dpr`).
+Normal programs are saved as `myprogram.lpr` files (`lpr` = Lazarus program file; in Delphi you would use `.dpr`).
 
 Units allow you to group common stuff (anything that can be declared), for usage by other units and programs. They have an interface section, where you declare what is available for other units and programs, and then the implementation. Save units as `myunit.pas`.
 
@@ -122,12 +144,12 @@ implementation
 
 procedure MyProcedure(const A: Integer);
 begin
-  Writeln('A + 10 is:', A + 10);
+  Writeln('A + 10 is: ', A + 10);
 end;
 
 function MyFunction(const S: string): string;
 begin
-  Result := S + ' string are automatically managed';
+  Result := S + ' strings are automatically managed';
 end;
 
 end.
@@ -218,7 +240,8 @@ By default methods are not virtual, declare them with `virtual` to make them. Ov
 
 ### Interfaces
 
-We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces. It can only have 1 ancestor class.
+We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
+//This is much like Java, where interfaces are used whenever you think of multiple inheritance.
 
 ### Exceptions
 
@@ -240,7 +263,7 @@ type
 procedure TMyClass.MyMethod;
 begin
   if Random > 0.5 then
-    raise Exception.Create('Raising!');
+    raise Exception.Create('Raising an exception!');
 end;
 
 var
@@ -257,7 +280,7 @@ Note that the `finally` clause is executed even if you exit the block using the 
 
 ### Visibility specifiers
 
-As in all object-oriented language, we have visibility specifiers to hide fields / methods / properties. By default it's `public`, which means everyone can access it.
+As in all object-oriented languages, we have visibility specifiers to hide fields / methods / properties. By default it's `public`, which means everyone can access it.
 
 The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
 
@@ -310,12 +333,14 @@ I advice using `FreeAndNil(A)` always, without exceptions, and never to call dir
 
 ### Automatic freeing
 
-In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil` (see below about the `FreeAndNil(A)` method).
+In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
 
 So, like this:
 
 [source,pascal]
 ----
+uses SysUtils;
+
 type
   TGun = class
   end;
@@ -341,10 +366,12 @@ begin
 end;
 ----
 
-One can also use the `TComponent` feature of _"ownership"_. An object that is owned will be automatically freed by the owner. It's automatically taken care of to not free an already freed instance this way (so things will also work correct if you manually free the owned object earlier). Be can rewrite previous example like this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is owned will be automatically freed by the owner. It's automatically taken care of to not free an already freed instance this way (so things will also work correct if you manually free the owned object earlier). Be can rewrite previous example like this:
 
 [source,pascal]
 ----
+uses SysUtils, Classes;
+
 type
   TGun = class(TComponent)
   end;
@@ -368,13 +395,15 @@ Another approach to automatic freeing is use the `OwnsObjects` functionality (by
 
 [source,pascal]
 ----
+uses SysUtils, Classes, FGL;
+
 type
-  TGun = class(TComponent)
+  TGun = class
   end;
 
   TGunList = specialize TFPGObjectList<TGun>;
 
-  TPlayer = class(TComponent)
+  TPlayer = class
     Guns: TGunList;
     Gun1, Gun2: TGun;
     constructor Create;
@@ -395,9 +424,15 @@ end;
 destructor TPlayer.Destroy;
 begin
   { We have to take care to free the list.
-    It will automatically free it's contents. {
+    It will automatically free it's contents. }
   FreeAndNil(Guns);
-  { This is a nice convention, to nil the references we know are freed now.
+
+  { No need to free the Gun1, Gun2 anymore. It's a nice habit to set to "nil"
+    their references now, as we know they are freed. In this simple class,
+    with so simple destructor, it's obvious that they cannot be accessed
+    anymore -- but doing this pays off in case of larger and more complicated
+    destructors.
+
     Alternatively, we could avoid declaring Gun1 and Gun2,
     and instead use Guns[0] and Guns[1] in own code.
     Or create a function like Gun1 that returns Guns[0]. }
@@ -409,7 +444,7 @@ end;
 
 Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means. Use `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
 
-*In Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other stuff has a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+*In Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
 
 ## Various stuff
 
@@ -466,6 +501,7 @@ begin
   S := TFileStream.Create('my_binary_file.data');
   try
     S.ReadBuffer(A, SizeOf(A));
+    Writeln('Got integer ', A);
   finally FreeAndNil(S) end;
 end;
 ----
