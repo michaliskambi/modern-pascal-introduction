@@ -1,0 +1,580 @@
+# Quick Modern Object Pascal for Programmers
+Michalis Kamburelis
+:toc:
+:sectnums:
+:source-highlighter: coderay
+
+## Why
+
+There's a lot of books and resources about Pascal out there, but too many of them talk about the old Pascal, without classes, units or generics.
+// Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
+
+So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it  _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java.
+
+* It's statically compiled,
+* very type safe,
+* fast,
+* high-level but can also be low-level if you need it to be.
+
+It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, http://castle-engine.sourceforge.net/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
+
+This introduction is mostly directed at programmers who already have experience in other languages. We will not cover here the meanings of some universal concepts, like _"what is a class"_, we'll only show how to do them in Pascal.
+
+## Basics
+
+### Functions, procedures, primitive types
+
+[source,pascal]
+----
+// In short, use this for all modern code in FPC
+{$mode objfpc}{$H+}
+
+program MyProgram; // Save this file as myprogram.lpr
+
+procedure MyProcedure(const A: Integer);
+begin
+  Writeln('A + 10 is:', A + 10);
+end;
+
+function MyFunction(const S: string): string;
+begin
+  Result := S + ' string are automatically managed';
+end;
+
+var
+  X: Single;
+begin
+  Writeln(MyFunction('Note: '));
+  MyProcedure(5);
+
+  // Division using "/" always makes float result, use "div" for integer division
+  X := 15 / 5;
+  Writeln('X is now: ', X); // scientific notation
+  Writeln('X is now: ', X:1:2); // 2 decimal places
+end.
+----
+
+### Enumerated and ordinal types and sets and constant-length arrays
+
+Enumerated types in Pascal are a powerful, opaque type.
+
+[source,pascal]
+----
+type
+  TAnimalKind = (akDuck, akCat, akDog);
+----
+
+The convention is to prefix the enum names with a two-letter shortcut of type name, hence `ak` = shortcut for "Animal Kind". This is a useful convention, since the enum names are in unit (global) namespace, so it's nice to avoid collisions by this `ak` prefix.
+
+Use `Ord(MyAnimalKind)` to forcefully convert enum to int, or typecast `TAnimalKind(MyInteger)` to forcefully convert int to enum. In the latter case, make sure to check first whether `MyInteger` is in good range (0 to `Ord(High(TAnimalKind))`).
+
+Enumerated and ordinal types can be used as array indexes:
+
+[source,pascal]
+----
+type
+  TArrayOfTenStrings = array [0..9] of string;
+  TArrayOfTenStrings1Based = array [1..10] of string;
+
+  TMyNumber = 0..9;
+  TAlsoArrayOfTenStrings = array [TMyNumber] of string;
+
+  TAnimalKind = (akDuck, akCat, akDog);
+  TAnimalNames = array [TAnimalKind] of string;
+----
+
+They can also be used to create sets (a bit-fields internally):
+
+[source,pascal]
+----
+type
+  TAnimalKind = (akDuck, akCat, akDog);
+  TAnimals = set of TAnimalKind;
+
+var
+  A: TAnimals;
+begin
+  A := [];
+  A := [akDuck, akCat];
+  A := A + [akDog];
+  A := A * [akCat, akDog];
+  Include(A, akDuck);
+  Exclude(A, akDuck);
+end;
+----
+
+## Units
+
+Normal programs are saved as `myprogram.lpr` files (lpr = Lazarus program file; in Delphi you would use `.dpr`).
+
+Units allow you to group common stuff (anything that can be declared), for usage by other units and programs. They have an interface section, where you declare what is available for other units and programs, and then the implementation. Save units as `myunit.pas`.
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}
+unit MyUnit;
+interface
+
+procedure MyProcedure(const A: Integer);
+function MyFunction(const S: string): string;
+
+implementation
+
+procedure MyProcedure(const A: Integer);
+begin
+  Writeln('A + 10 is:', A + 10);
+end;
+
+function MyFunction(const S: string): string;
+begin
+  Result := S + ' string are automatically managed';
+end;
+
+end.
+----
+
+Use a unit by a `uses` keyword:
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}
+
+program MyProgram;
+
+uses MyUnit;
+
+var
+  X: Single;
+begin
+  Writeln(MyFunction('Note: '));
+  MyProcedure(5);
+end.
+----
+
+## Classes
+
+### Basics
+
+We have classes.
+
+[source,pascal]
+----
+type
+  TMyClass = class
+    MyInt: Integer;
+    procedure MyMethod;
+  end;
+
+procedure TMyClass.MyMethod;
+begin
+  Writeln(MyInt + 10);
+end;
+----
+
+We have inheritance and virtual methods.
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}
+
+program MyProgram;
+
+uses SysUtils;
+
+type
+  TMyClass = class
+    MyInt: Integer;
+    procedure MyVirtualMethod; virtual;
+  end;
+
+  TMyClassDescendant = class(TMyClass)
+    procedure MyVirtualMethod; override;
+  end;
+
+procedure TMyClass.MyVirtualMethod;
+begin
+  Writeln('TMyClass shows MyInt + 10: ', MyInt + 10);
+end;
+
+procedure TMyClassDescendant.MyVirtualMethod;
+begin
+  Writeln('TMyClassDescendant shows MyInt + 20: ', MyInt + 20);
+end;
+
+var
+  C: TMyClass;
+begin
+  C := TMyClass.Create;
+  C.MyVirtualMethod;
+  FreeAndNil(C);
+
+  C := TMyClassDescendant.Create;
+  C.MyVirtualMethod;
+  FreeAndNil(C);
+end.
+----
+
+By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
+
+### Interfaces
+
+We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces. It can only have 1 ancestor class.
+
+### Exceptions
+
+We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}
+
+program MyProgram;
+
+uses SysUtils;
+
+type
+  TMyClass = class
+    procedure MyMethod;
+  end;
+
+procedure TMyClass.MyMethod;
+begin
+  if Random > 0.5 then
+    raise Exception.Create('Raising!');
+end;
+
+var
+  C: TMyClass;
+begin
+  C := TMyClass.Create;
+  try
+    C.MyMethod;
+  finally FreeAndNil(C) end;
+end.
+----
+
+Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
+
+### Visibility specifiers
+
+As in all object-oriented language, we have visibility specifiers to hide fields / methods / properties. By default it's `public`, which means everyone can access it.
+
+The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
+
+Not every field and property type is allowed in the `published` section (not every type can be streamed). Just use `public` if you don't care about streaming but want something available to all users.
+
+### private and strict private
+
+The `private` visibility specifier means that the field (or method) in not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
+
+However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. As you can guess, it means that the field (or method) in not accessible outside of this class -- period. No exceptions.
+
+In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
+
+### Default ancestor
+
+If you don't declare the ancestor type, the `class` inherits from `TObject`.
+
+### Remember to free (release memory) class instances
+
+The classes (instances of the `class` type) have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
+
+### How to free
+
+To free the class instance, it's best to call `FreeAndNil(A)` on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
+
+It is more-or-less a shortcut for
+
+[source,pascal]
+----
+if A <> nil then
+begin
+  A.Destroy;
+  A := nil'
+end;
+----
+
+Actually, that's an oversimplification, as `FreeAndNil` does a useful trick and sets the variable `A` to `nil` *before* calling the destructor on a suitable reference.
+
+Often in other code you will also find people using the `A.Free` method, which is like doing
+
+[source,pascal]
+----
+if A <> nil then
+  A.Destroy;
+----
+
+Note that in normal circumstances, you should never call a method on an instance which may be `nil`. The `Free` method is an exception here (it does something dirty in the implementation -- namely, checks whether `Self <> nil`).
+
+I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. _Castle Game Engine_ does it like that. It provides a nice assertion that _all references are either nil, or point to valid instances_.
+
+### Automatic freeing
+
+In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil` (see below about the `FreeAndNil(A)` method).
+
+So, like this:
+
+[source,pascal]
+----
+type
+  TGun = class
+  end;
+
+  TPlayer = class
+    Gun1, Gun2: TGun;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+constructor TPlayer.Create;
+begin
+  inherited;
+  Gun1 := TGun.Create;
+  Gun2 := TGun.Create;
+end;
+
+destructor TPlayer.Destroy;
+begin
+  FreeAndNil(Gun1);
+  FreeAndNil(Gun2);
+  inherited;
+end;
+----
+
+One can also use the `TComponent` feature of _"ownership"_. An object that is owned will be automatically freed by the owner. It's automatically taken care of to not free an already freed instance this way (so things will also work correct if you manually free the owned object earlier). Be can rewrite previous example like this:
+
+[source,pascal]
+----
+type
+  TGun = class(TComponent)
+  end;
+
+  TPlayer = class(TComponent)
+    Gun1, Gun2: TGun;
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+constructor TPlayer.Create(AOwner: TComponent);
+begin
+  inherited;
+  Gun1 := TGun.Create(Self);
+  Gun2 := TGun.Create(Self);
+end;
+----
+
+Note that we need to override a virtual `TComponent` constructor here. So we cannot change the constructor parameters. (Actually, you can -- declare a new constructor with `reintroduce`. But be careful, as some functionality, e.g. streaming, will still use the virtual constructor, so make sure it works right in either case.)
+
+Another approach to automatic freeing is use the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we could also write:
+
+[source,pascal]
+----
+type
+  TGun = class(TComponent)
+  end;
+
+  TGunList = specialize TFPGObjectList<TGun>;
+
+  TPlayer = class(TComponent)
+    Guns: TGunList;
+    Gun1, Gun2: TGun;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+constructor TPlayer.Create;
+begin
+  inherited;
+  // Actually, the parameter true (OwnsObjects) is already the default
+  Guns := TGunList.Create(true);
+  Gun1 := TGun.Create(Self);
+  Guns.Add(Gun1);
+  Gun2 := TGun.Create(Self);
+  Guns.Add(Gun2);
+end;
+
+destructor TPlayer.Destroy;
+begin
+  { We have to take care to free the list.
+    It will automatically free it's contents. {
+  FreeAndNil(Guns);
+  { This is a nice convention, to nil the references we know are freed now.
+    Alternatively, we could avoid declaring Gun1 and Gun2,
+    and instead use Guns[0] and Guns[1] in own code.
+    Or create a function like Gun1 that returns Guns[0]. }
+  Gun1 := nil;
+  Gun2 := nil;
+  inherited;
+end;
+----
+
+Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means. Use `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
+
+*In Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other stuff has a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+
+## Various stuff
+
+### Output, logging
+
+To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
+
+This is "magic" routine in Pascal, it takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with some special syntax for specifying padding and number precision.
+
+[source,pascal]
+----
+Writeln('Hello world!');
+Writeln('You can output an integer: ', 3 * 4);
+Writeln('You can pad an integer: ', 666:10);
+Writeln('You can output a float: ', Pi:1:4);
+----
+
+To explicitly use newline in string, use the `LineEnding` constant (FPC RTL) (_Castle Game Engine_ has also a shorter `NL` constant). Pascal strings to not interpret any special backslash sequences, so writing
+
+[source,pascal]
+----
+Writeln('One line.\nSecond line.'); // INCORRECT example
+----
+
+doesn't work like some of you would think. This will work:
+
+[source,pascal]
+----
+Writeln('One line.' + LineEnding + 'Second line.');
+----
+
+or just this:
+
+[source,pascal]
+----
+Writeln('One line.');
+Writeln('Second line.');
+----
+
+Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
+
+*In Castle Game Engine:* use `WritelnLog`, never `Writeln`. This will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
+
+### Input/output using streams
+
+Modern programs should use `TStream` class and it's many descendants to do input / output.
+
+[source,pascal]
+----
+var
+  S: TStream;
+  A: Integer;
+begin
+  S := TFileStream.Create('my_binary_file.data');
+  try
+    S.ReadBuffer(A, SizeOf(A));
+  finally FreeAndNil(S) end;
+end;
+----
+
+It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
+
+For Castle Game Engine: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
+
+[source,pascal]
+----
+EnableNetwork := true;
+S := Download('http://castle-engine.sourceforge.net');
+----
+
+[source,pascal]
+----
+S := Download('file:///home/michalis/my_binary_file.data');
+----
+
+[source,pascal]
+----
+
+S := Download(ApplicationData('gui/my_image.png'));
+----
+
+To read text files, I advice using `TTextReader` class from `CastleClassUtils`. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
+
+[source,pascal]
+----
+Text := TTextReader.Create(ApplicationData('my_data.txt'));
+while not Text.Eof do
+  WritelnLog('NextLine', Text.ReadLine);
+----
+
+### Lists
+
+For dynamic-length lists of stuff, we advice using generic classes from the `FGL` or `CastleGenericLists` units. Use `TFPGList` for lists of primitives, `TFPGObjectList` for a list of class instances. Use `CastleGenericLists` and `TGenericStructList` for a list of records or _old-style objects_.
+
+Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+
+### Old-style objects
+
+In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's discouraged to use it anymore, except when you want to get the _record with methods_ feature. Then the old-style objects are useful.
+
+Both `record` and `object` do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome. It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
+
+### Virtual constructors, destructors
+
+Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameterless.
+
+Constructor name is by convention `Create`.
+
+You can change this name, although be careful with this -- if you define `CreateMy`, always redefine also the name `Create`, otherwise the user can still access the constructor `Create` of the ancestor, bypassing your `CreateMy` constructor.
+
+In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
+
+In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see "class references" below).
+
+### Overloading
+
+Methods (and global functions and procedures) with the same name are allowed, as long as they have different parameters. At compile time, the compiler detects which one you want to use, knowing the parameters you pass.
+
+By default, the overloading uses the FPC approach, which means that all the methods in given namespace (a class or a unit) are equal, and hide the other methods in namespaces with less priority. For example, if you define a class with methods `Foo(Integer)` and `Foo(string)`, and it descends from a class with method `Foo(Float)`, then the users of your new class will not be able to access the method `Foo(Float)` easily (they still can --- if they typecast the class to it's ancestor type). To overcome this, use the `overload` keyword.
+
+### Class references
+
+Class reference allows you to change the class type at runtime, for example to call a class method or constructor without knowing the exact class at compile-time.
+
+[source,pascal]
+----
+type
+  TMyClass = class(TComponent)
+  end;
+
+  TMyClass1 = class(TMyClass)
+  end;
+
+  TMyClass2 = class(TMyClass)
+  end;
+
+  TMyClassRef = class of TMyClass;
+
+var
+  C: TMyClass;
+  ClassRef: TMyClassRef;
+begin
+  // Obviously you can do this:
+
+  C := TMyClass.Create(nil); FreeAndNil(C);
+  C := TMyClass1.Create(nil); FreeAndNil(C);
+  C := TMyClass2.Create(nil); FreeAndNil(C);
+
+  // In addition, using class references, you can also do this:
+
+  ClassRef := TMyClass;
+  C := ClassRef.Create(nil); FreeAndNil(C);
+
+  ClassRef := TMyClass1;
+  C := ClassRef.Create(nil); FreeAndNil(C);
+
+  ClassRef := TMyClass2;
+  C := ClassRef.Create(nil); FreeAndNil(C);
+end;
+----
+
+## License of this document
+
+Copyright Michalis Kamburelis.
+
+Permission to redistribute and modify this document freely, under the _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_ or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_, just like Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights .
+
+The source code is in AsciiDoc, I'll upload it somewhere shortly:)
