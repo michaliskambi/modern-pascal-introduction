@@ -1,6 +1,7 @@
 # Quick Modern Object Pascal for Programmers
 Michalis Kamburelis
 :toc:
+:toclevels: 4
 :sectnums:
 :source-highlighter: coderay
 
@@ -9,12 +10,12 @@ Michalis Kamburelis
 There's a lot of books and resources about Pascal out there, but too many of them talk about the old Pascal, without classes, units or generics.
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
-So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it  _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java.
+So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it  _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java or C#.
 
-* It's statically compiled,
-* very type safe,
-* fast,
-* high-level but can also be low-level if you need it to be.
+* It has all the modern features you expect -- classes, units, interfaces, generics...
+* It's compiled to a fast, native code,
+* It's very type safe,
+* High-level but can also be low-level if you need it to be.
 
 It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, http://castle-engine.sourceforge.net/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
 
@@ -177,7 +178,12 @@ end.
 
 ### Basics
 
-We have classes.
+We have classes. At the basic level, a class is just a container for
+
+* _fields_ (which is fancy name for _"a variable inside a class"_),
+* _methods_ (which is fancy name for _"a procedure or function inside a class"_),
+* and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something).
+* Actually, you can put <<More stuff inside classes and nested classes>>, more about this in later section.
 
 [source,pascal]
 ----
@@ -238,10 +244,85 @@ end.
 
 By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
 
+### Properties
+
+Properies are a very nice _"syntax sugar"_ to
+
+1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and a _setter_ function. A most typical usage is to perform some side-effect each time some value changes.
+2. Make somethig that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
+
+[source,pascal]
+----
+type
+  TWebPage = class
+  private
+    FURL: string;
+    FColor: TColor;
+    function SetColor(const Value: TColor);
+  public
+    { No way to set it directly.
+      Call the Load method, like Load('http://www.freepascal.org/'),
+      to load a page and set this property. }
+    property URL: string read FURL;
+    property Color: TColor read FColor write SetColor;
+    procedure Load(const AnURL: string);
+  end;
+
+procedure TWebPage.Load(const AnURL: string);
+begin
+  FURL := AnURL;
+  NetworkingComponent.LoadWebPage(AnURL);
+end;
+
+function TWebPage.SetColor(const Value: TColor);
+begin
+  if FColor <> Value then
+  begin
+    FColor := Value;
+    // for example, cause some update each time value changes
+    Repaint;
+    // as another example, make sure that some underlying instance,
+    // like a "RenderingComponent" (whatever that is),
+    // has a synchronized value of Color.
+    RenderingComponent.Color := Value;
+  end;
+end;
+----
+
+// { compare with the old value, to shield from making
+//   useless assignments to RenderingComponent.Color.
+//   This is a common approach to guarantee that setting WebPage.Color
+//   many times to the same value will be fast,
+//   even if setting RenderingComponent.Color many times to the same value
+//   would be slow. }
+
+When declaring a property you specify:
+
+. Whether it can be read, and how: by directly reading a field, or by using a method.
+. And, in a similar manner,  whether it can be set, and how: by directly writing to a designated field, or by calling a method.
+
+The compiler checks that the types and parameters of indicated fields / methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
+
+There are some good conventions when creating properties. They should be somewhat predictable, like fields:
+
+* The _getter_ function should have no visible side-effects, and be deterministic (no randomization, not even pseudo- :). Reading a property many times should be valid, and return the same value. Note that it's OK for _getter_ to have some _invisible_ side-effect, for example to cache a value of some calculation (known to produce the same results for given instance), to return it faster next time.
+
+* The _setter_ function should always set the requested value. So after `MyClass.MyProperty := 123;` you can expect that always `MyClass.MyProperty = 123`.
+
+These are only conventions, the compiler doesn't prevent you from making something weird using properties. More notes:
+
+* The read-only properties are often used to make some field read-only from the outside. Again, the good convention is to make it behave like a constant, at least constant for this object instance, at least constant for this object instance with this state. The value of the property should not change unexpectedly. Make it a function, not a property, if reading it has a side effect or returns something random!
+
+* The "backing" field of a property is almost always private, since the idea of a property is to encapsulate all outside access to it.
+
+* It's technically possible to make set-only properties, but I have not yet seen a good example of such thing:)
+
 ### Interfaces
 
 We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
 //This is much like Java, where interfaces are used whenever you think of multiple inheritance.
+
+// TODO example.
 
 ### Exceptions
 
@@ -286,23 +367,19 @@ The exception is for classes compiled with `{$M+}`, or descendants of classes co
 
 Not every field and property type is allowed in the `published` section (not every type can be streamed). Just use `public` if you don't care about streaming but want something available to all users.
 
-### private and strict private
-
-The `private` visibility specifier means that the field (or method) in not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
-
-However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. As you can guess, it means that the field (or method) in not accessible outside of this class -- period. No exceptions.
-
-In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
-
 ### Default ancestor
 
 If you don't declare the ancestor type, the `class` inherits from `TObject`.
 
-### Remember to free (release memory) class instances
+### Freeing classes
+
+#### Remember to free (release memory) class instances
 
 The classes (instances of the `class` type) have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
 
-### How to free
+Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
+
+#### How to free
 
 To free the class instance, it's best to call `FreeAndNil(A)` on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
 
@@ -331,7 +408,7 @@ Note that in normal circumstances, you should never call a method on an instance
 
 I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. _Castle Game Engine_ does it like that. It provides a nice assertion that _all references are either nil, or point to valid instances_.
 
-### Automatic freeing
+#### Automatic freeing
 
 In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
 
@@ -446,6 +523,232 @@ Beware that the list classes "ownership" mechanism is simple, and you will get a
 
 *In Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
 
+### private and strict private
+
+The `private` visibility specifier means that the field (or method) in not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
+
+However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. As you can guess, it means that the field (or method) in not accessible outside of this class -- period. No exceptions.
+
+In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
+
+### Class methods
+
+These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
+
+[source,pascal]
+----
+type
+  TEnemy = class
+    procedure Kill;
+    class procedure KillAll;
+  end;
+
+var
+  E: TEnemy;
+begin
+  E := TEnemy.Create;
+  try
+    E.Kill;
+  finally FreeAndNil(E) end;
+  TEnemy.KillAll;
+end;
+----
+
+Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
+
+Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameterless).
+
+### More stuff inside classes and nested classes
+
+You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, so you can the nested class can even be private (not visible to the outside world).
+
+[source,pascal]
+----
+type
+  TMyClass = class
+  private
+    type
+      TInternalClass = class
+        Velocity: Single;
+        procedure DoSomething;
+      end;
+    var
+    FInternalClass: TInternalClass;
+  public
+    const
+      DefaultVelocity = 100.0;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+constructor TMyClass.Create;
+begin
+  inherited;
+  FInternalClass := TInternalClass.Create;
+  FInternalClass.Velocity := DefaultVelocity;
+  FInternalClass.DoSomething;
+end;
+
+destructor TMyClass.Destroy;
+begin
+  FreeAndNil(FInternalClass);
+  inherited;
+end;
+
+{ note that method definition is prefixed with
+  "TMyClass.TInternalClass" below. }
+procedure TMyClass.TInternalClass.DoSomething;
+begin
+end;
+----
+
+### Class references
+
+Class reference allows you to change the class type at runtime, for example to call a class method or constructor without knowing the exact class at compile-time.
+
+[source,pascal]
+----
+type
+  TMyClass = class(TComponent)
+  end;
+
+  TMyClass1 = class(TMyClass)
+  end;
+
+  TMyClass2 = class(TMyClass)
+  end;
+
+  TMyClassRef = class of TMyClass;
+
+var
+  C: TMyClass;
+  ClassRef: TMyClassRef;
+begin
+  // Obviously you can do this:
+
+  C := TMyClass.Create(nil); FreeAndNil(C);
+  C := TMyClass1.Create(nil); FreeAndNil(C);
+  C := TMyClass2.Create(nil); FreeAndNil(C);
+
+  // In addition, using class references, you can also do this:
+
+  ClassRef := TMyClass;
+  C := ClassRef.Create(nil); FreeAndNil(C);
+
+  ClassRef := TMyClass1;
+  C := ClassRef.Create(nil); FreeAndNil(C);
+
+  ClassRef := TMyClass2;
+  C := ClassRef.Create(nil); FreeAndNil(C);
+end;
+----
+
+Class references can be combined with virtual class methods. This gives a similar effect as using classes with virtual methods -- the actual method to be executed is determined at runtime.
+
+[source,pascal]
+----
+type
+  TMyClass = class(TComponent)
+    class procedure DoSomething; virtual; abstract;
+  end;
+
+  TMyClass1 = class(TMyClass)
+    class procedure DoSomething; override;
+  end;
+
+  TMyClass2 = class(TMyClass)
+    class procedure DoSomething; override;
+  end;
+
+  TMyClassRef = class of TMyClass;
+
+var
+  C: TMyClass;
+  ClassRef: TMyClassRef;
+begin
+  ClassRef := TMyClass1;
+  ClassRef.DoSomething;
+
+  ClassRef := TMyClass2;
+  ClassRef.DoSomething;
+
+  { And this will cause an exception at runtime,
+    since DoSomething is abstract in TMyClass. }
+  ClassRef := TMyClass;
+  ClassRef.DoSomething;
+end;
+----
+
+// This is an example why compiler cannot detect *all* uses of an abstract
+// methods at compile time, in this case --- the error can only resurface
+// at runtime.
+//
+// Poor example actually, since compiler could prevent "ClassRef := TMyClass"
+// in this case?
+
+### Class helpers
+
+TODO
+
+### Virtual constructors, destructors
+
+Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameterless.
+
+Constructor name is by convention `Create`.
+
+You can change this name, although be careful with this -- if you define `CreateMy`, always redefine also the name `Create`, otherwise the user can still access the constructor `Create` of the ancestor, bypassing your `CreateMy` constructor.
+
+In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
+
+In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see "class references" below).
+
+### An exception in constructor
+
+What happens if an exception happens during a constructor? The line
+
+[source,pascal]
+----
+X := TMyClass.Create;
+----
+
+does not execute to the end in this case, `X` cannot be assigned, so who will cleanup after a partially-constructed class?
+
+The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
+
+We also have to depend in such cases that _the memory of the class is guaranteed to be zeroed right before the constructor code is executed_. So we know that at the beginning, all class references are `nil`, all integers are `0` and so on.
+
+So below works without any memory leaks:
+
+[source,pascal]
+----
+type
+  TPlayer = class
+    Gun1, Gun2: TGun;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+constructor TPlayer.Create;
+begin
+  inherited;
+  Gun1 := TGun.Create;
+  raise Exception('Raising an exception from constructor!');
+  Gun2 := TGun.Create;
+end;
+
+destructor TPlayer.Destroy;
+begin
+  { in case since the constructor crashed, we can
+    have Gun1 <> nil and Gun2 = nil now. Deal with it.
+    ...Actually, in this case, FreeAndNil deals with it without
+    any additional effort on our side, because FreeAndNil checks
+    whether the instance is nil before calling it's destructor. }
+  FreeAndNil(Gun1);
+  FreeAndNil(Gun2);
+  inherited;
+end;
+----
+
 ## Various stuff
 
 ### Output, logging
@@ -548,64 +851,11 @@ In the old days, Turbo Pascal introduced another syntax for class-like functiona
 
 Both `record` and `object` do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome. It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
 
-### Virtual constructors, destructors
-
-Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameterless.
-
-Constructor name is by convention `Create`.
-
-You can change this name, although be careful with this -- if you define `CreateMy`, always redefine also the name `Create`, otherwise the user can still access the constructor `Create` of the ancestor, bypassing your `CreateMy` constructor.
-
-In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
-
-In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see "class references" below).
-
 ### Overloading
 
 Methods (and global functions and procedures) with the same name are allowed, as long as they have different parameters. At compile time, the compiler detects which one you want to use, knowing the parameters you pass.
 
 By default, the overloading uses the FPC approach, which means that all the methods in given namespace (a class or a unit) are equal, and hide the other methods in namespaces with less priority. For example, if you define a class with methods `Foo(Integer)` and `Foo(string)`, and it descends from a class with method `Foo(Float)`, then the users of your new class will not be able to access the method `Foo(Float)` easily (they still can --- if they typecast the class to it's ancestor type). To overcome this, use the `overload` keyword.
-
-### Class references
-
-Class reference allows you to change the class type at runtime, for example to call a class method or constructor without knowing the exact class at compile-time.
-
-[source,pascal]
-----
-type
-  TMyClass = class(TComponent)
-  end;
-
-  TMyClass1 = class(TMyClass)
-  end;
-
-  TMyClass2 = class(TMyClass)
-  end;
-
-  TMyClassRef = class of TMyClass;
-
-var
-  C: TMyClass;
-  ClassRef: TMyClassRef;
-begin
-  // Obviously you can do this:
-
-  C := TMyClass.Create(nil); FreeAndNil(C);
-  C := TMyClass1.Create(nil); FreeAndNil(C);
-  C := TMyClass2.Create(nil); FreeAndNil(C);
-
-  // In addition, using class references, you can also do this:
-
-  ClassRef := TMyClass;
-  C := ClassRef.Create(nil); FreeAndNil(C);
-
-  ClassRef := TMyClass1;
-  C := ClassRef.Create(nil); FreeAndNil(C);
-
-  ClassRef := TMyClass2;
-  C := ClassRef.Create(nil); FreeAndNil(C);
-end;
-----
 
 ## License of this document
 
