@@ -27,12 +27,7 @@ This introduction is mostly directed at programmers who already have experience 
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+} // Just use this line in all modern sources
-
-program MyProgram; // Save this file as myprogram.lpr
-begin
-  Writeln('Hello world!');
-end.
+include::hello_world.lpr[]
 ----
 
 This is a complete program that you can _compile_ and _run_.
@@ -50,31 +45,7 @@ Voila -- a working GUI application, cross-platform, with native look everywhere,
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}
-
-program MyProgram;
-
-procedure MyProcedure(const A: Integer);
-begin
-  Writeln('A + 10 is: ', A + 10);
-end;
-
-function MyFunction(const S: string): string;
-begin
-  Result := S + ' strings are automatically managed';
-end;
-
-var
-  X: Single;
-begin
-  Writeln(MyFunction('Note: '));
-  MyProcedure(5);
-
-  // Division using "/" always makes float result, use "div" for integer division
-  X := 15 / 5;
-  Writeln('X is now: ', X); // scientific notation
-  Writeln('X is now: ', X:1:2); // 2 decimal places
-end.
+include::functions_primitives.lpr[]
 ----
 
 ### Enumerated and ordinal types and sets and constant-length arrays
@@ -134,44 +105,14 @@ Units allow you to group common stuff (anything that can be declared), for usage
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}
-unit MyUnit;
-interface
-
-procedure MyProcedure(const A: Integer);
-function MyFunction(const S: string): string;
-
-implementation
-
-procedure MyProcedure(const A: Integer);
-begin
-  Writeln('A + 10 is: ', A + 10);
-end;
-
-function MyFunction(const S: string): string;
-begin
-  Result := S + ' strings are automatically managed';
-end;
-
-end.
+include::myunit.pas[]
 ----
 
 Use a unit by a `uses` keyword:
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}
-
-program MyProgram;
-
-uses MyUnit;
-
-var
-  X: Single;
-begin
-  Writeln(MyFunction('Note: '));
-  MyProcedure(5);
-end.
+include::myunit_test.lpr[]
 ----
 
 ## Classes
@@ -203,43 +144,7 @@ We have inheritance and virtual methods.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}
-
-program MyProgram;
-
-uses SysUtils;
-
-type
-  TMyClass = class
-    MyInt: Integer;
-    procedure MyVirtualMethod; virtual;
-  end;
-
-  TMyClassDescendant = class(TMyClass)
-    procedure MyVirtualMethod; override;
-  end;
-
-procedure TMyClass.MyVirtualMethod;
-begin
-  Writeln('TMyClass shows MyInt + 10: ', MyInt + 10);
-end;
-
-procedure TMyClassDescendant.MyVirtualMethod;
-begin
-  Writeln('TMyClassDescendant shows MyInt + 20: ', MyInt + 20);
-end;
-
-var
-  C: TMyClass;
-begin
-  C := TMyClass.Create;
-  C.MyVirtualMethod;
-  FreeAndNil(C);
-
-  C := TMyClassDescendant.Create;
-  C.MyVirtualMethod;
-  FreeAndNil(C);
-end.
+include::inheritance.lpr[]
 ----
 
 By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
@@ -323,31 +228,7 @@ We have exceptions. They can be caught with `try ... except ... end` clauses, an
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}
-
-program MyProgram;
-
-uses SysUtils;
-
-type
-  TMyClass = class
-    procedure MyMethod;
-  end;
-
-procedure TMyClass.MyMethod;
-begin
-  if Random > 0.5 then
-    raise Exception.Create('Raising an exception!');
-end;
-
-var
-  C: TMyClass;
-begin
-  C := TMyClass.Create;
-  try
-    C.MyMethod;
-  finally FreeAndNil(C) end;
-end.
+include::exception_finally.lpr[]
 ----
 
 Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
