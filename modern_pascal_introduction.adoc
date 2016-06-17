@@ -317,13 +317,6 @@ These are only conventions, the compiler doesn't prevent you from making somethi
 
 * It's technically possible to make set-only properties, but I have not yet seen a good example of such thing:)
 
-### Interfaces
-
-We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
-//This is much like Java, where interfaces are used whenever you think of multiple inheritance.
-
-// TODO example.
-
 ### Exceptions
 
 We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
@@ -798,7 +791,43 @@ end;
 
 ### Class helpers
 
-TODO
+The _method_ is just a procedure or function inside a class. From the outside of the class, you call it with a special syntax `MyInstance.MyMethod(...)`. After a while you grow accustomed to thinking that _if I want to make action Action on instance X, I write `X.Action(...)`_.
+
+But sometimes, you need to implement something that conceptually is _an action on class TMyClass_ without modifying the _TMyClass_ source code. Sometimes it's because it's not your source code, and you don't want to change it. Sometimes it's because of the dependencies -- adding a method like `Render` to a class like `TMy3DObject` seems like a straightforward idea, but maybe the base implementation of class `TMy3DObject` should be kept independent from the rendering code? It would be better to "enhance" an existing class, to add functionality to it without changing it's source code.
+
+Simple way to do it is then to create a global procedure that takes an instance of `TMy3DObject` as it's 1st parameter.
+
+[source,pascal]
+----
+procedure Render(const O: TMy3DObject; const Color: TColor);
+var
+  I: Integer;
+begin
+  for I := 0 to O.ShapesCount - 1 do
+    RenderMesh(O.Shape[I].Mesh, Color);
+end;
+----
+
+This works perfectly, but the downside is that calling it looks a little ugly. While usually you call actions like `X.Action(...)`, in this case you have to call them like `Render(X, ...)`. It would be cool to be able to just write `X.Render(...)`, even when `Render` is not implemented in the same unit as `TMy3DObject`.
+
+And this is where you use class helpers. They are just a way to implement procedures / functions that operate on given class, and that are called like methods, but are not in fact normal methods -- they were added outside of the `TMy3DObject` definition.
+
+[source,pascal]
+----
+type
+  TMy3DObjectHelper = class helper for TMy3DObject
+    procedure Render(const Color: TColor);
+  end;
+
+procedure TMy3DObjectHelper.Render(const Color: TColor);
+var
+  I: Integer;
+begin
+  // note that we access ShapesCount, Shape without any qualifiers here
+  for I := 0 to ShapesCount - 1 do
+    RenderMesh(Shape[I].Mesh, Color);
+end;
+----
 
 ### Virtual constructors, destructors
 
@@ -831,32 +860,50 @@ So below works without any memory leaks:
 
 [source,pascal]
 ----
-type
-  TPlayer = class
-    Gun1, Gun2: TGun;
-    constructor Create;
-    destructor Destroy; override;
-  end;
+include::exception_in_constructor_test.lpr[]
+----
 
-constructor TPlayer.Create;
-begin
-  inherited;
-  Gun1 := TGun.Create;
-  raise Exception('Raising an exception from constructor!');
-  Gun2 := TGun.Create;
-end;
+## Interfaces
 
-destructor TPlayer.Destroy;
-begin
-  { in case since the constructor crashed, we can
-    have Gun1 <> nil and Gun2 = nil now. Deal with it.
-    ...Actually, in this case, FreeAndNil deals with it without
-    any additional effort on our side, because FreeAndNil checks
-    whether the instance is nil before calling it's destructor. }
-  FreeAndNil(Gun1);
-  FreeAndNil(Gun2);
-  inherited;
-end;
+### Good (CORBA) interfaces
+
+We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
+//This is much like Java, where interfaces are used whenever you think of multiple inheritance.
+
+[source,pascal]
+----
+include::interfaces_corba_test.lpr[]
+----
+
+Note: the default interface kind (if we would omit the `{$interfaces corba}` declaration) is COM. The _COM_ types of interfaces are unfortunately an _embarassment to the language_ (details in the next section). That's why I would advice to just use `{$interfaces corba}` in all modern code for interfaces.
+
+### Ugly (COM) interfaces
+
+If you really need to use COM interfaces, beware:
+
+* For some reason, the designer of this language feature (Borland) decided to entangle it with *two* concepts it should never be entangled with. Namely, with
++
+--
+  . COM (some ancient Windows technology) and
+  . with reference counting (as far as I understand, this was a consequence of being related to the COM technology, for some reason COM stuff had to be reference counted).
+--
+
+// +
+// The relation to COM technology has . You just have to put some random "GUID" string at the interface declaration to make it work). But the reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
+
+* You need to declare a GUID at your COM interfaces, to make the `Supports(ObjectInstance, IMyInterface)` or `ObjectInstance is IMyInterface` work. Just use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor).
+
+* Your class needs to implement a magic `_AddRef`, `_Release`, `QueryInterface` methods. Or descend from something that already implements them, like `TComponent`. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
+
+* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release`, `QueryInterface` implementations that basically do nothing. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
+
+* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even though we usually hack it to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual ( http://freepascal.org/docs-html/ref/refse47.html ), http://bugs.freepascal.org/view.php?id=10374 .
+
+Here's a previous example reworked to use COM interfaces:
+
+[source,pascal]
+----
+include::interfaces_com_test.lpr[]
 ----
 
 ## License of this document

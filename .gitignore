@@ -1,4 +1,8 @@
 *~
+*.o
 modern_pascal_introduction.html
 modern_pascal_introduction.pdf
 modern_pascal_introduction.xml
+exception_in_constructor_test
+interfaces_com_test
+interfaces_corba_test
