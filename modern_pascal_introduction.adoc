@@ -257,15 +257,15 @@ Not every field and property type is allowed in the `published` section (not eve
 
 If you don't declare the ancestor type, every `class` inherits from `TObject`.
 
-### Freeing classes
+## Freeing classes
 
-#### Remember to free (release memory) class instances
+### Remember to free (release memory) class instances
 
 The classes (instances of the `class` type) have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
 
 Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
 
-#### How to free
+### How to free
 
 To free the class instance, it's best to call `FreeAndNil(A)` on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
 
@@ -294,7 +294,7 @@ Note that in normal circumstances, you should never call a method on an instance
 
 I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. _Castle Game Engine_ does it like that. It provides a nice assertion that _all references are either nil, or point to valid instances_.
 
-#### Manual and automatic freeing
+### Manual and automatic freeing
 
 In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
 
@@ -409,7 +409,7 @@ Beware that the list classes "ownership" mechanism is simple, and you will get a
 
 *In Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
 
-#### Free notification
+### Free notification
 
 If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
 
