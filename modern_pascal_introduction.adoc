@@ -896,6 +896,10 @@ include::interfaces_com_test.lpr[]
 
 Copyright Michalis Kamburelis.
 
-Permission to redistribute and modify this document freely, under the _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_ or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_, just like Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights .
+You have permission to redistribute and even modify this document freely, under the
 
-The source code is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction .
+* _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_
+* or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_
+* (just like Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights).
+
+The source code is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, patches and pull requests, are very welcome:) You can reach me through GitHub, or my webpage https://michalis.ii.uni.wroc.pl/~michalis/ , or email michalis.kambi@gmail.com .
