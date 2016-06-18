@@ -48,6 +48,45 @@ Voila -- a working GUI application, cross-platform, with native look everywhere,
 include::code-samples/functions_primitives.lpr[]
 ----
 
+To return a value from a function, assign something to the magic `Result` variable. You can read and set the `Result` freely, just like a local variable.
+
+[source,pascal]
+----
+function MyFunction(const S: string): string;
+begin
+  Result := S + 'something';
+  Result := Result + ' something more!';
+  Result := Result + ' and more!';
+end;
+----
+
+You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result. If you want to call the function itself recursively, you can of course do it, and be sure to specify the parenthesis (this makes a recursive call to parameter-less function different from accessing this function's current result). Like this:
+
+[source,pascal]
+----
+function ReadIntegersUntilZero: string;
+var
+  I: Integer;
+begin
+  Readln(I);
+  Result := IntToStr(I);
+  if I <> 0 then
+    Result := Result + ' ' + ReadIntegersUntilZero();
+end;
+----
+
+You can call `Exit` to end the execution of the procedure or function before it reaches the final `end;`. If you call parameter-less `Exit` in a function, it wil return the last thing you set as `Result`. You can also use `Exit(X)` construct, to set the function result and exit *now* -- this is just like `return X` construct in C-like languages.
+
+[source,pascal]
+----
+function AddName(const ExistingNames, NewName: string): string;
+begin
+  if ExistingNames = '' then
+    Exit(NewName);
+  Result := ExistingNames + ', ' + NewName;
+end;
+----
+
 ### Enumerated and ordinal types and sets and constant-length arrays
 
 Enumerated type in Pascal is a very nice, opaque type. You will probably use it much more often than enums in other languages:)
