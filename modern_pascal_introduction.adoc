@@ -962,7 +962,10 @@ include::exception_in_constructor_test.lpr[]
 
 ### Good (CORBA) interfaces
 
-We have interfaces, much like in Java. They declare the API, without declaring the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
+We have interfaces, much like in Java. The idea is that _an interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
+
+You can cast a class to any interface it supports, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. You can say that "it allows to deal with cases when simple class inheritance is not enough".
+
 //This is much like Java, where interfaces are used whenever you think of multiple inheritance.
 
 [source,pascal]
@@ -970,7 +973,10 @@ We have interfaces, much like in Java. They declare the API, without declaring t
 include::interfaces_corba_test.lpr[]
 ----
 
-Note: the default interface kind (if we would omit the `{$interfaces corba}` declaration) is COM. The _COM_ types of interfaces are unfortunately an _embarrassment to the language_ (details in the next section). That's why I would advice to just use `{$interfaces corba}` in all modern code for interfaces.
+NOTE: The default interface style
+//(if we would omit the `{$interfaces corba}` directive)
+is _COM_. But I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces. The _COM_ interfaces are somewhat an _embarrassment to the language_, to be honest (details in the next section).
+//, and it's best to avoid them if you can.
 
 ### Ugly (COM) interfaces
 
