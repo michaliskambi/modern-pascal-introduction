@@ -24,3 +24,5 @@ clean:
 .PHONY: upload
 upload: all
 	scp modern_pascal_introduction.html modern_pascal_introduction.pdf michalis@michalis.ii.uni.wroc.pl:/home/michalis/public_html/modern_pascal_introduction/
+	firefox http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.html
+	firefox http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.pdf
