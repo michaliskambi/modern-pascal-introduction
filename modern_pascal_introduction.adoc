@@ -203,10 +203,10 @@ By default methods are not virtual, declare them with `virtual` to make them. Ov
 
 ### Properties
 
-Properies are a very nice _"syntax sugar"_ to
+Properties are a very nice _"syntax sugar"_ to
 
 1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and a _setter_ function. A most typical usage is to perform some side-effect each time some value changes.
-2. Make somethig that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
+2. Make something that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
 
 [source,pascal]
 ----
@@ -267,7 +267,7 @@ Technically, for the compiler, the "getter" and "setter" methods are just normal
 
 * The _getter_ function should have no visible side-effects (e.g. it should not read some input from file / keyboard). It should be deterministic (no randomization, not even pseudo-randomization :). Reading a property many times should be valid, and return the same value, if nothing changed in-between.
 +
-Note that it's OK for _getter_ to have some _invisible_ side-effect, for example to cache a value of some calculation (known to produce the same results for given instance), to return it faster next time. This is in fact one of the cool possilities of a "getter" function.
+Note that it's OK for _getter_ to have some _invisible_ side-effect, for example to cache a value of some calculation (known to produce the same results for given instance), to return it faster next time. This is in fact one of the cool possibilities of a "getter" function.
 
 * The _setter_ function should always set the requested value, such that calling the _getter_ yields it back. Do not reject invalid values silently in the "setter" (raise an exception if you must). Do not convert or scale the requested value. The idea is that after `MyClass.MyProperty := 123;` the programmer can expect that `MyClass.MyProperty = 123`.
 
@@ -298,7 +298,7 @@ The basic visibility levels are:
 `private`:: only accessible in this class.
 `protected`:: only accessible in this class and descendants.
 
-The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tighly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See <<private and strict private>> section.
+The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See <<private and strict private>> section.
 
 By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
 
@@ -488,7 +488,7 @@ begin
   { With O2, things are more difficult. It's not nil, but it's invalid.
     Trying to access a field of a nil instance (or call a method
     that accessed a field of a nil instance) results in an unpredictable
-    behaviour - maybe an access violation exception, maybe a garbage data
+    behavior - maybe an access violation exception, maybe a garbage data
     returned. }
 end;
 ----
@@ -497,7 +497,7 @@ There are various solutions to it:
 
 * One solution is to, well, be careful. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 
-* The other solution is to use `TComponent` class "free notification" mechanism. One component get be notified when another component is freed, and thus set it's reference to `nil`.
+* The other solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
 +
 Thus you get something like a _weak reference_. It can cope with various usage scenarios, for example you can let the code from outside of the class to set your reference, and the outside code can also free the instance at anytime.
 +
@@ -717,7 +717,7 @@ Now you can include this file using `{$I myconfig.inc}` in all your sources.
 {$ifdef MSWINDOWS} {$I my_windows_implementation.inc} {$endif}
 ----
 +
-Sometimes this is better than writing a long code with many `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` intermixed with normal code (variable declarations, routine implementation). The code is more readable this way. You can even use this technique more aggressively, by using the `-Fi` command-line option of FPC to include some subdirectiries only for specific platforms. Then you can have many version of include file `{$I my platform_specific_implementation.inc}` and you simply include them, letting the compiler find the correct version.
+Sometimes this is better than writing a long code with many `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` intermixed with normal code (variable declarations, routine implementation). The code is more readable this way. You can even use this technique more aggressively, by using the `-Fi` command-line option of FPC to include some subdirectories only for specific platforms. Then you can have many version of include file `{$I my platform_specific_implementation.inc}` and you simply include them, letting the compiler find the correct version.
 
 ## Advanced classes features
 
@@ -754,7 +754,7 @@ end;
 
 Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
 
-Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameterless).
+Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
 
 ### More stuff inside classes and nested classes
 
@@ -926,7 +926,7 @@ end;
 
 ### Virtual constructors, destructors
 
-Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameterless.
+Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameter-less.
 
 Constructor name is by convention `Create`.
 
@@ -970,7 +970,7 @@ We have interfaces, much like in Java. They declare the API, without declaring t
 include::interfaces_corba_test.lpr[]
 ----
 
-Note: the default interface kind (if we would omit the `{$interfaces corba}` declaration) is COM. The _COM_ types of interfaces are unfortunately an _embarassment to the language_ (details in the next section). That's why I would advice to just use `{$interfaces corba}` in all modern code for interfaces.
+Note: the default interface kind (if we would omit the `{$interfaces corba}` declaration) is COM. The _COM_ types of interfaces are unfortunately an _embarrassment to the language_ (details in the next section). That's why I would advice to just use `{$interfaces corba}` in all modern code for interfaces.
 
 ### Ugly (COM) interfaces
 
