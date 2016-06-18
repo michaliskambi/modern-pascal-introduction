@@ -277,6 +277,8 @@ Note that it's OK for _getter_ to have some _invisible_ side-effect, for example
 
 * It's technically possible to make _set-only properties_, but I have not yet seen a good example of such thing:)
 
+NOTE: Properties can also be defined outside of class, at a unit level. They serve an analogous purpose then: look like a global variable, but are backed by a _getter_ and _setter_ routines.
+
 ### Exceptions
 
 We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
@@ -923,6 +925,9 @@ begin
     RenderMesh(Shape[I].Mesh, Color);
 end;
 ----
+
+NOTE: The more general concept is _"type helper"_. Using them you can add methods even to primitive types, like integers or enums. You can also add _"record helpers_" to (you guessed it...) records. See http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
+//And of course to records and old-style objects (both of them can also have regular methods, they are much like classes in this regard).
 
 ### Virtual constructors, destructors
 
