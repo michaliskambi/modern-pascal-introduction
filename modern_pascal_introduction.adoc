@@ -27,7 +27,7 @@ This introduction is mostly directed at programmers who already have experience 
 
 [source,pascal]
 ----
-include::hello_world.lpr[]
+include::code-samples/hello_world.lpr[]
 ----
 
 This is a complete program that you can _compile_ and _run_.
@@ -45,7 +45,7 @@ Voila -- a working GUI application, cross-platform, with native look everywhere,
 
 [source,pascal]
 ----
-include::functions_primitives.lpr[]
+include::code-samples/functions_primitives.lpr[]
 ----
 
 ### Enumerated and ordinal types and sets and constant-length arrays
@@ -144,7 +144,7 @@ Units allow you to group common stuff (anything that can be declared), for usage
 
 [source,pascal]
 ----
-include::myunit.pas[]
+include::code-samples/myunit.pas[]
 ----
 
 Final programs are saved as `myprogram.lpr` files (`lpr` = Lazarus program file; in Delphi you would use `.dpr`). Note that other conventions are possible here, e.g. some projects just use `.pas` for main program file, some use `.pp` for units or programs. I advice using `.pas` for units and `.lpr` for FPC/Lazarus programs.
@@ -153,14 +153,14 @@ A program can use a unit by a `uses` keyword:
 
 [source,pascal]
 ----
-include::myunit_test.lpr[]
+include::code-samples/myunit_test.lpr[]
 ----
 
 One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use it's identifiers only in your implementation).
 
 [source,pascal]
 ----
-include::anotherunit.pas[]
+include::code-samples/anotherunit.pas[]
 ----
 
 It is not allowed to have _circular unit dependencies in the interface_. That is, two units cannot use each other in the interface section. This constraint is reasonable -- in order to "understand" (e.g. decide on a memory layout of structures) the interface section of a unit, the compiler must first "understand" all the units it uses in interface section. With circular dependencies, this would be impossible. (That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
@@ -196,7 +196,7 @@ We have inheritance and virtual methods.
 
 [source,pascal]
 ----
-include::inheritance.lpr[]
+include::code-samples/inheritance.lpr[]
 ----
 
 By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
@@ -285,7 +285,7 @@ We have exceptions. They can be caught with `try ... except ... end` clauses, an
 
 [source,pascal]
 ----
-include::exception_finally.lpr[]
+include::code-samples/exception_finally.lpr[]
 ----
 
 Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
@@ -960,7 +960,7 @@ So below works without any memory leaks:
 
 [source,pascal]
 ----
-include::exception_in_constructor_test.lpr[]
+include::code-samples/exception_in_constructor_test.lpr[]
 ----
 
 ## Interfaces
@@ -975,7 +975,7 @@ You can cast a class to any interface it supports, and then _call the methods th
 
 [source,pascal]
 ----
-include::interfaces_corba_test.lpr[]
+include::code-samples/interfaces_corba_test.lpr[]
 ----
 
 NOTE: The default interface style
@@ -1009,7 +1009,7 @@ Here's a previous example reworked to use COM interfaces:
 
 [source,pascal]
 ----
-include::interfaces_com_test.lpr[]
+include::code-samples/interfaces_com_test.lpr[]
 ----
 
 ## License of this document
