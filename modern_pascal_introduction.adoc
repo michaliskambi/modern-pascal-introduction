@@ -761,6 +761,104 @@ end;
 
 ## Various stuff
 
+### Local (nested) routines
+
+This is quite powerful feature that often allows you to split a long routine (_function, procedure, method_) into many smaller ones _easily_. You simply define a helper routine within another one.
+
+The local routine can freely access (read, write) all the parameters of a parent routine, _and all the local variables of the parent that were declared above it_. This is very powerful, makes using local routines really easy, to split those long routines without much effort (as you don't have to pass around all the necessary information in parameters). It may also get somewhat unreadable, if you allow too many local functions to use the same local variable. So use this feature carefully.
+
+These two examples are equivalent:
+
+[source,pascal]
+----
+procedure SumOfSquares(const N: Integer): Integer;
+
+  function Square(const Value: Integer): Integer;
+  begin
+    Result := Value * Value;
+  end;
+
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 0 to N do
+    Result := Result + Square(I);
+end;
+----
+
+Another version, where we let the local routine `Square` to access `I` directly:
+
+[source,pascal]
+----
+procedure SumOfSquares(const N: Integer): Integer;
+var
+  I: Integer;
+
+  function Square: Integer;
+  begin
+    Result := I * I;
+  end;
+
+begin
+  Result := 0;
+  for I := 0 to N do
+    Result := Result + Square(I);
+end;
+----
+
+### Callbacks (aka events, aka pointers to functions, aka procedural variables)
+
+They allow to call a function indirectly, through to a variable. The variable can be assigned at runtime to point to any function _with matching parameter types and return types_.
+
+The callback can be:
+
+* Normal, which means it can point to any normal routine (not a method, not local).
++
+[source,pascal]
+----
+include::code-samples/callbacks.lpr[]
+----
+* A method: declare with `of object` at the end.
++
+[source,pascal]
+----
+include::code-samples/callbacks_of_object.lpr[]
+----
++
+Note that you _cannot_ pass global procedures / functions as methods. They are incompatible. If you have to provide an `of object` callback, but don't want to create a dummy class instance, you can pass <<Class methods>> as methods.
++
+[source,pascal]
+----
+type
+  TMyMethod = function (const A, B: Integer): Integer of object;
+
+  TMyClass = class
+    class function Add(const A, B: Integer): Integer
+    class function Multiply(const A, B: Integer): Integer
+  end;
+
+var
+  M: TMyMethod;
+begin
+  M := @TMyClass(nil).Add;
+  M := @TMyClass(nil).Multiply;
+end;
+----
++
+Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMyClass.Add`.
+
+* A (possibly) local routine: declare with `is nested` at the end, and make sure to use `{$modeswitch nestedprocvars}` directive for the code. These go hand-in-hand with <<Local (nested) routines>>.
+
+### Generics
+
+A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
+
+The generics in Pascal are realized much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+// Unlike in Java, you are *not* limited to only generics of things that are a reference.
+
+TODO, show example of classes and procedures
+
 ### Input/output using streams
 
 Modern programs should use `TStream` class and it's many descendants to do input / output.
@@ -963,7 +1061,9 @@ You can allocate and free pointers using the `New` / `Dispose` methods, or (more
 
 There is also an untyped `Pointer` type, similar to `void*` in C-like languages. It is completely unsafe, and can be typecasted to any other pointer type.
 
-Remember that a _class instance_ is also in fact a pointer, although it doesn't require any `^` or `@` operators to use it. A linked list using classes is certainly possible, it would simply be this:
+Remember that a _class instance_ is also in fact a pointer, although it doesn't require any `^` or `@` operators to use it.
+//That's why it's called a _reference_.
+A linked list using classes is certainly possible, it would simply be this:
 
 [source,pascal]
 ----
