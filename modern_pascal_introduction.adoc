@@ -4,6 +4,7 @@ Michalis Kamburelis
 :toclevels: 4
 :sectnums:
 :source-highlighter: coderay
+:docinfo1:
 
 ## Why
 
