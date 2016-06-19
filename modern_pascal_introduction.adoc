@@ -236,6 +236,52 @@ begin
 end;
 ----
 
+### Loops (for, while, repeat, for .. in)
+
+[source,pascal]
+----
+include::code-samples/loops.lpr[]
+----
+
+Various notes:
+
+* It may seem that the difference between the `while` and `repeat` loop is "cosmetical" (you specify a negated condition, because in `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_). Actually there's an important difference: in case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
+
+* The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
++
+In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
+
+* The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
+** It can iterate over all values in the array (example above).
+** It can iterate over all possible values of an enumerated type:
++
+[source,pascal]
+----
+var
+  AK: AnimalKind;
+begin
+  for AnimalKind in TAnimalKind do...
+----
+** It can iterate over all items included in the set:
++
+[source,pascal]
+----
+var
+  Animals: TAnimals;
+  AK: AnimalKind;
+begin
+  Animals := [akDog, akCat];
+  for AK in Animals do ...
+----
+** And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
++
+[source,pascal]
+----
+include::code-samples/for_in_list.lpr[]
+----
++
+We didn't yet explain the concept of classes, so the last example may not be obvious to you yet -- just carry on, it will make sense later:)
+
 ### Output, logging
 
 To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
@@ -769,12 +815,6 @@ For dynamic-length lists of stuff, we advice using generic classes from the `FGL
 
 Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
-### Old-style objects
-
-In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's discouraged to use it anymore, except when you want to get the _record with methods_ feature. Then the old-style objects are useful.
-
-Both `record` and `object` do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome. It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
-
 ### Overloading
 
 Methods (and global functions and procedures) with the same name are allowed, as long as they have different parameters. At compile time, the compiler detects which one you want to use, knowing the parameters you pass.
@@ -878,6 +918,61 @@ Now you can include this file using `{$I myconfig.inc}` in all your sources.
 ----
 +
 Sometimes this is better than writing a long code with many `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` intermixed with normal code (variable declarations, routine implementation). The code is more readable this way. You can even use this technique more aggressively, by using the `-Fi` command-line option of FPC to include some subdirectories only for specific platforms. Then you can have many version of include file `{$I my platform_specific_implementation.inc}` and you simply include them, letting the compiler find the correct version.
+
+### Records
+
+_Record_ is just a container for other variables. It's like a much, much simplified _class_: there is no inheritance or virtual methods. It is like a _structure_ in C-like languages.
+
+If you use the `{$modeswitch advancedrecords}` directive, records *can* have methods and visibility specifiers. In general, language features that are available for classes, and _do not break the simple predicatable memory layout of a record_, are then possible.
+
+[source,pascal]
+----
+include::code-samples/records.lpr[]
+----
+
+Records are useful when you need speed:
+
+* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except for auto-managed types, like strings, they are guaranteed to be initialized to be empty).
+* Arrays of records are nicely linear in memory, so they are cache-friendly.
+* The memory layout of records (size, padding between fields) is clearly defined in some situations: you declare the _C layout_, or when you use `packed record`. This is nice if you need to pass records around to libraries written in other programming languages, or when you use records to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
+* Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases, or for more _dirty, low-level unsafe tricks_:)
+
+### Old-style objects
+
+In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's discouraged to use it anymore, except when you want to get the _record with methods_ feature. Then the old-style objects are useful.
+
+Both `record` and `object` do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome. It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
+
+### Pointers
+
+You can create a _pointer_ to any other type. The pointer to type `TMyRecord` is declared as `^TMyRecord`, and by convention is called `PMyRecord`. This is a traditional example of a linked list of integers using records:
+
+[source,pascal]
+----
+type
+  PMyRecord = ^TMyRecord;
+  TMyRecord = record
+    Value: Integer;
+    Next: PMyRecord;
+  end;
+----
+
+Note that the definition is recursive (type `PMyRecord` is defined using type `TMyRecord`, while `TMyRecord` is defined using `PMyRecord`). It is allowed to define a pointer type to a _not-yet-defined type_, as long as it will be resolved within the same `type` block.
+
+You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not typesafe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator. To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator.
+
+There is also an untyped `Pointer` type, similar to `void*` in C-like languages. It is completely unsafe, and can be typecasted to any other pointer type.
+
+Remember that a _class instance_ is also in fact a pointer, although it doesn't require any `^` or `@` operators to use it. A linked list using classes is certainly possible, it would simply be this:
+
+[source,pascal]
+----
+type
+  TMyClass = class
+    Value: Integer;
+    Next: TMyClass;
+  end;
+----
 
 ## Advanced classes features
 
