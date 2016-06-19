@@ -200,6 +200,8 @@ The convention is to prefix the enum names with a two-letter shortcut of type na
 
 NOTE: The collisions in names are not a show-stopper. It's Ok for different units to define the same identifier. But it's a good idea to try to avoid the collisions anyway, to keep code simple to understand and grep.
 
+NOTE: You can avoid placing enum names in the global namespace by directive `{$scopedenums on}`. This means you will have to acess them qualified by a type name, like `TAnimalKind.akDuck`. The need for `ak` prefix disappears in this situation, and you will probably just call the enums `Duck, Cat, Dog`. This is similar to C# enums.
+
 The fact that enumerated type is _opaque_ means that it cannot be just assigned to and from an integer. However, for special use, you can use `Ord(MyAnimalKind)` to forcefully convert enum to int, or typecast `TAnimalKind(MyInteger)` to forcefully convert int to enum. In the latter case, make sure to check first whether `MyInteger` is in good range (0 to `Ord(High(TAnimalKind))`).
 
 Enumerated and ordinal types can be used as array indexes:
@@ -857,7 +859,17 @@ A powerful feature of any modern language. The definition of something (typicall
 The generics in Pascal are realized much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
-TODO, show example of classes and procedures
+[source,pascal]
+----
+include::code-samples/generics.lpr[]
+----
+
+Generics are not limited to classes, you can have generic functions and procedures as well:
+
+[source,pascal]
+----
+include::code-samples/generic_functions.lpr[]
+----
 
 ### Input/output using streams
 
