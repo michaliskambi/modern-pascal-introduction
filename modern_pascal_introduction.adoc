@@ -1,6 +1,6 @@
 # Quick Modern Object Pascal for Programmers
 Michalis Kamburelis
-:toc:
+:toc: left
 :toclevels: 4
 :sectnums:
 :source-highlighter: coderay
@@ -75,7 +75,7 @@ begin
 end;
 ----
 
-You can call `Exit` to end the execution of the procedure or function before it reaches the final `end;`. If you call parameter-less `Exit` in a function, it wil return the last thing you set as `Result`. You can also use `Exit(X)` construct, to set the function result and exit *now* -- this is just like `return X` construct in C-like languages.
+You can call `Exit` to end the execution of the procedure or function before it reaches the final `end;`. If you call parameter-less `Exit` in a function, it will return the last thing you set as `Result`. You can also use `Exit(X)` construct, to set the function result and exit *now* -- this is just like `return X` construct in C-like languages.
 
 [source,pascal]
 ----
@@ -86,6 +86,105 @@ begin
   Result := ExistingNames + ', ' + NewName;
 end;
 ----
+
+### Testing (if, booleans, logical operators)
+
+Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
+
+[source,pascal]
+----
+var
+  A: Integer;
+  B: boolean;
+begin
+  if A > 0 then
+    DoSomething;
+
+  if A > 0 then
+  begin
+    DoSomething;
+    AndDoSomethingMore;
+  end;
+
+  if A > 10 then
+    DoSomething else
+    DoSomethingElse;
+
+  // equivalent to above
+  B := A > 10;
+  if B then
+    DoSomething else
+    DoSomethingElse;
+end;
+----
+
+The logical operators are called `and`, `or`, `not`, `xor`. Since they also act as bit-wise operators, you may need to use parenthesis around some expressions, to avoid confusing the compiler.
+
+For example this is a compilation error:
+
+[source,pascal]
+----
+var
+  A, B: Integer;
+begin
+  if A = 0 and B <> 0 then ... // INCORRECT example
+----
+
+This is correct:
+
+[source,pascal]
+----
+var
+  A, B: Integer;
+begin
+  if (A = 0) and (B <> 0) then ...
+----
+
+* Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
+
+* Using `and` between two integer values is a bit-wise `and`, and the result is integer. So the operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
+
+The _short-circuit evaluation_ is used. Consider this expression:
+
+[source,pascal]
+----
+if MyFunction(X) and MyOtherFunction(Y) then...
+----
+
+* It's guaranteed that `MyFunction(X)` will be evaluated first.
+* And if `MyFunction(X)` returns `false`, then the value of expression is known (the value of `false and whatever` is always `false`), and `MyOtherFunction(Y)` will not be executed at all.
+* Analogous rule is for `or` expression. There, if the expression is known to be `true` (because the 1st operand if `true`), the 2nd operand is not evaluated.
+* This is particularly useful when writing expressions like
++
+[source,pascal]
+----
+if (A <> nil) and A.IsValid then...
+----
++
+This will work OK, even when `A` is `nil`.
+
+### Testing (case)
+
+If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
+
+[source,pascal]
+----
+case SomeValue of
+  0: DoSomething;
+  1: DoSomethingElse;
+  2: begin
+       IfItsTwoThenDoThis;
+       AndAlsoDoThis;
+     end;
+  3..10: DoSomethingInCaseItsInThisRange;
+  11, 21, 31: AndDoSomethingForTheseSpecialValues;
+  else DoSomethingInCaseOfUnexpectedValue;
+end;
+----
+
+The `else` clause is optional. When no condition matches, and there's no `else`, then nothing happens.
+
+In you come from C-like languages, and compare this with `switch` statement in these languages, you will notice that there is no automatic _fall-through_. This is a deliberate blessing in Pascal. You don't have to remember to place `break` instructions. In every execution, _at most one_ branch of the `case` is executed, that's it.
 
 ### Enumerated and ordinal types and sets and constant-length arrays
 
