@@ -87,7 +87,7 @@ begin
 end;
 ----
 
-### Testing (if, booleans, logical operators)
+### Testing: if, booleans, logical operators
 
 Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
 
@@ -163,7 +163,7 @@ if (A <> nil) and A.IsValid then...
 +
 This will work OK, even when `A` is `nil`.
 
-### Testing (case)
+### Testing single expression for multiple values: case
 
 If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
 
@@ -313,7 +313,7 @@ We have classes. At the basic level, a class is just a container for
 
 * _fields_ (which is fancy name for _"a variable inside a class"_),
 * _methods_ (which is fancy name for _"a procedure or function inside a class"_),
-* and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something).
+* and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something; more in <<Properties>>).
 * Actually, you can put <<More stuff inside classes and nested classes>>, more about this in later section.
 
 [source,pascal]
@@ -330,6 +330,8 @@ begin
 end;
 ----
 
+### Inheritance, is, as
+
 We have inheritance and virtual methods.
 
 [source,pascal]
@@ -338,6 +340,24 @@ include::code-samples/inheritance.lpr[]
 ----
 
 By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
+
+To test the class of an instance at runtime, use the `is` operator. To typecast the instance to a specific class, use the `as` operator.
+
+[source,pascal]
+----
+include::code-samples/is_as.lpr[]
+----
+
+Instead of casting using `X as TMyClass`, you can also use the _unchecked_ typecast `TMyClass(X)`. This is faster, but results in an undefined behavior if the `X` is not, in fact, a `TMyClass` descendant. So don't use the `TMyClass(X)` typecast, or use it only in a code where it's blindingly obvious that it's correct, for example right after testing with `is`:
+
+[source,pascal]
+----
+if A is TMyClass then
+  (A as TMyClass).CallSomeMethodOfMyClass;
+// below is marginally faster
+if A is TMyClass then
+  TMyClass(A).CallSomeMethodOfMyClass;
+----
 
 ### Properties
 

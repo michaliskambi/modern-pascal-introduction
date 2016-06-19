@@ -1,5 +1,4 @@
 {$mode objfpc}{$H+}
-
 program MyProgram;
 
 uses SysUtils;
@@ -28,10 +27,12 @@ var
   C: TMyClass;
 begin
   C := TMyClass.Create;
-  C.MyVirtualMethod;
-  FreeAndNil(C);
+  try
+    C.MyVirtualMethod;
+  finally FreeAndNil(C) end;
 
   C := TMyClassDescendant.Create;
-  C.MyVirtualMethod;
-  FreeAndNil(C);
+  try
+    C.MyVirtualMethod;
+  finally FreeAndNil(C) end;
 end.
