@@ -1,4 +1,4 @@
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$J-}
 program is_as;
 
 uses SysUtils;

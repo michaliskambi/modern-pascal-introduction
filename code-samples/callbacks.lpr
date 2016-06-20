@@ -1,4 +1,4 @@
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$J-}
 
 function Add(const A, B: Integer): Integer;
 begin

@@ -1,4 +1,4 @@
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$J-}
 uses SysUtils;
 
 generic function Min<T>(const A, B: T): T;

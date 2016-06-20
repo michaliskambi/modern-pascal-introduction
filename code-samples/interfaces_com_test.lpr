@@ -1,4 +1,4 @@
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$J-}
 {$interfaces com}
 
 uses SysUtils, Classes;

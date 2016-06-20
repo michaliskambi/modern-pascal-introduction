@@ -1,4 +1,4 @@
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$J-}
 {$R+} // range checking on - nice for debugging
 var
   MyArray: array [0..9] of Integer;

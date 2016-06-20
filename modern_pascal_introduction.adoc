@@ -942,7 +942,7 @@ By default, the overloading uses the FPC approach, which means that all the meth
 
 You can use simple preprocessor directives for
 
-* conditional compilation,
+* conditional compilation (code depending on platform, or some custom switches),
 * to include one file in another,
 * you can also use parameter-less macros.
 
@@ -950,7 +950,7 @@ Note that macros with parameters are not allowed. In general, you should avoid u
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$J-}
 unit PreprocessorStuff;
 interface
 
@@ -1016,6 +1016,7 @@ Include files have commonly the `.inc` extension, and are used for two purposes:
 ----
 {$mode objfpc}
 {$H+}
+{$J-}
 {$ifndef VER3}
   {$error This code can only be compiled using FPC version at least 3.x.}
 {$endif}
