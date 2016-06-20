@@ -88,7 +88,7 @@ begin
 end;
 ----
 
-### Testing: if, booleans, logical operators
+### Testing: if, booleans, operators
 
 Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
 
@@ -119,7 +119,11 @@ begin
 end;
 ----
 
-The logical operators are called `and`, `or`, `not`, `xor`. Since they also act as bit-wise operators, you may need to use parenthesis around some expressions, to avoid confusing the compiler.
+The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
+
+The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a simple equality `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
+
+The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions.
 
 For example this is a compilation error:
 
@@ -131,6 +135,8 @@ begin
   if A = 0 and B <> 0 then ... // INCORRECT example
 ----
 
+The above fails to compile, because the compiler sees the bit-wise `and` inside: `(0 and B)`.
+
 This is correct:
 
 [source,pascal]
@@ -140,10 +146,6 @@ var
 begin
   if (A = 0) and (B <> 0) then ...
 ----
-
-* Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
-
-* Using `and` between two integer values is a bit-wise `and`, and the result is integer. So the operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
 
 The _short-circuit evaluation_ is used. Consider this expression:
 
@@ -163,6 +165,10 @@ if (A <> nil) and A.IsValid then...
 ----
 +
 This will work OK, even when `A` is `nil`.
+
+// * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
+
+// * Using `and` between two integer values is a bit-wise `and`, and the result is integer. The operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
 
 ### Testing single expression for multiple values: case
 
