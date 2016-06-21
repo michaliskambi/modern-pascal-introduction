@@ -1250,7 +1250,7 @@ end;
 
 ### Class references
 
-Class reference allows you to change the class type at runtime, for example to call a class method or constructor without knowing the exact class at compile-time.
+_Class reference_ allows you to choose the class at runtime, for example to call a class method or constructor without knowing the exact class at compile-time. It is a type declared as `class of TMyClass`.
 
 [source,pascal]
 ----
@@ -1323,6 +1323,32 @@ begin
   ClassRef := TMyClass;
   ClassRef.DoSomething;
 end;
+----
+
+If you have an instance, and you would like to get a reference to it's class (not the declared class, but the final descendant class used at its construction), you can use the `ClassType` property. The declared type of `ClassType` is `TClass`, which stands for `class of TObject`. Often you can safely typecast it to something more specific, when you know that the instance is something more specific than `TObject`.
+
+In particular, you can use the `ClassType` reference to call virtual methods, including virtual constructors. This allows you to create a method like `Clone` that constructs an instance of _the exact run-time class of the current object_. You can combine it with <<Cloning: TPersistent.Assign>> to have a method that returns a newly-constructed clone of the current instance.
+
+Remember that it only works when the constructor of your class is virtual. For example, it can be used with the standard `TComponent` descendants, since they all must override `TComponent.Create(AOwner: TComponent)` virtual constructor.
+
+[source,pascal]
+----
+type
+  TMyClass = class(TComponent)
+    procedure Assign(Source: TPersistent); override;
+    function Clone(AOwner: TComponent): TMyClass;
+  end;
+
+  TMyClassRef = class of TMyClass;
+
+function TMyClass.Clone(AOwner: TComponent): TMyClass;
+begin
+  // This would always create an instance of exactly TMyClass:
+  //Result := TMyClass.Create(AOwner);
+  // This can potentially create an instance of TMyClass descendant:
+  Result := TMyClassRef(ClassType).Create(AOwner);
+  Result.Assign(Self);
+end
 ----
 
 // This is an example why compiler cannot detect *all* uses of an abstract
