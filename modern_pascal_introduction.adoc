@@ -129,7 +129,7 @@ if A <> 0 then
     AIsNonzeroButBIsZero;
 ----
 
-Wrapping the nested `if` inside `begin` ... `end` is often better than the previous example. It's more obvious to the reader, even if you mess up the identation. And when you add / remove some `else` clause in the code below, it's obvious to which condition it applies (the `A` test or the `B` test), so it's less error-prone.
+Wrapping the nested `if` inside `begin` ... `end` is often better than the previous example. It's more obvious to the reader, even if you mess up the indentation. And when you add / remove some `else` clause in the code below, it's obvious to which condition it applies (the `A` test or the `B` test), so it's less error-prone.
 
 [source,pascal]
 ----
@@ -329,7 +329,7 @@ Writeln('You can pad an integer: ', 666:10);
 Writeln('You can output a float: ', Pi:1:4);
 ----
 
-To explicitly use newline in string, use the `LineEnding` constant (FPC RTL) (_Castle Game Engine_ has also a shorter `NL` constant). Pascal strings do not interpret any special backslash sequences, so writing
+To explicitly use newline in string, use the `LineEnding` constant (FPC RTL) (the _Castle Game Engine_ has also a shorter `NL` constant). Pascal strings do not interpret any special backslash sequences, so writing
 
 [source,pascal]
 ----
@@ -353,7 +353,7 @@ Writeln('Second line.');
 
 Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
 
-*In Castle Game Engine:* use `WritelnLog`, never `Writeln`. This will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
+*In the Castle Game Engine:* use `WritelnLog`, never `Writeln`. This will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
 
 ## Units
 
@@ -582,7 +582,7 @@ if A <> nil then
 
 Note that in normal circumstances, you should never call a method on an instance which may be `nil`. The `Free` method is an exception here (it does something dirty in the implementation -- namely, checks whether `Self <> nil`).
 
-I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. _Castle Game Engine_ does it like that. It provides a nice assertion that _all references are either nil, or point to valid instances_.
+I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It provides a nice assertion that _all references are either nil, or point to valid instances_.
 
 ### Manual and automatic freeing
 
@@ -697,7 +697,7 @@ end;
 
 Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means. Use `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
 
-*In Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+*In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
 
 ### Free notification
 
@@ -814,7 +814,7 @@ end;
 
 It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
 
-For Castle Game Engine: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
+*In the Castle Game Engine*: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
 
 [source,pascal]
 ----
@@ -1415,7 +1415,7 @@ include::code-samples/exception_in_constructor_test.lpr[]
 
 We have interfaces, much like in Java. The idea is that _an interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have 1 ancestor class.
 
-You can cast a class to any interface it supports, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. You can say that "it allows to deal with cases when simple class inheritance is not enough".
+You can cast a class to any interface it supports, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. Useful when a simple class inheritance is not enough.
 
 //This is much like Java, where interfaces are used whenever you think of multiple inheritance.
 
