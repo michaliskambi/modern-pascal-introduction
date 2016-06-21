@@ -517,7 +517,7 @@ The explanation of `private` and `protected` visibility above is not precisely t
 
 By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
 
-Not every field and property type is allowed in the `published` section (not every type can be streamed). Just use `public` if you don't care about streaming but want something available to all users.
+Not every field and property type is allowed in the `published` section (not every type can be streamed, and only classes can be streamed from simple fields). Just use `public` if you don't care about streaming but want something available to all users.
 
 ### Default ancestor
 
@@ -768,7 +768,80 @@ begin
 end;
 ----
 
-## Various stuff
+## Run-time library
+
+### Input/output using streams
+
+Modern programs should use `TStream` class and it's many descendants to do input / output.
+
+[source,pascal]
+----
+var
+  S: TStream;
+  A: Integer;
+begin
+  S := TFileStream.Create('my_binary_file.data');
+  try
+    S.ReadBuffer(A, SizeOf(A));
+    Writeln('Got integer ', A);
+  finally FreeAndNil(S) end;
+end;
+----
+
+It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
+
+For Castle Game Engine: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
+
+[source,pascal]
+----
+EnableNetwork := true;
+S := Download('http://castle-engine.sourceforge.net');
+----
+
+[source,pascal]
+----
+S := Download('file:///home/michalis/my_binary_file.data');
+----
+
+[source,pascal]
+----
+
+S := Download(ApplicationData('gui/my_image.png'));
+----
+
+To read text files, I advice using `TTextReader` class from `CastleClassUtils`. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
+
+[source,pascal]
+----
+Text := TTextReader.Create(ApplicationData('my_data.txt'));
+while not Text.Eof do
+  WritelnLog('NextLine', Text.ReadLine);
+----
+
+### Lists
+
+For dynamic-length lists of stuff, we advice using generic classes from the `FGL` or `CastleGenericLists` units. Use `TFPGList` for lists of primitives, `TFPGObjectList` for a list of class instances. Use `CastleGenericLists` and `TGenericStructList` for a list of records or _old-style objects_.
+
+Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+
+### Cloning: TPersistent.Assign
+
+To allow copying a class instance, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. There is no magic copying here, you need to implement the `Assign` to actually copy the fields you want.
+
+You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
+
+[source,pascal]
+----
+include::code-samples/persistent.lpr[]
+----
+
+Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the target class.
+
+Be careful when calling `inherited` in the `Assign` implementation. You should _call inherited `TPersistent.Assign` only if you cannot handle the assignment in your code_ (this allows the `AssignTo` method to work, or otherwise raise an exception when assignment cannot be done). On the other hand, if your class descends from another class that already implements the `Assign` method, then _always call the inherited ``TMyClass.Assign``_. See the example below.
+
+NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
+
+## Various language features
 
 ### Local (nested) routines
 
@@ -877,60 +950,6 @@ Generics are not limited to classes, you can have generic functions and procedur
 ----
 include::code-samples/generic_functions.lpr[]
 ----
-
-### Input/output using streams
-
-Modern programs should use `TStream` class and it's many descendants to do input / output.
-
-[source,pascal]
-----
-var
-  S: TStream;
-  A: Integer;
-begin
-  S := TFileStream.Create('my_binary_file.data');
-  try
-    S.ReadBuffer(A, SizeOf(A));
-    Writeln('Got integer ', A);
-  finally FreeAndNil(S) end;
-end;
-----
-
-It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
-
-For Castle Game Engine: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
-
-[source,pascal]
-----
-EnableNetwork := true;
-S := Download('http://castle-engine.sourceforge.net');
-----
-
-[source,pascal]
-----
-S := Download('file:///home/michalis/my_binary_file.data');
-----
-
-[source,pascal]
-----
-
-S := Download(ApplicationData('gui/my_image.png'));
-----
-
-To read text files, I advice using `TTextReader` class from `CastleClassUtils`. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
-
-[source,pascal]
-----
-Text := TTextReader.Create(ApplicationData('my_data.txt'));
-while not Text.Eof do
-  WritelnLog('NextLine', Text.ReadLine);
-----
-
-### Lists
-
-For dynamic-length lists of stuff, we advice using generic classes from the `FGL` or `CastleGenericLists` units. Use `TFPGList` for lists of primitives, `TFPGObjectList` for a list of class instances. Use `CastleGenericLists` and `TGenericStructList` for a list of records or _old-style objects_.
-
-Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
 ### Overloading
 
