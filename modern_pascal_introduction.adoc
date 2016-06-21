@@ -88,7 +88,7 @@ begin
 end;
 ----
 
-### Testing: if, booleans, operators
+### Testing (if)
 
 Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
 
@@ -118,6 +118,30 @@ begin
     DoSomethingElse;
 end;
 ----
+
+The `else` is paired with the last `if`. So this works as you expect:
+
+[source,pascal]
+----
+if A <> 0 then
+  if B <> 0 then
+    AIsNonzeroAndBToo else
+    AIsNonzeroButBIsZero;
+----
+
+Wrapping the nested `if` inside `begin` ... `end` is often better than the previous example. It's more obvious to the reader, even if you mess up the identation. And when you add / remove some `else` clause in the code below, it's obvious to which condition it applies (the `A` test or the `B` test), so it's less error-prone.
+
+[source,pascal]
+----
+if A <> 0 then
+begin
+  if B <> 0 then
+    AIsNonzeroAndBToo else
+    AIsNonzeroButBIsZero;
+end;
+----
+
+### Logical, relational and bit-wise operators
 
 The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
 
@@ -170,7 +194,7 @@ This will work OK, even when `A` is `nil`.
 
 // * Using `and` between two integer values is a bit-wise `and`, and the result is integer. The operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
 
-### Testing single expression for multiple values: case
+### Testing single expression for multiple values (case)
 
 If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
 
