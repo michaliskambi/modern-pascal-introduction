@@ -820,7 +820,7 @@ while not Text.Eof do
 
 ### Lists
 
-For dynamic-length lists of stuff, we advice using generic classes from the `FGL` or `CastleGenericLists` units. Use `TFPGList` for lists of primitives, `TFPGObjectList` for a list of class instances. Use `CastleGenericLists` and `TGenericStructList` for a list of records or _old-style objects_.
+For dynamic-length lists of stuff, we advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in earlier FPC versions.
 
 Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
@@ -1111,6 +1111,36 @@ type
     Value: Integer;
     Next: TMyClass;
   end;
+----
+
+### Operator overloading
+
+You can override the meaning of many language operators, for example to allow addition and multiplication of your custom types. Like this:
+
+[source,pascal]
+----
+include::code-samples/operator_overloading.lpr[]
+----
+
+You can override operators on classes too. Since you usually create new instances of your classes inside the operator function, the caller must remember to free the result.
+
+[source,pascal]
+----
+include::code-samples/operator_overloading_classes.lpr[]
+----
+
+You can override operators on records too. This is usually easier than overloading them for classes, as the caller doesn't have to deal then with memory management.
+
+[source,pascal]
+----
+include::code-samples/operator_overloading_records.lpr[]
+----
+
+For records, it's adviced to use `{$modeswitch advancedrecords}` and override operators as `class operator` inside the record. This allows to use generic classes that depend on some operator existence (like `TFPGList`, that depends on equality operator being available) with such records. Otherwise the "global" definition of an operator (not inside the record) would not be found (because it's not available at the code that implements the `TFPGList`), and you could not specialize a list like `specialize TFPGList<TMyRecord>`.
+
+[source,pascal]
+----
+include::code-samples/operator_overloading_records_lists.lpr[]
 ----
 
 ## Advanced classes features

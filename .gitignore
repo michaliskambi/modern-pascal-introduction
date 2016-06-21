@@ -21,3 +21,7 @@ code-samples/generic_functions
 code-samples/generics
 code-samples/is_as
 code-samples/persistent
+code-samples/operator_overloading
+code-samples/operator_overloading_records
+code-samples/operator_overloading_classes
+code-samples/operator_overloading_records_lists
