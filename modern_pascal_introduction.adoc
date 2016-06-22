@@ -1475,7 +1475,8 @@ If you really need to use COM interfaces, beware:
 
 * You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release`, `QueryInterface` implementations that basically do nothing. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
-* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even though we usually hack it to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual ( http://freepascal.org/docs-html/ref/refse47.html ), http://bugs.freepascal.org/view.php?id=10374 .
+* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even though we usually hack it to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual (http://freepascal.org/docs-html/ref/refse47.html).
+//, http://bugs.freepascal.org/view.php?id=10374 .
 
 Here's a previous example reworked to use COM interfaces:
 
