@@ -373,6 +373,8 @@ A program can use a unit by a `uses` keyword:
 include::code-samples/myunit_test.lpr[]
 ----
 
+### Units using each other
+
 One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use it's identifiers only in your implementation).
 
 [source,pascal]
@@ -380,9 +382,160 @@ One unit can also use another unit. Another unit can be used in the interface se
 include::code-samples/anotherunit.pas[]
 ----
 
-It is not allowed to have _circular unit dependencies in the interface_. That is, two units cannot use each other in the interface section. This constraint is reasonable -- in order to "understand" (e.g. decide on a memory layout of structures) the interface section of a unit, the compiler must first "understand" all the units it uses in interface section. With circular dependencies, this would be impossible. (That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
+It is not allowed to have _circular unit dependencies in the interface_. That is, two units cannot use each other in the interface section. The reason is that everything must be declared before it's used. In order to "understand" (e.g. decide on a memory layout of a structures) the interface section of a unit, the compiler must first "understand" all the units it uses in the interface section. Pascal language follows this rule strictly, which results in fast compilation, but also makes circular dependencies _between units interfaces_ impossible.
+//(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
 It is _OK to make a circular dependency between units when at least one "usage" is only in the implementation_. So it's OK for unit `A` to use unit `B` in the interface, and then unit `B` to use unit `A` in the implementation.
+
+### Qualifying identifiers with unit name
+
+Different units may define the same identifier. To keep the code simple to read and search, you should usually avoid it, but it's not always possible.
+// in some situations (e.g. when you use a third-party library).
+In such cases, the last unit on the `uses` clause "wins", which means that the identifiers it introduces hide the same identifiers introduced by earlier units.
+
+You can always explicitly define a unit of a given identifier, by using it like `MyUnit.MyIdentifier`. This is the usual solution when the identifier you want to use from `MyUnit` is hidden by another unit. Of course you can also rearrange the order of units on your uses clause, although this can affect other declarations than the one you're trying to fix.
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+program showcolor;
+
+// Both Graphics and GoogleMapsEngine units define TColor type.
+uses Graphics, GoogleMapsEngine;
+
+var
+  { This doesn't work like we want, as TColor ends up
+    being defined by GoogleMapsEngine. }
+  // Color: TColor;
+  { This works Ok. }
+  Color: Graphics.TColor;
+begin
+  Color := clYellow;
+  Writeln(Red(Color), ' ', Green(Color), ' ', Blue(Color));
+end.
+----
+
+In case of units, remember that they have two `uses` clauses: one in the interface, and another one in the implementation. The rule _later units hide the stuff from earlier units_ is applied here consistently, which means that _units used in the implementation section_ can hide identifiers from units _used in the interface section_. However, remember that when reading the `interface` section, only the units used in the interface matter. This may create a confusing situation, where two seemingly-equal declarations are considered different by the compiler:
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+unit UnitUsingColors;
+
+// INCORRECT example
+
+interface
+
+uses Graphics;
+
+procedure ShowColor(const Color: TColor);
+
+implementation
+
+uses GoogleMapsEngine;
+
+procedure ShowColor(const Color: TColor);
+begin
+  // Writeln(ColorToString(Color));
+end;
+
+end.
+----
+
+The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compiler will fail to compile the above unit, claiming that you don't implement a procedure `ShowColor` that matches the interface declaration. The problem is that unit `GoogleMapsEngine` also defines a `TColor` type. And it is used only in the `implementation` section, therefore it _shadows_ the `TColor` definition only in the implementation. The equivalent version of above unit, where the error is obvious, looks like this:
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+unit UnitUsingColors;
+
+// INCORRECT example.
+// This is what compiles "sees" when trying to compile previous example
+
+interface
+
+uses Graphics;
+
+procedure ShowColor(const Color: Graphics.TColor);
+
+implementation
+
+uses GoogleMapsEngine;
+
+procedure ShowColor(const Color: GoogleMapsEngine.TColor);
+begin
+  // Writeln(ColorToString(Color));
+end;
+
+end.
+----
+
+The solution is trivial in this case, just change the implementation to explicitly use `TColor` from `Graphics` unit. You could fix it also by moving the `GoogleMapsEngine` usage, to the interface section and earlier than `Graphics`, although this could result in other consequences in real-world cases, when `UnitUsingColors` would define more things.
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+unit UnitUsingColors;
+
+interface
+
+uses Graphics;
+
+procedure ShowColor(const Color: TColor);
+
+implementation
+
+uses GoogleMapsEngine;
+
+procedure ShowColor(const Color: Graphics.TColor);
+begin
+  // Writeln(ColorToString(Color));
+end;
+
+end.
+----
+
+### Exposing one units identifiers from another
+
+Sometimes you need to take an identifier from a used unit, and _expose_ it from your new unit. The end result should be that using the new unit should make the identifier available in the namespace.
+
+Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
+
+This can be done by redefining the identifier in your new unit.
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+unit MyUnit;
+
+interface
+
+uses Graphics;
+
+type
+  { Expose TColor from Graphics unit as TMyColor. }
+  TMyColor = TColor;
+
+  { Alternatively, expose it under the same name.
+    Qualify with unit name in this case, otherwise
+    we would refer to ourselves with "TColor = TColor" definition. }
+  TColor = Graphics.TColor;
+
+const
+  { This works with constants too. }
+  clYellow = Graphics.clYellow;
+  clBlue = Graphics.clBlue;
+
+implementation
+
+end.
+----
+
+Note that this trick cannot be done as easily with global procedures, functions and variables. With procedures and functions, you could expose a constant pointer to a procedure in another unit (see <<Callbacks>>), but that looks quite dirty.
+
+The usual solution is then to create a trivial "wrapper" functions that underneath simply call the functions from the internal unit, passing the parameters and return values around.
+
+To make this work with global variables, one can use global (unit-level) properties, see <<Properties>>.
 
 ## Classes
 
@@ -917,6 +1070,8 @@ end;
 ----
 
 Local routines can go to any depth -- which means that you can define a local routine within another local routine. So you can go wild (but please don't go _too wild_, or the code will get unreadable:).
+
+[[Callbacks]]
 
 ### Callbacks (aka events, aka pointers to functions, aka procedural variables)
 
