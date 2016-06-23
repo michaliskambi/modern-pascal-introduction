@@ -549,9 +549,9 @@ If you don't declare the ancestor type, every `class` inherits from `TObject`.
 
 ## Freeing classes
 
-### Remember to free (release memory) class instances
+### Remember to free the class instances
 
-The classes (instances of the `class` type) have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
+The class instances have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
 
 Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
 
@@ -844,7 +844,7 @@ while not Text.Eof do
 
 ### Lists
 
-For dynamic-length lists of stuff, we advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in earlier FPC versions.
+For dynamic-length lists of stuff, I advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in earlier FPC versions.
 
 Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
