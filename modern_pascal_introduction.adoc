@@ -916,6 +916,8 @@ begin
 end;
 ----
 
+Local routines can go to any depth -- which means that you can define a local routine within another local routine. So you can go wild (but please don't go _too wild_, or the code will get unreadable:).
+
 ### Callbacks (aka events, aka pointers to functions, aka procedural variables)
 
 They allow to call a function indirectly, through to a variable. The variable can be assigned at runtime to point to any function _with matching parameter types and return types_.
@@ -1209,7 +1211,11 @@ Note that a constructor always acts like a class method when called in a normal 
 
 ### More stuff inside classes and nested classes
 
-You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, so you can the nested class can even be private (not visible to the outside world).
+You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, in particular the nested class can be private (not visible to the outside world), which is often useful.
+//The compiler watches that you don't break the visibility rules (for example you cannot declare a _public function_ that returns a type that is _private_).
+// (I wish - it doesn't, unfortunately...)
+
+Note that to declare a field after a constant or type you will need to open a `var` block.
 
 [source,pascal]
 ----
