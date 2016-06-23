@@ -10,8 +10,8 @@ So, we make a hack:)
 . Get `delphi-hl.xml` file from https://sourceforge.net/p/xslthl/code/HEAD/tree/trunk/xslthl/highlighters/delphi-hl.xml . Drop it inside `.../asciidoctor-fopub/build/fopub/docbook-xsl/xslthl/` directory. Like this:
 +
 --
-cd ../asciidoctor-fopub/build/fopub/docbook-xsl/xslthl/
-wget http://svn.code.sf.net/p/xslthl/code/trunk/xslthl/highlighters/delphi-hl.xml
+  cd ../asciidoctor-fopub/build/fopub/docbook-xsl/xslthl/
+  wget http://svn.code.sf.net/p/xslthl/code/trunk/xslthl/highlighters/delphi-hl.xml
 --
 . Modify `.../asciidoctor-fopub/build/fopub/docbook-xsl/xslthl-config.xml` source code to add these lines:
 +
