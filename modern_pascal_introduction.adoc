@@ -869,9 +869,12 @@ NOTE: Remember that when descending from `TPersistent`, the default _visibility 
 
 ### Local (nested) routines
 
-This is quite powerful feature that often allows you to split a long routine (_function, procedure, method_) into many smaller ones _easily_. You simply define a helper routine within another one.
+Inside a larger _routine_ (function, procedure, method) you can define a helper routine.
 
-The local routine can freely access (read, write) all the parameters of a parent routine, _and all the local variables of the parent that were declared above it_. This is very powerful, makes using local routines really easy, to split those long routines without much effort (as you don't have to pass around all the necessary information in parameters). It may also get somewhat unreadable, if you allow too many local functions to use the same local variable. So use this feature carefully.
+//It has all the flexibility of a normal routine, it's just not
+//This is quite powerful feature that allows you to _easily_ split a long routine into many smaller ones.
+
+The local routine can freely access (read and write) all the parameters of a parent, _and all the local variables of the parent that were declared above it_. This is very powerful. It often allows to split long routines into a couple of small ones without much effort (as you don't have to pass around all the necessary information in the parameters). Be careful to not overuse this feature -- if many nested functions use (and even change) the same variable of the parent, the code may get hard to follow.
 
 These two examples are equivalent:
 
@@ -909,7 +912,7 @@ var
 begin
   Result := 0;
   for I := 0 to N do
-    Result := Result + Square(I);
+    Result := Result + Square;
 end;
 ----
 
