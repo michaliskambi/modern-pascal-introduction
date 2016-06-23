@@ -495,7 +495,7 @@ end;
 end.
 ----
 
-### Exposing one units identifiers from another
+### Exposing one unit identifiers from another
 
 Sometimes you need to take an identifier from a used unit, and _expose_ it from your new unit. The end result should be that using the new unit should make the identifier available in the namespace.
 
