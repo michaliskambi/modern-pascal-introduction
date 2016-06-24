@@ -1649,7 +1649,7 @@ Here's a previous example reworked to use COM interfaces:
 include::code-samples/interfaces_com_test.lpr[]
 ----
 
-### Typecasting interfaces without "is" operator
+### Typecasting interfaces without "as" operator
 
 This section applies to both _CORBA_ and _COM_ interfaces.
 
