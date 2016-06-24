@@ -682,7 +682,7 @@ Note that the `finally` clause is executed even if you exit the block using the 
 
 ### Visibility specifiers
 
-As in all object-oriented languages, we have visibility specifiers to hide fields / methods / properties.
+As in most object-oriented languages, we have visibility specifiers to hide fields / methods / properties.
 
 The basic visibility levels are:
 
