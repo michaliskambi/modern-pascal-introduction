@@ -1,0 +1,13 @@
+    if C1 is IMyInterface then
+    //if Supports(C1, IMyInterface) then // equivalent to "is" check above
+      //UseThroughInterface(C1 as IMyInterface);
+      UseThroughInterface(C1); // these can also be just casted with no syntax, as it's compile-time provably correct
+      //UseThroughInterface(IMyInterface(C1)); // equivalent to casting implicitly, it seems: checked at compile-time, this is OK
+
+    if C2 is IMyInterface then
+      //UseThroughInterface(C2 as IMyInterface);
+      UseThroughInterface(C2); // these can also be just casted with no syntax, as it's compile-time provably correct
+
+    if C3 is IMyInterface then
+      UseThroughInterface(C3 as IMyInterface); // this is visibly wrong at compile-time, so only "as" cast compiles
+      //UseThroughInterface(IMyInterface(C3)); // equivalent to casting implicitly, it seems: checked at compile-time, not possible here

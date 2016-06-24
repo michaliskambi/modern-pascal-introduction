@@ -1649,6 +1649,39 @@ Here's a previous example reworked to use COM interfaces:
 include::code-samples/interfaces_com_test.lpr[]
 ----
 
+### Typecasting interfaces without "is" operator
+
+This section applies to both _CORBA_ and _COM_ interfaces.
+
+Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
+
+[source,pascal]
+----
+UseThroughInterface(Cx as IMyInterface);
+----
+
+It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface` (we secure from it by checking with `Cx is IMyInterface` previously).
+
+You can instead cast the instance as an interface implicitly:
+
+[source,pascal]
+----
+UseThroughInterface(Cx);
+----
+
+In this case, the typecast must be valid at compile-time. So it will compile OK for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
+
+So this typecast works just like with classes. If an instance of class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, or `TMyClass` *descendant*.
+
+An equivalent is also
+
+[source,pascal]
+----
+UseThroughInterface(IMyInterface(Cx));
+----
+
+This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
+
 ## License of this document
 
 Copyright Michalis Kamburelis.
