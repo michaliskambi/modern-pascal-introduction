@@ -1512,7 +1512,7 @@ begin
   // This can potentially create an instance of TMyClass descendant:
   Result := TMyClassRef(ClassType).Create(AOwner);
   Result.Assign(Self);
-end
+end;
 ----
 
 // This is an example why compiler cannot detect *all* uses of an abstract
