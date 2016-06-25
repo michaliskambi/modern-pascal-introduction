@@ -450,7 +450,7 @@ The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compil
 unit UnitUsingColors;
 
 // INCORRECT example.
-// This is what compiles "sees" when trying to compile previous example
+// This is what compiler "sees" when trying to compile previous example
 
 interface
 
@@ -1660,7 +1660,7 @@ Casting to an interface type using the `as` operator makes a check at run-time. 
 UseThroughInterface(Cx as IMyInterface);
 ----
 
-It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface` (we secure from it by checking with `Cx is IMyInterface` previously).
+It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface` (but we avoid the error by checking `Cx is IMyInterface` before doing the cast).
 
 You can instead cast the instance as an interface implicitly:
 
@@ -1669,9 +1669,9 @@ You can instead cast the instance as an interface implicitly:
 UseThroughInterface(Cx);
 ----
 
-In this case, the typecast must be valid at compile-time. So it will compile OK for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
+In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
 
-So this typecast works just like with classes. If an instance of class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, or `TMyClass` *descendant*.
+In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
 
 An equivalent is also
 
@@ -1682,14 +1682,15 @@ UseThroughInterface(IMyInterface(Cx));
 
 This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
 
-## License of this document
+## About this document
 
 Copyright Michalis Kamburelis.
 
-You have permission to redistribute and even modify this document freely, under the
+The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com . My homepage is https://michalis.ii.uni.wroc.pl/~michalis/ .
+
+You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
 * _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_
-* or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_
-* (just like Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights).
+* or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
 
-The source code is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, patches and pull requests, are very welcome:) You can reach me through GitHub, or my webpage https://michalis.ii.uni.wroc.pl/~michalis/ , or email michalis.kambi@gmail.com .
+Thank you for reading!
