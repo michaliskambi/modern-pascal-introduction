@@ -719,7 +719,7 @@ It is more-or-less a shortcut for
 if A <> nil then
 begin
   A.Destroy;
-  A := nil'
+  A := nil;
 end;
 ----
 
