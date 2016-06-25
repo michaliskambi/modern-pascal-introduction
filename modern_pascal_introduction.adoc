@@ -1251,12 +1251,12 @@ If you use the `{$modeswitch advancedrecords}` directive, records *can* have met
 include::code-samples/records.lpr[]
 ----
 
-Records are useful when you need speed:
+Records are useful when you need speed or a predictable memory layout:
 
-* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except for auto-managed types, like strings, they are guaranteed to be initialized to be empty).
+* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count).
 * Arrays of records are nicely linear in memory, so they are cache-friendly.
-* The memory layout of records (size, padding between fields) is clearly defined in some situations: you declare the _C layout_, or when you use `packed record`. This is nice if you need to pass records around to libraries written in other programming languages, or when you use records to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
-* Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases, or for more _dirty, low-level unsafe tricks_:)
+* The memory layout of records (size, padding between fields) is clearly defined in some situations: when you request the _C layout_, or when you use `packed record`. This is useful if you need to pass records around to libraries written in other programming languages, or when you use records to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
+* Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases. And it allows for more _dirty, low-level unsafe tricks_:)
 
 ### Old-style objects
 
