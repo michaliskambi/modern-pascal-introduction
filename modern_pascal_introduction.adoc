@@ -1621,14 +1621,14 @@ is _COM_. But I advice to use _CORBA_ style interfaces, and the `{$interfaces co
 
 ### Ugly (COM) interfaces
 
-If you really need to use COM interfaces, beware:
+The _COM interfaces_ bring two additional features:
 
-* For some reason, the designer of this language feature (Borland) decided to entangle it with *two* concepts it should never be entangled with. Namely, with
-+
---
-  . COM (some ancient Windows technology) and
-  . with reference counting (as far as I understand, this was a consequence of being related to the COM technology, for some reason COM stuff had to be reference counted).
---
+. integration with COM (a technology from Windows, also available on Unix through _XPCOM_, used by Mozilla),
+. reference counting (which gives you automatic destruction when all the interface references go out of scope).
+
+In my eyes, it is rather ugly to connect _COM interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class. Then it's nice to be able to cast them as the same interface, and use their common API through that interface. That's how _CORBA interfaces_ work, and how interfaces work in C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx) and Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html).
+
+When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology. In practice, this means that:
 
 // +
 // The relation to COM technology has . You just have to put some random "GUID" string at the interface declaration to make it work). But the reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
@@ -1637,7 +1637,7 @@ If you really need to use COM interfaces, beware:
 
 * Your class needs to implement a magic `_AddRef`, `_Release`, `QueryInterface` methods. Or descend from something that already implements them, like `TComponent`. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
 
-* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release`, `QueryInterface` implementations that basically do nothing. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
+* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
 * You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even though we usually hack it to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual (http://freepascal.org/docs-html/ref/refse47.html).
 //, http://bugs.freepascal.org/view.php?id=10374 .
