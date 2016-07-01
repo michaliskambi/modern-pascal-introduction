@@ -1271,12 +1271,12 @@ But records are still very useful when you need speed or a predictable memory la
 
 ### Old-style objects
 
-In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's somewhat a blend between the concept of a `record` and a modern `class`.
+In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's somewhat of a blend between the concept of a `record` and a modern `class`.
 
-* The old-style objects can be allocated, and during that allocation you can call their constructor / destructor.
-* But they can also be simply declared and used. Like records, they do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome.
+* The old-style objects can be allocated / freed, and during that operation you can call their constructor / destructor.
+* But they can also be simply declared and used, like records. A simple `record` or `object` type is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome.
 //It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
-* They offer inheritance and virtual methods, although with small differences here and there between the keywords used with modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling it's constructor, and the object has virtual methods.
+* Old-style objects offer inheritance and virtual methods, although with small differences from the modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling it's constructor, and the object has virtual methods.
 
 It's discouraged to use the old-style objects in most cases. Modern _classes_ provide much more functionality. And when needed, records (including _advanced records_) can be used for performance. These concepts are usually a better idea than old-style objects.
 
