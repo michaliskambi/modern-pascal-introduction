@@ -1225,6 +1225,7 @@ Include files have commonly the `.inc` extension, and are used for two purposes:
 {$mode objfpc}
 {$H+}
 {$J-}
+{$modeswitch advancedrecords}
 {$ifndef VER3}
   {$error This code can only be compiled using FPC version at least 3.x.}
 {$endif}
@@ -1256,18 +1257,28 @@ If you use the `{$modeswitch advancedrecords}` directive, records *can* have met
 include::code-samples/records.lpr[]
 ----
 
-Records are useful when you need speed or a predictable memory layout:
+In modern Object Pascal, your first instinct should be to design a `class`, not a `record` -- because classes are packed with useful features, like constructors and inheritance.
 
-* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count).
+But records are still very useful when you need speed or a predictable memory layout:
+
+* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count). So you have to be more careful when dealing with records, but it gives you some performance gain.
 * Arrays of records are nicely linear in memory, so they are cache-friendly.
-* The memory layout of records (size, padding between fields) is clearly defined in some situations: when you request the _C layout_, or when you use `packed record`. This is useful if you need to pass records around to libraries written in other programming languages, or when you use records to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
+* The memory layout of records (size, padding between fields) is clearly defined in some situations: when you request the _C layout_, or when you use `packed record`. This is useful:
+** to communicate with libraries written in other programming languages, when they expose an API based on records,
+** to read and write binary files,
+** to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
 * Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases. And it allows for more _dirty, low-level unsafe tricks_:)
 
 ### Old-style objects
 
-In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's discouraged to use it anymore, except when you want to get the _record with methods_ feature. Then the old-style objects are useful.
+In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's somewhat a blend between the concept of a `record` and a modern `class`.
 
-Both `record` and `object` do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome. It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
+* The old-style objects can be allocated, and during that allocation you can call their constructor / destructor.
+* But they can also be simply declared and used. Like records, they do not have to be allocated / freed. A simple `record` or `object` is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome.
+//It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
+* They offer inheritance and virtual methods, although with small differences here and there between the keywords used with modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling it's constructor, and the object has virtual methods.
+
+It's discouraged to use the old-style objects in most cases. Modern _classes_ provide much more functionality. And when needed, records (including _advanced records_) can be used for performance. These concepts are usually a better idea than old-style objects.
 
 ### Pointers
 
