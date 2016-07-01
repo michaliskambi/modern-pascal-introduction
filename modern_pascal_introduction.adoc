@@ -61,7 +61,9 @@ begin
 end;
 ----
 
-You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result. If you want to call the function itself recursively, you can of course do it, and be sure to specify the parenthesis (this makes a recursive call to parameter-less function different from accessing this function's current result). Like this:
+You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result.
+
+If you want to call the function itself recursively, you can of course do it. If you're calling a parameter-less function recursively, be sure to specify the parenthesis (even though in Pascal you can usually omit the parentheses for a parameter-less function), this makes a recursive call to a parameter-less function different from accessing this function's current result. Like this:
 
 [source,pascal]
 ----
@@ -129,7 +131,7 @@ if A <> 0 then
     AIsNonzeroButBIsZero;
 ----
 
-Wrapping the nested `if` inside `begin` ... `end` is often better than the previous example. It's more obvious to the reader, even if you mess up the indentation. And when you add / remove some `else` clause in the code below, it's obvious to which condition it applies (the `A` test or the `B` test), so it's less error-prone.
+While the example with nested `if` above is correct, it is often better to place the nested `if` inside a `begin` ... `end` block in such cases. This makes the code more obvious to the reader, and it will remain obvious even if you mess up the indentation. The improved version of the example is below. When you add or remove some `else` clause in the code below, it's obvious to which condition it will apply (to the `A` test or the `B` test), so it's less error-prone.
 
 [source,pascal]
 ----
@@ -145,7 +147,7 @@ end;
 
 The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
 
-The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a simple equality `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
+The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
 
 The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions.
 
