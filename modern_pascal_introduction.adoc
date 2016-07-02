@@ -1682,11 +1682,11 @@ include::code-samples/interfaces_com_with_ref_counting.lpr[]
 
 ### Using COM interfaces with reference-counting disabled
 
-As mentioned in the previous section, your class can descend from `TComponent` (or a similar class like `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent`) which disable reference-counting for COM interfaces.
+As mentioned in the previous section, your class can descend from `TComponent` (or a similar class like `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent`) which disables reference-counting for COM interfaces. This allows you to use COM interfaces, and still free the class instance manually.
 
-You need to be careful in this case to not free the class instance when some interface variable may refer to it. Remember that every typecast `Cx as IMyInterface` also creates a temporary interface variable, and you should not assume that it goes out of scope before the end of the current procedure. For this reason, the example below uses a `UseInterfaces` procedure, and it frees the class instances _outside_ of this procedure (when we can be sure that temporary interface variables are out of scope).
+You need to be careful in this case to not free the class instance when some interface variable may refer to it. Remember that every typecast `Cx as IMyInterface` also creates a temporary interface variable, which may be present even until the end of the current procedure. For this reason, the example below uses a `UseInterfaces` procedure, and it frees the class instances _outside_ of this procedure (when we can be sure that temporary interface variables are out of scope).
 
-To avoid this mess, it's usually better to use CORBA interfaces, if you don't want reference-counting.
+To avoid this mess, it's usually better to use CORBA interfaces, if you don't want reference-counting with your interfaces.
 
 [source,pascal]
 ----
