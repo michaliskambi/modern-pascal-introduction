@@ -6,6 +6,7 @@ modern_pascal_introduction.pdf
 modern_pascal_introduction.xml
 code-samples/exception_in_constructor_test
 code-samples/interfaces_com_test
+code-samples/interfaces_com_with_ref_counting
 code-samples/interfaces_corba_test
 code-samples/exception_finally
 code-samples/functions_primitives

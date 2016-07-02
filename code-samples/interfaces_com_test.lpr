@@ -46,18 +46,24 @@ var
   C1: TMyClass1;
   C2: TMyClass2;
   C3: TMyClass3;
+
+procedure UseInterfaces;
+begin
+  if C1 is IMyInterface then
+  //if Supports(C1, IMyInterface) then // equivalent to "is" check above
+    UseThroughInterface(C1 as IMyInterface);
+  if C2 is IMyInterface then
+    UseThroughInterface(C2 as IMyInterface);
+  if C3 is IMyInterface then
+    UseThroughInterface(C3 as IMyInterface);
+end;
+
 begin
   C1 := TMyClass1.Create(nil);
   C2 := TMyClass2.Create(nil);
   C3 := TMyClass3.Create(nil);
   try
-    if C1 is IMyInterface then
-    //if Supports(C1, IMyInterface) then // equivalent to "is" check above
-      UseThroughInterface(C1 as IMyInterface);
-    if C2 is IMyInterface then
-      UseThroughInterface(C2 as IMyInterface);
-    if C3 is IMyInterface then
-      UseThroughInterface(C3 as IMyInterface);
+    UseInterfaces;
   finally
     FreeAndNil(C1);
     FreeAndNil(C2);

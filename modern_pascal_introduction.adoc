@@ -1657,14 +1657,36 @@ In practice, this means that:
 
 * You need to declare a GUID at your COM interfaces, to make the `Supports(ObjectInstance, IMyInterface)` or `ObjectInstance is IMyInterface` work. Just use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor).
 
-* Your class needs to implement a magic `_AddRef`, `_Release`, `QueryInterface` methods. Or descend from something that already implements them, like `TComponent`. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
+* Your class needs to implement a magic `_AddRef`, `_Release`, and `QueryInterface` methods. Or descend from something that already implements them. A particular implementation of these methods may actually enable or disable the __reference-counting__ feature of COM interfaces (although disabling it is somewhat dangerous -- see the next point).
 
-* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
+** The standard class `TInterfacedObject` implements these methods to _enable_ the reference-counting.
+** The standard class `TComponent` implements these methods to _disable_ the reference-counting. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
 
-* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even though we usually hack it to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual (http://freepascal.org/docs-html/ref/refse47.html).
+//* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
+
+* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even if you hack the _AddRef method to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual (http://freepascal.org/docs-html/ref/refse47.html).
 //, http://bugs.freepascal.org/view.php?id=10374 .
 
-Here's a previous example reworked to use COM interfaces:
+The safest approach to using _COM interfaces_ is to
+
+* accept the fact that they are reference-counted,
+* derive the appropriate classes from `TInterfacedObject`,
+* and avoid using the class instance, instead accessing the instance always through the interface, letting reference-counting manage the deallocation.
+
+This is an example of such interface use:
+
+[source,pascal]
+----
+include::code-samples/interfaces_com_with_ref_counting.lpr[]
+----
+
+### Using COM interfaces with reference-counting disabled
+
+As mentioned in the previous section, your class can descend from `TComponent` (or a similar class like `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent`) which disable reference-counting for COM interfaces.
+
+You need to be careful in this case to not free the class instance when some interface variable may refer to it. Remember that every typecast `Cx as IMyInterface` also creates a temporary interface variable, and you should not assume that it goes out of scope before the end of the current procedure. For this reason, the example below uses a `UseInterfaces` procedure, and it frees the class instances _outside_ of this procedure (when we can be sure that temporary interface variables are out of scope).
+
+To avoid this mess, it's usually better to use CORBA interfaces, if you don't want reference-counting.
 
 [source,pascal]
 ----
