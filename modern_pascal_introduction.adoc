@@ -730,9 +730,9 @@ begin
 end;
 ----
 
-Actually, that's an oversimplification, as `FreeAndNil` does a useful trick and sets the variable `A` to `nil` *before* calling the destructor on a suitable reference.
+Actually, that's an oversimplification, as `FreeAndNil` does a useful trick and sets the variable `A` to `nil` *before* calling the destructor on a suitable reference. This helps to prevent a certain class of bugs -- the idea is that the "outside" code should never access a half-destructed instance of the class.
 
-Often in other code you will also find people using the `A.Free` method, which is like doing
+Often you will also see people using the `A.Free` method, which is like doing
 
 [source,pascal]
 ----
@@ -740,9 +740,11 @@ if A <> nil then
   A.Destroy;
 ----
 
-Note that in normal circumstances, you should never call a method on an instance which may be `nil`. The `Free` method is an exception here (it does something dirty in the implementation -- namely, checks whether `Self <> nil`).
+This frees the `A`, unless it's `nil`.
 
-I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It provides a nice assertion that _all references are either nil, or point to valid instances_.
+Note that in normal circumstances, you should never call a method on an instance which may be `nil`. So the call `A.Free` may look suspicious at the first sight, if `A` can be `nil`. However, the `Free` method is an exception to this rule. It does something dirty in the implementation -- namely, checks whether `Self <> nil`. This dirty trick works only in non-virtual methods (that don't call any virtual methods and don't access any fields).
+
+I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_.
 
 ### Manual and automatic freeing
 
@@ -779,7 +781,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is owned will be automatically freed by the owner. It's automatically taken care of to not free an already freed instance this way (so things will also work correct if you manually free the owned object earlier). We can change the previous example to this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is owned will be automatically freed by the owner. It's automatically taken care of to not free an already freed instance this way (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
 
 [source,pascal]
 ----
@@ -804,7 +806,7 @@ end;
 
 Note that we need to override a virtual `TComponent` constructor here. So we cannot change the constructor parameters. (Actually, you can -- declare a new constructor with `reintroduce`. But be careful, as some functionality, e.g. streaming, will still use the virtual constructor, so make sure it works right in either case.)
 
-Another approach to automatic freeing is use the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we could also write:
+Another mechanism for automatic freeing is the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we can also write:
 
 [source,pascal]
 ----
@@ -855,7 +857,7 @@ begin
 end;
 ----
 
-Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means. Use `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
+Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means, while it's also contained within a list. Use the `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
 
 *In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
 
@@ -885,8 +887,8 @@ begin
     exception at runtime. }
 
   { With O2, things are more difficult. It's not nil, but it's invalid.
-    Trying to access a field of a nil instance (or call a method
-    that accessed a field of a nil instance) results in an unpredictable
+    Trying to access a field of a non-nil invalid instance (or call a method
+    that accessed a field of such instance) results in an unpredictable
     behavior - maybe an access violation exception, maybe a garbage data
     returned. }
 end;
@@ -1004,7 +1006,7 @@ while not Text.Eof do
 
 ### Lists
 
-For dynamic-length lists of stuff, I advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in earlier FPC versions.
+For dynamic-length lists of stuff, I advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
 
 Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
