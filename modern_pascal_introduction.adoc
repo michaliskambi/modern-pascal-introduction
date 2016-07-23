@@ -110,13 +110,15 @@ begin
   end;
 
   if A > 10 then
-    DoSomething else
+    DoSomething
+  else
     DoSomethingElse;
 
   // equivalent to above
   B := A > 10;
   if B then
-    DoSomething else
+    DoSomething
+  else
     DoSomethingElse;
 end;
 ----
@@ -127,7 +129,8 @@ The `else` is paired with the last `if`. So this works as you expect:
 ----
 if A <> 0 then
   if B <> 0 then
-    AIsNonzeroAndBToo else
+    AIsNonzeroAndBToo
+  else
     AIsNonzeroButBIsZero;
 ----
 
@@ -138,7 +141,8 @@ While the example with nested `if` above is correct, it is often better to place
 if A <> 0 then
 begin
   if B <> 0 then
-    AIsNonzeroAndBToo else
+    AIsNonzeroAndBToo
+  else
     AIsNonzeroButBIsZero;
 end;
 ----
@@ -321,7 +325,7 @@ We didn't yet explain the concept of classes, so the last example may not be obv
 
 To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
 
-This is "magic" routine in Pascal, it takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with some special syntax for specifying padding and number precision.
+This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with some special syntax for specifying padding and number precision.
 
 [source,pascal]
 ----
@@ -356,6 +360,28 @@ Writeln('Second line.');
 Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
 
 *In the Castle Game Engine:* use `WritelnLog`, never `Writeln`. This will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
+
+### Converting to a string
+
+If you're looking for a way to convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
+
+* You can convert particular types to strings using specialized functions like `IntToStr` and `FloatToStr`. Furthermore, you can concatenate strings in Pascal simply by adding them. So you can create a string like this: `'My int number is ' + IntToStr(MyInt) + ', and the value of Pi is ' + FloatToStr(Pi)`.
+** _Advantage_: Absolutely flexible. There are many `XxxToStr` overloaded versions and friends (like `FormatFloat`), covering many types.
+// They give you a lot of flexibility in formatting.
+** _Another advantage_: Consistent with the reverse functions. To convert a string (for example, user input) back to an integer or float, you use `StrToInt`, `StrToFloat` or friends (like `StrToIntDef`).
+** _Disadvantage_: A long concatenation of many `XxxToStr` calls and strings doesn't look nice.
+//For classes, they can override the `TObject.ToString` method.
+//It doesn't have that clean _separation of pattern and arguments_ property of `Format` call.
+
+* The `Format` function, used like `Format('%d %f %s', [MyInt, MyFloat, MyString])`. This is like `sprintf` function in the C-like languages. It inserts the arguments into the placeholders in the pattern. The placeholders may use special syntax to influence formatting, e.g. `%.4f` results in a floating-point format with 4 digits after the decimal point.
+** _Advantage_: The separation of _pattern_ string from _arguments_ looks clean. If you need to change the pattern string without touching the arguments (e.g. when translating), you can do it easily.
+** _Another advantage_: No compiler magic. You can use the same syntax to pass any number of arguments of an arbitrary type in your own routines (declare parameter as an `array of const`). You can then pass these arguments downward to `Format`, or deconstruct the list of parameters and do anything you like with them.
+** _Disadvantage_: Compiler does not check whether the pattern matches the arguments. Using a wrong placeholder type will result in an exception at runtime (`EConversionError` exception, not anything nasty like a segmentation fault).
+//Note that, unlike the C `sprintf`, the correctness at runtime can be completely verified (there are no dirty pointer tricks inside
+
+* `WriteStr(TargetString, ...)` routine behaves much like `Write(...)`, except that the result is saved to the `TargetString`.
+** _Advantage_: It supports all the features of `Write`, including the special syntax for formatting like `Pi:1:4`.
+** _Disadvantage_: The special syntax for formatting is a "compiler magic", implemented specifically for routines like this. This is sometimes troublesome, e.g. you cannot create your own routine `MyStringFormatter(...)` that would also allow the special syntax like `Pi:1:4`. For this reason (and also because it wasn't implemented for a long time in major Pascal compilers), this construction is not very popular.
 
 ## Units
 
