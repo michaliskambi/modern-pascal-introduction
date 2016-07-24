@@ -21,7 +21,9 @@ code-samples/callbacks_of_object
 code-samples/generic_functions
 code-samples/generics
 code-samples/is_as
+code-samples/file_stream
 code-samples/persistent
+code-samples/my_binary_file.data
 code-samples/operator_overloading
 code-samples/operator_overloading_records
 code-samples/operator_overloading_classes

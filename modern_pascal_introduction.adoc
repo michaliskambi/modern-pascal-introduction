@@ -984,23 +984,12 @@ end;
 
 ### Input/output using streams
 
-Modern programs should use `TStream` class and it's many descendants to do input / output.
+Modern programs should use `TStream` class and it's many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
 
 [source,pascal]
 ----
-var
-  S: TStream;
-  A: Integer;
-begin
-  S := TFileStream.Create('my_binary_file.data');
-  try
-    S.ReadBuffer(A, SizeOf(A));
-    Writeln('Got integer ', A);
-  finally FreeAndNil(S) end;
-end;
+include::code-samples/file_stream.lpr[]
 ----
-
-It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
 
 *In the Castle Game Engine*: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
 
