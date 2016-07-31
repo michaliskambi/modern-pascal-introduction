@@ -359,7 +359,7 @@ Writeln('Second line.');
 
 Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
 
-*In the Castle Game Engine:* use `WritelnLog`, never `Writeln`. This will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
+*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
 
 ### Converting to a string
 
