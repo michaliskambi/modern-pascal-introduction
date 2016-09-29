@@ -186,7 +186,7 @@ if MyFunction(X) and MyOtherFunction(Y) then...
 
 * It's guaranteed that `MyFunction(X)` will be evaluated first.
 * And if `MyFunction(X)` returns `false`, then the value of expression is known (the value of `false and whatever` is always `false`), and `MyOtherFunction(Y)` will not be executed at all.
-* Analogous rule is for `or` expression. There, if the expression is known to be `true` (because the 1st operand if `true`), the 2nd operand is not evaluated.
+* Analogous rule is for `or` expression. There, if the expression is known to be `true` (because the 1st operand is `true`), the 2nd operand is not evaluated.
 * This is particularly useful when writing expressions like
 +
 [source,pascal]
@@ -325,7 +325,7 @@ We didn't yet explain the concept of classes, so the last example may not be obv
 
 To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
 
-This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with some special syntax for specifying padding and number precision.
+This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with a special syntax to specify padding and number precision.
 
 [source,pascal]
 ----
@@ -335,7 +335,7 @@ Writeln('You can pad an integer: ', 666:10);
 Writeln('You can output a float: ', Pi:1:4);
 ----
 
-To explicitly use newline in string, use the `LineEnding` constant (FPC RTL) (the _Castle Game Engine_ has also a shorter `NL` constant). Pascal strings do not interpret any special backslash sequences, so writing
+To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
 
 [source,pascal]
 ----
@@ -359,16 +359,16 @@ Writeln('Second line.');
 
 Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
 
-*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`).
+*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `Writeln` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
 
 ### Converting to a string
 
-If you're looking for a way to convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
+To convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
 
 * You can convert particular types to strings using specialized functions like `IntToStr` and `FloatToStr`. Furthermore, you can concatenate strings in Pascal simply by adding them. So you can create a string like this: `'My int number is ' + IntToStr(MyInt) + ', and the value of Pi is ' + FloatToStr(Pi)`.
 ** _Advantage_: Absolutely flexible. There are many `XxxToStr` overloaded versions and friends (like `FormatFloat`), covering many types.
 // They give you a lot of flexibility in formatting.
-** _Another advantage_: Consistent with the reverse functions. To convert a string (for example, user input) back to an integer or float, you use `StrToInt`, `StrToFloat` or friends (like `StrToIntDef`).
+** _Another advantage_: Consistent with the reverse functions. To convert a string (for example, user input) back to an integer or float, you use `StrToInt`, `StrToFloat` and friends (like `StrToIntDef`).
 ** _Disadvantage_: A long concatenation of many `XxxToStr` calls and strings doesn't look nice.
 //For classes, they can override the `TObject.ToString` method.
 //It doesn't have that clean _separation of pattern and arguments_ property of `Format` call.
@@ -475,7 +475,7 @@ end;
 end.
 ----
 
-The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compiler will fail to compile the above unit, claiming that you don't implement a procedure `ShowColor` that matches the interface declaration. The problem is that unit `GoogleMapsEngine` also defines a `TColor` type. And it is used only in the `implementation` section, therefore it _shadows_ the `TColor` definition only in the implementation. The equivalent version of above unit, where the error is obvious, looks like this:
+The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compiler will fail to compile the above unit, claiming that you don't implement a procedure `ShowColor` that matches the interface declaration. The problem is that unit `GoogleMapsEngine` also defines a `TColor` type. And it is used only in the `implementation` section, therefore it _shadows_ the `TColor` definition only in the implementation. The equivalent version of the above unit, where the error is obvious, looks like this:
 
 [source,pascal]
 ----
@@ -483,7 +483,7 @@ The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compil
 unit UnitUsingColors;
 
 // INCORRECT example.
-// This is what compiler "sees" when trying to compile previous example
+// This is what the compiler "sees" when trying to compile previous example
 
 interface
 
@@ -530,7 +530,7 @@ end.
 
 ### Exposing one unit identifiers from another
 
-Sometimes you need to take an identifier from a used unit, and _expose_ it from your new unit. The end result should be that using the new unit should make the identifier available in the namespace.
+Sometimes you want to take an identifier from one unit, and _expose_ it in a new unit. The end result should be that using the new unit will make the identifier available in the namespace.
 
 Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
 
@@ -628,7 +628,7 @@ if A is TMyClass then
 
 Properties are a very nice _"syntax sugar"_ to
 
-1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and a _setter_ function. A most typical usage is to perform some side-effect each time some value changes.
+1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and _setter_ methods. The typical usage is to perform some side-effect (e.g. redraw the screen) each time some value changes.
 2. Make something that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
 
 [source,pascal]
@@ -676,12 +676,15 @@ end;
 //   even if setting RenderingComponent.Color many times to the same value
 //   would be slow. }
 
+Note that instead of specifying a method, you can also specify a field (typically a private field) to directly get or set. In the example above, the `Color` property uses a _setter_ method `SetColor`. But for getting the value, the `Color` property refers directly to the private field `FColor`. Directly refering to a field is faster than implementing trivial getter or setter methods (faster for you, and faster at execution).
+
 When declaring a property you specify:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
 . And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
+
 
 Technically, for the compiler, the "getter" and "setter" methods are just normal methods and they can do absolutely anything (including side-effects or randomization). But it's a good convention to design properties to behave more-or-less like fields:
 
@@ -694,7 +697,7 @@ Note that it's OK for _getter_ to have some _invisible_ side-effect, for example
 
 * The _setter_ function should always set the requested value, such that calling the _getter_ yields it back. Do not reject invalid values silently in the "setter" (raise an exception if you must). Do not convert or scale the requested value. The idea is that after `MyClass.MyProperty := 123;` the programmer can expect that `MyClass.MyProperty = 123`.
 
-* The _read-only properties_ are often used to make some field read-only from the outside. Again, the good convention is to make it behave like a constant, at least constant for this object instance, at least constant for this object instance with this state. The value of the property should not change unexpectedly. Make it a function, not a property, if reading it has a side effect or returns something random.
+* The _read-only properties_ are often used to make some field read-only from the outside. Again, the good convention is to make it behave like a constant, at least constant for this object instance with this state. The value of the property should not change unexpectedly. _Make it a function, not a property, if using it has a side effect or returns something random._
 
 * The _"backing" field of a property is almost always private_, since the idea of a property is to encapsulate all outside access to it.
 
@@ -774,7 +777,7 @@ I advice using `FreeAndNil(A)` always, without exceptions, and never to call dir
 
 ### Manual and automatic freeing
 
-In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
+In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in the constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
 
 So, like this:
 
@@ -807,7 +810,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is owned will be automatically freed by the owner. It's automatically taken care of to not free an already freed instance this way (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
 
 [source,pascal]
 ----
@@ -876,7 +879,7 @@ begin
 
     Alternatively, we could avoid declaring Gun1 and Gun2,
     and instead use Guns[0] and Guns[1] in own code.
-    Or create a function like Gun1 that returns Guns[0]. }
+    Or create a method like Gun1 that returns Guns[0]. }
   Gun1 := nil;
   Gun2 := nil;
   inherited;
@@ -891,7 +894,7 @@ Beware that the list classes "ownership" mechanism is simple, and you will get a
 
 If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
 
-Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references.
+Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references. Consider this code:
 
 [source,pascal]
 ----
@@ -902,29 +905,33 @@ begin
   O2 := O1;
   FreeAndNil(O1);
 
-  { Now O1 is nil. If some code may access it, it can use
-    "if O1 <> nil ..." to avoid calling methods on a freed instance,
-    like
-
-      if O1 <> nil then Writeln(O1.ClassName);
-
-    Trying to access a field of a nil instance (or call a method
-    that accessed a field of a nil instance) results in a predictable
-    exception at runtime. }
-
-  { With O2, things are more difficult. It's not nil, but it's invalid.
-    Trying to access a field of a non-nil invalid instance (or call a method
-    that accessed a field of such instance) results in an unpredictable
-    behavior - maybe an access violation exception, maybe a garbage data
-    returned. }
+  // what happens if we access O1 or O2 here?
 end;
 ----
 
+1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
++
+[source,pascal]
+----
+if O1 <> nil then
+  Writeln(O1.ClassName);
+----
++
+Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
++
+Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
+
+2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
+//(or call a method that accessed a field of such instance)
+results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
+
 There are various solutions to it:
 
-* One solution is to, well, be careful. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
+* One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 
-* The other solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
+* In the above example, right after freeing the `O1` instance, you can simply set the `O2` variable explicitly to `nil`. That's trivial in this simple case.
+
+* The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
 +
 Thus you get something like a _weak reference_. It can cope with various usage scenarios, for example you can let the code from outside of the class to set your reference, and the outside code can also free the instance at anytime.
 +
@@ -1038,7 +1045,7 @@ include::code-samples/persistent.lpr[]
 
 Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the target class.
 
-Be careful when calling `inherited` in the `Assign` implementation. You should _call inherited `TPersistent.Assign` only if you cannot handle the assignment in your code_ (this allows the `AssignTo` method to work, or otherwise raise an exception when assignment cannot be done). On the other hand, if your class descends from another class that already implements the `Assign` method, then _always call the inherited ``TMyClass.Assign``_. See the example below.
+Be careful when calling `inherited` in the `Assign` implementation. You should _call inherited `TPersistent.Assign` only if you cannot handle the assignment in your code_ (this allows the `AssignTo` method to work, or otherwise raise an exception when assignment cannot be done). On the other hand, if your class descends from another class that already implements the `Assign` method, then _always call the inherited ``TMyClass.Assign``_. See the example above.
 
 NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
 
