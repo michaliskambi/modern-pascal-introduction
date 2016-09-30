@@ -5,6 +5,7 @@ uses SysUtils, Classes;
 
 type
   IMyInterface = interface
+  ['{79352612-668B-4E8C-910A-26975E103CAC}']
     procedure Shoot;
   end;
 

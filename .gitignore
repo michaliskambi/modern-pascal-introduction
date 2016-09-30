@@ -20,6 +20,7 @@ code-samples/callbacks
 code-samples/callbacks_of_object
 code-samples/generic_functions
 code-samples/generics
+code-samples/gen_guid
 code-samples/is_as
 code-samples/file_stream
 code-samples/persistent

@@ -1683,7 +1683,7 @@ What are COM interfaces?::
   The _COM interface_ is synonymous with _an interface descending from a special `IUnknown` interface_. Descending from `IUnknown`:
 +
 * Requires that your classes define the `_AddRef` and `_ReleaseRef` methods. Proper implementation of these methods can manage the lifetime of your objects using the reference-counting.
-* Adds the `QueryInterface` method and it introduces a special mechanism for identifying the interfaces using GUIDs.
+* Adds the `QueryInterface` method.
 * Allows to interact with the _COM (Component Object Model) technology_.
 
 What do you advice to not use the COM interfaces?::
@@ -1708,6 +1708,25 @@ Can we have reference-counting with CORBA interfaces?::
 //    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that iunknown doesn't just do refcounting though, it also plays a part in identity (queryinterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
+### Interfaces GUIDs
+
+GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see placed at every interface definition. Yes, they are just random. Unfortunately, they are necessary.
+
+//Yes, they look ugly.
+//, and I wish they would not be necessary.
+They have no meaning (if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_). But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
+
+Without the GUIDs, the `is` operator returns `true` always if your class supports _any_ interface. And the `Supports(ObjectInstance, IMyInterface)` magic function refuses to be compiled for interfaces without GUID (which is actually a good thing, it's better to refuse to compile than to blindly return `true` and mask the problem). This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
+
+So, to be on the safe side, you should always declare a GUID for your interface. You can use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor). Or you can use an online service like https://www.guidgenerator.com/ .
+
+Or you can write your own tool for this, using the `CreateGUID` and `GUIDToString` functions in RTL. See the example below:
+
+[source,pascal]
+----
+include::code-samples/gen_guid.lpr[]
+----
+
 ### Ugly (COM) interfaces
 
 The _COM interfaces_ bring two additional features:
@@ -1720,9 +1739,7 @@ In my eyes, it was rather ugly to entangle _interfaces_ with such features. It c
 In practice, this means that:
 
 // +
-// The relation to COM technology has . You just have to put some random "GUID" string at the interface declaration to make it work). But the reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
-
-* You need to declare a GUID at your COM interfaces, to make the `Supports(ObjectInstance, IMyInterface)` or `ObjectInstance is IMyInterface` work. Just use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor).
+// The relation to COM technology has . The reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
 
 * Your class needs to implement a magic `_AddRef`, `_Release`, and `QueryInterface` methods. Or descend from something that already implements them. A particular implementation of these methods may actually enable or disable the __reference-counting__ feature of COM interfaces (although disabling it is somewhat dangerous -- see the next point).
 
