@@ -1716,7 +1716,7 @@ GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see plac
 //, and I wish they would not be necessary.
 They have no meaning (if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_). But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
 
-Without the GUIDs, the `is` operator returns `true` always if your class supports _any_ interface. And the `Supports(ObjectInstance, IMyInterface)` magic function refuses to be compiled for interfaces without GUID (which is actually a good thing, it's better to refuse to compile than to blindly return `true` and mask the problem). This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
+Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID. This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
 
 So, to be on the safe side, you should always declare a GUID for your interface. You can use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor). Or you can use an online service like https://www.guidgenerator.com/ .
 
