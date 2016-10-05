@@ -149,7 +149,7 @@ end;
 
 ### Logical, relational and bit-wise operators
 
-The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
+The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:)). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
 
 The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
 
@@ -165,7 +165,9 @@ begin
   if A = 0 and B <> 0 then ... // INCORRECT example
 ----
 
-The above fails to compile, because the compiler sees the bit-wise `and` inside: `(0 and B)`.
+The above fails to compile, because the compiler first tries to preform a higher-priority bit-wise `and` in the middle of the expression which turns out to be: `(0 and B)` which returns an integer value. Then the compiler goes on and applies `=` operator which yields a boolean value `A = (0 and B)`. And finally the "type mismatch" error is risen after trying to compare the boolean value `A = (0 and B)` and integer value `0`.
+
+
 
 This is correct:
 
@@ -194,7 +196,9 @@ if MyFunction(X) and MyOtherFunction(Y) then...
 if (A <> nil) and A.IsValid then...
 ----
 +
-This will work OK, even when `A` is `nil`.
+This will work OK, even when `A` is `nil` This will work OK, even when `A` is `nil` (i.e. null pointer).
+
+.
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 

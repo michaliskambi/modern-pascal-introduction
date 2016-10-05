@@ -92,7 +92,7 @@ end;
 
 ### Условные операторы (if)
 
-Конструкции `if .. then` или `if .. then .. else` запускает некий код, когда некое условие удовлетворительно. В отличии от C-подобных языков, в Pascal тебе не нужно ставить в скобки условие.
+Конструкции `if .. then` или `if .. then .. else` запускают некий код, когда некое условие удовлетворительно. В отличии от C-подобных языков, в Pascal тебе не нужно ставить в скобки условие.
 
 [source,pascal]
 ----
@@ -123,7 +123,7 @@ begin
 end;
 ----
 
-Оператор `else` относится к полседнему условию `if`. Поэтому оно работает, как ты и ожидаешь:
+Оператор `else` относится к последнему условию `if`. Поэтому оно работает, как ты и ожидаешь:
 
 [source,pascal]
 ----
@@ -149,25 +149,25 @@ end;
 
 ### Логические операторы, операторы отношений и побитовые (поразрядные) операторы
 
-The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
+_Логические операторы_ - это `and`, `or`, `not`, `xor`. Их значение, вероятно, очевидно(ищи _"исключающее или"_ если ты не уверен что делает `xor` :)). Они берут _булевские аргументы (boolean)_, и возвращают также значение типа _boolean_. Они так же могут работать как _побитовые операторы_, когда оба аргумента целого типа (integer, byte или другие), в этом случае они также возвращают значение идентичного целого типа.
 
-The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
+_Операторы отношения (сравнения)_ - представлены очевидными комбинациями символов: `=`, `<>`, `>`, `<`, `\<=`, `>=`. Следует отметить, что в отличии от синтаксиса С-подобных языков, в Паскале оператор сравнения идентичности выглядит как один знак "равно" `A = B` (в отличии от С, где используется код `A == B`). Специальным _оператором присваивания_ в паскале является `:=`.
 
-The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions.
+_Логический (или побитовый) оператор имеет более высокий приоритет, чем операторы отношения_. Поэтому может понадобиться использовать круглые скобки вокруг сравниваемых выражений.
 
-For example this is a compilation error:
+Следующий пример вызовет ошибку компиляции:
 
 [source,pascal]
 ----
 var
   A, B: Integer;
 begin
-  if A = 0 and B <> 0 then ... // INCORRECT example
+  if A = 0 and B <> 0 then ... // так делать НЕЛЬЗЯ
 ----
 
-The above fails to compile, because the compiler sees the bit-wise `and` inside: `(0 and B)`.
+Ошибка связана с тем, что компилятор пытается в первую очередь пытается выполнить побитовый оператор `and` в середине выражения и в результате получается `(0 and B)`, которое возвращает целочисленную величину. Далее компиллятор выполняет оператор "равно" и получает булевскую величину `A = (0 and B)`. Финальная ошибка оказывается связана с попыткой сравнить булевскую величину `A = (0 and B)` с целочисленной величиной `0`.
 
-This is correct:
+Правильно будет делать таким образом:
 
 [source,pascal]
 ----
@@ -177,30 +177,30 @@ begin
   if (A = 0) and (B <> 0) then ...
 ----
 
-The _short-circuit evaluation_ is used. Consider this expression:
+Паскаль использует _"короткую оценку (short-circuit evaluation)"_ - оптимизацию, которая позволяет не рассчитывать выражение целиком, если его первая часть определяет результат. Рассмотрим пример:
 
 [source,pascal]
 ----
 if MyFunction(X) and MyOtherFunction(Y) then...
 ----
 
-* It's guaranteed that `MyFunction(X)` will be evaluated first.
-* And if `MyFunction(X)` returns `false`, then the value of expression is known (the value of `false and whatever` is always `false`), and `MyOtherFunction(Y)` will not be executed at all.
-* Analogous rule is for `or` expression. There, if the expression is known to be `true` (because the 1st operand is `true`), the 2nd operand is not evaluated.
-* This is particularly useful when writing expressions like
+* Значение функции `MyFunction(X)` всегда рассчитывается первым.
+* И если `MyFunction(X)` вернёт значение `false`, это означает, что мы уже знаем результат всего выражения (Какое бы ни было второе значение при выполнении `false and что-нибудь` мы всегда получим `false`). Таким образом `MyOtherFunction(Y)` вообще не будет выполняться.
+* Идентичная ситуация и с выражением `or`. В данном случае, если мы наперёд знаем, что результат будет `true` потому что первый аргумент имеет значение `true`, второй аргумент не влияет на результат и вообще не рассчитывается.
+* Это особенно полезно если нужно записать выражение типа:
 +
 [source,pascal]
 ----
 if (A <> nil) and A.IsValid then...
 ----
 +
-This will work OK, even when `A` is `nil`.
+Здесь не возникнет ошибки даже в случае если `A` имеет значение `nil` (т.е. нулевой указатель).
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 
 // * Using `and` between two integer values is a bit-wise `and`, and the result is integer. The operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
 
-### Testing single expression for multiple values (case)
+### Проверка одного выражения на множественные значения (оператор case)
 
 If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
 
