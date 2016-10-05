@@ -58,7 +58,7 @@ function MyFunction(const S: string): string;
 begin
   Result := S + 'что-нибудь';
   Result := Result + ' ещё что-нибудь!';
-  Result := Result + ' и ещё немножко!';
+  Result := Result + ' И ещё немножко!';
 end;
 ----
 
@@ -92,7 +92,7 @@ end;
 
 ### Условные операторы (if)
 
-Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
+Конструкции `if .. then` или `if .. then .. else` запускает некий код, когда некое условие удовлетворительно. В отличии от C-подобных языков, в Pascal тебе не нужно ставить в скобки условие.
 
 [source,pascal]
 ----
@@ -114,7 +114,7 @@ begin
   else
     DoSomethingElse;
 
-  // equivalent to above
+  // идентично предыдущему примеру
   B := A > 10;
   if B then
     DoSomething
@@ -123,7 +123,7 @@ begin
 end;
 ----
 
-The `else` is paired with the last `if`. So this works as you expect:
+Оператор `else` относится к полседнему условию `if`. Поэтому оно работает, как ты и ожидаешь:
 
 [source,pascal]
 ----
@@ -134,7 +134,7 @@ if A <> 0 then
     AIsNonzeroButBIsZero;
 ----
 
-While the example with nested `if` above is correct, it is often better to place the nested `if` inside a `begin` ... `end` block in such cases. This makes the code more obvious to the reader, and it will remain obvious even if you mess up the indentation. The improved version of the example is below. When you add or remove some `else` clause in the code below, it's obvious to which condition it will apply (to the `A` test or the `B` test), so it's less error-prone.
+Обертывание вложения `if` внутри `begin ... end` часто лучше, чем предыдущий пример. Оно более очевидно читателю, даже если ты перемешаешь, испортишь отступы. И когда ты добавляешь / удаляешь некий `else` пункт в коде ниже, оно очевидно к какому условию оно применяется (A тестируется или B тестируется), поэтому оно мене подвержено ошибкам.
 
 [source,pascal]
 ----
@@ -147,7 +147,7 @@ begin
 end;
 ----
 
-### Logical, relational and bit-wise operators
+### Логические операторы, операторы отношений и побитовые (поразрядные) операторы
 
 The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
 
