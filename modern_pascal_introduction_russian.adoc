@@ -6,7 +6,7 @@ Michalis Kamburelis
 :source-highlighter: coderay
 :docinfo1:
 
-## Для чего это?
+## Для чего это нужно?
 
 Существует множество книг и источников о Паскале, но слишком много из них говорят о старом Паскале, без классов, юнитов, дженериках (generics).
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
@@ -34,11 +34,11 @@ include::code-samples/hello_world.lpr[]
 
 Это полноценная программа, которую можно _скомпилировать_ и _запустить_.
 
-* Если используется командная строка FPC, достаточно просто создать новый файл "myprogram.lpr" и выполнить команду "fpc myprogram.lpr"
-* Если используется _Lazarus_, то необходимо создать новый проект (в строке меню: _Project_ -> _New Project_ -> _Simple Program_). Сохраните его как "myprogram" и вставьте в него этот исходный код. Компиляция выполняется используя пункт _Run_ → _Compile_ в меню.
+* Если используется командная строка FPC, достаточно просто создать новый файл `myprogram.lpr` и выполнить команду `fpc myprogram.lpr`
+* Если используется _Lazarus_, то необходимо создать новый проект (в строке меню: _Project_ -> _New Project_ -> _Simple Program_). Сохраните его как `myprogram` и вставьте в него этот исходный код. Компиляция выполняется используя пункт _Run_ → _Compile_ в меню.
 * Эта консольная программа, так что, в обоих случаях, -- скомпилированный исполняемый файл нужно запустить из терминала командной строки, чтобы увидеть результат.
 
-Остальная часть этой статьи рассказывает о языке Object Pascal, поэтому не ожидайте чего-нибудь большего, чем приложений командной строки. Если хочется взглянуть на что-либо более "крутое", можно просто создать новый GUI проект в _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
+Остальная часть этой статьи рассказывает о самом языке Object Pascal, поэтому не ожидайте чего-нибудь большего, чем приложений командной строки. Если хочется взглянуть на что-либо более "крутое", можно просто создать новый GUI проект в _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
 //Play around, drop some buttons on the form, handle their events (like `OnClick`).
 Вуаля! -- рабочее кроссплатформенное GUI приложение, с нативным видом, использующее удобные визуальные библиотеки. _Lazarus_ и _Free Pascal Compiler_ имеют множество готовых компонент для сетей, GUI, баз данных, чтения и записи различных форматов файлов (XML, json, изображения...), управления потоками и всем, что только может понадобиться программисту. Ярким тому примером является крутой _Castle Game Engine_, о котором упоминалось ранее:)
 // The libraries created in other languages (dll, so, dylib) can be easily used from FPC too (and for most of them, you'll find ready "header" units, and even units that wrap them in more modern object-oriented API).
@@ -50,22 +50,21 @@ include::code-samples/hello_world.lpr[]
 include::code-samples/functions_primitives.lpr[]
 ----
 
-To return a value from a function, assign something to the magic `Result` variable. You can read and set the `Result` freely, just like a local variable.
+Чтобы вернуть значение функции, присвой что-нибудь магическое переменной `Result`. Ты можешь свободно читать и устанавливать переменную `Result`, так же просто как локальную переменную.
 
 [source,pascal]
 ----
 function MyFunction(const S: string): string;
 begin
-  Result := S + 'something';
-  Result := Result + ' something more!';
-  Result := Result + ' and more!';
+  Result := S + 'что-нибудь';
+  Result := Result + ' ещё что-нибудь!';
+  Result := Result + ' и ещё немножко!';
 end;
 ----
 
-You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result.
+Ты так же можешь рассмативать имя функции (как `MyFunction` в примере выше) как переменную, к который ты можешь присваивать. Но я бы припятсвовал этому в новом коде, так как это выгладит "тусклым/подозрительным" когда использвано на правой стороне присваимого выражение. Просто используй `Result` всегда, когда ты хочешь читать или устанавливать значение функции.
 
-If you want to call the function itself recursively, you can of course do it. If you're calling a parameter-less function recursively, be sure to specify the parenthesis (even though in Pascal you can usually omit the parentheses for a parameter-less function), this makes a recursive call to a parameter-less function different from accessing this function's current result. Like this:
-
+Если ты хочешь вызвать функцию рекурсивно, ты кончено можешь сделать это, но не забудь указать специальные параметры (такой рекурсивный вызов с параметром получает другой результат в отличии от резульата доступа к текущему результату функции). Так:
 [source,pascal]
 ----
 function ReadIntegersUntilZero: string;
@@ -79,7 +78,7 @@ begin
 end;
 ----
 
-You can call `Exit` to end the execution of the procedure or function before it reaches the final `end;`. If you call parameter-less `Exit` in a function, it will return the last thing you set as `Result`. You can also use `Exit(X)` construct, to set the function result and exit *now* -- this is just like `return X` construct in C-like languages.
+Ты можешь вызвать `Exit`, чтобы окончить выполнение процедуры или функции до того, как она достигнет заверщаюгего `end;`. Если ты вызываешь без параметров `Exit` в функции, она вернет последнее, что ты присовоил `Result`. Ты так же можешь использовать конструкцию `Exit(X)`, чтобы установить результат функции и выйти *сейчас* — это тоже что и `return X` конструкция в С-подобных языках.
 
 [source,pascal]
 ----
@@ -91,7 +90,7 @@ begin
 end;
 ----
 
-### Testing (if)
+### Условные операторы (if)
 
 Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
 
