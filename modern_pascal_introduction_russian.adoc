@@ -12,38 +12,38 @@ Michalis Kamburelis
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
 Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
- Но представляя язык, я считаю выжным подчеркнуть, что это современный, объектно-ориентированный язык. Он  *сильно* эволюционировал от старого (Turbo) Pascal, который изучал каждый школьник давным давно. Сравнительно, Он вполне похож на C++, Java или C#.
+ Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он  *сильно* эволюционировал от старого (Turbo) Pascal, который изучал каждый школьник давным давно. Сравнительно, Он вполне похож на C++, Java или C#.
 
 * Он имеет все современные особенности, которые ты можешь ожидать — классы, юниты, интерфейсы, дженерики...
 * Он компилируется в быстрый машинный код,
 * Он очень типобезопасен,
 * Высокоуровненвый, но может быть низкоуровневым если это необходимо.
 
-Он так же имеет превосходных, портативный компилятов с открытым кодом названным _Free Pascal Compiler_, http://freepascal.org/ . И сопровождаемая IDE (редактор, отладичк, бибиотека компонентов, создатель форм), названная _Lazarus_ http://lazarus.freepascal.org/ . Я являюсь создателем _Castle Game Engine_, http://castle-engine.sourceforge.net/ , является крутым портавтивным 3D и 2D game движком, исплользующим этот язык, чтобы создавать игры для многих платформ (Windows, Linux, MacOSX, Android, iOS, web плагины).
+Он так же имеет превосходных, портативный компиляторов с открытым кодом названным _Free Pascal Compiler_, http://freepascal.org/ . И сопровождаемая IDE (редактор, отладчик, библиотека компонентов, создатель форм), названная _Lazarus_ http://lazarus.freepascal.org/ . Я являюсь создателем _Castle Game Engine_, http://castle-engine.sourceforge.net/ , является крутым портативным двух и трёхмерным игровым движком, использующим этот язык, чтобы создавать игры для многих платформ (Windows, Linux, MacOSX, Android, iOS, web плагины).
 
-This introduction is mostly directed at programmers who already have experience in other languages. We will not cover here the meanings of some universal concepts, like _"what is a class"_, we'll only show how to do them in Pascal.
+Это введение больше направленно на программистов, которые уже имеют опыт в других языках. Мы не будем раскрывать здесь значения некоторых универсальных концепций, как _"что такое класс"_, мы только покажем как они реализуются в Pascal.
 
-## Basics
+## Основы
 
-### "Hello world" program
+### Программа "Hello world"
 
 [source,pascal]
 ----
 include::code-samples/hello_world.lpr[]
 ----
 
-This is a complete program that you can _compile_ and _run_.
+Это полноценная программа, которую можно _скомпилировать_ и _запустить_.
 
-* If you use the command-line FPC, just create a new file `myprogram.lpr` and execute `fpc myprogram.lpr`.
-* If you use _Lazarus_, create a new project (menu _Project_ -> _New Project_ -> _Simple Program_). Save it as `myprogram` and paste this source code as the main file. Compile using the menu item _Run -> Compile_.
-* This is a command-line program, so in either case -- just run the compiled executable from the command-line.
+* Если используется командная строка FPC, достаточно просто создать новый файл "myprogram.lpr" и выполнить команду "fpc myprogram.lpr"
+* Если используется _Lazarus_, то необходимо создать новый проект (в строке меню: _Project_ -> _New Project_ -> _Simple Program_). Сохраните его как "myprogram" и вставьте в него этот исходный код. Компиляция выполняется используя пункт _Run_ → _Compile_ в меню.
+* Эта консольная программа, так что, в обоих случаях, -- скомпилированный исполняемый файл нужно запустить из терминала командной строки, чтобы увидеть результат.
 
-The rest of this article talks about the Object Pascal language, so don't expect to see anything more fancy than the command-line stuff. If you want to see something cool, just create a new GUI project in _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
+Остальная часть этой статьи рассказывает о языке Object Pascal, поэтому не ожидайте чего-нибудь большего, чем приложений командной строки. Если хочется взглянуть на что-либо более "крутое", можно просто создать новый GUI проект в _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
 //Play around, drop some buttons on the form, handle their events (like `OnClick`).
-Voila -- a working GUI application, cross-platform, with native look everywhere, using a comfortable visual component library. The _Lazarus_ and _Free Pascal Compiler_ come with lots of ready units for networking, GUI, database, file formats (XML, json, images...), threading and everything else you may need. I already mentioned my cool _Castle Game Engine_ earlier:)
+Вуаля! -- рабочее кроссплатформенное GUI приложение, с нативным видом, использующее удобные визуальные библиотеки. _Lazarus_ и _Free Pascal Compiler_ имеют множество готовых компонент для сетей, GUI, баз данных, чтения и записи различных форматов файлов (XML, json, изображения...), управления потоками и всем, что только может понадобиться программисту. Ярким тому примером является крутой _Castle Game Engine_, о котором упоминалось ранее:)
 // The libraries created in other languages (dll, so, dylib) can be easily used from FPC too (and for most of them, you'll find ready "header" units, and even units that wrap them in more modern object-oriented API).
 
-### Functions, procedures, primitive types
+### Функции, процедуры, простейшие типы
 
 [source,pascal]
 ----
