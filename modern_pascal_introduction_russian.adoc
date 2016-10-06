@@ -202,7 +202,7 @@ if (A <> nil) and A.IsValid then...
 
 ### Проверка одного выражения на множественные значения (оператор case)
 
-If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
+Если в зависимости от разных значений переменной должны быть исполнены разные действия, тогда может оказаться полезной конструкция `case .. of .. end`.
 
 [source,pascal]
 ----
@@ -219,11 +219,11 @@ case SomeValue of
 end;
 ----
 
-The `else` clause is optional. When no condition matches, and there's no `else`, then nothing happens.
+Условие `else` опционально. Если текущее значение анализируемого выражения не совпадает ни с одним из описанных случаев и нет условия `else`, то программа просто пропустит всю конструкцию и будет выполняться дальше.
 
-In you come from C-like languages, and compare this with `switch` statement in these languages, you will notice that there is no automatic _fall-through_. This is a deliberate blessing in Pascal. You don't have to remember to place `break` instructions. In every execution, _at most one_ branch of the `case` is executed, that's it.
+Программистам С-подобных языков полезно сравнить `case` с подобной конструкцией `switch` в этих языках. Стоит отметить, что `case` в Паскале защищён от случайного выполнения следующей инструкции. Нет необходимости помнить каждый раз размещать инструкцию `break` в конце каждого блока. После выполнения ветви условия программа автоматически закончит обработку конструкции `case` и продолжит выполнение дальше.
 
-### Enumerated and ordinal types and sets and constant-length arrays
+### Перечисляемый и порядковый типы, наборы и массивы постоянной длины
 
 Enumerated type in Pascal is a very nice, opaque type. You will probably use it much more often than enums in other languages:)
 
