@@ -1,4 +1,4 @@
-# Quick Modern Object Pascal for Programmers
+# Краткое введение в Современный Object Pascal для программистов
 Michalis Kamburelis
 :toc: left
 :toclevels: 4
@@ -6,65 +6,65 @@ Michalis Kamburelis
 :source-highlighter: coderay
 :docinfo1:
 
-## Why
+## Для чего это нужно?
 
-There are many books and resources about Pascal out there, but too many of them talk about the old Pascal, without classes, units or generics.
+Существует множество книг и источников о Паскале, но слишком много из них говорят о старом Паскале, без классов, юнитов, дженериках (generics).
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
-So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it  _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java or C#.
+Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
+ Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он  *сильно* эволюционировал от старого (Turbo) Pascal, который изучал каждый школьник давным давно. Сравнительно, Он вполне похож на C++, Java или C#.
 
-* It has all the modern features you expect -- classes, units, interfaces, generics...
-* It's compiled to a fast, native code,
-* It's very type safe,
-* High-level but can also be low-level if you need it to be.
+* Он имеет все современные особенности, которые ты можешь ожидать — классы, юниты, интерфейсы, дженерики...
+* Он компилируется в быстрый машинный код,
+* Он очень типобезопасен,
+* Высокоуровненвый, но может быть низкоуровневым если это необходимо.
 
-It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, http://castle-engine.sourceforge.net/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
+Он так же имеет превосходных, портативный компиляторов с открытым кодом названным _Free Pascal Compiler_, http://freepascal.org/ . И сопровождаемая IDE (редактор, отладчик, библиотека компонентов, создатель форм), названная _Lazarus_ http://lazarus.freepascal.org/ . Я являюсь создателем _Castle Game Engine_, http://castle-engine.sourceforge.net/ , является крутым портативным двух и трёхмерным игровым движком, использующим этот язык, чтобы создавать игры для многих платформ (Windows, Linux, MacOSX, Android, iOS, web плагины).
 
-This introduction is mostly directed at programmers who already have experience in other languages. We will not cover here the meanings of some universal concepts, like _"what is a class"_, we'll only show how to do them in Pascal.
+Это введение больше направленно на программистов, которые уже имеют опыт в других языках. Мы не будем раскрывать здесь значения некоторых универсальных концепций, как _"что такое класс"_, мы только покажем как они реализуются в Pascal.
 
-## Basics
+## Основы
 
-### "Hello world" program
+### Программа "Hello world"
 
 [source,pascal]
 ----
 include::code-samples/hello_world.lpr[]
 ----
 
-This is a complete program that you can _compile_ and _run_.
+Это полноценная программа, которую можно _скомпилировать_ и _запустить_.
 
-* If you use the command-line FPC, just create a new file `myprogram.lpr` and execute `fpc myprogram.lpr`.
-* If you use _Lazarus_, create a new project (menu _Project_ -> _New Project_ -> _Simple Program_). Save it as `myprogram` and paste this source code as the main file. Compile using the menu item _Run -> Compile_.
-* This is a command-line program, so in either case -- just run the compiled executable from the command-line.
+* Если используется командная строка FPC, достаточно просто создать новый файл `myprogram.lpr` и выполнить команду `fpc myprogram.lpr`
+* Если используется _Lazarus_, то необходимо создать новый проект (в строке меню: _Project_ -> _New Project_ -> _Simple Program_). Сохраните его как `myprogram` и вставьте в него этот исходный код. Компиляция выполняется используя пункт _Run_ → _Compile_ в меню.
+* Эта консольная программа, так что, в обоих случаях, -- скомпилированный исполняемый файл нужно запустить из терминала командной строки, чтобы увидеть результат.
 
-The rest of this article talks about the Object Pascal language, so don't expect to see anything more fancy than the command-line stuff. If you want to see something cool, just create a new GUI project in _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
+Остальная часть этой статьи рассказывает о самом языке Object Pascal, поэтому не ожидайте чего-нибудь большего, чем приложений командной строки. Если хочется взглянуть на что-либо более "крутое", можно просто создать новый GUI проект в _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
 //Play around, drop some buttons on the form, handle their events (like `OnClick`).
-Voila -- a working GUI application, cross-platform, with native look everywhere, using a comfortable visual component library. The _Lazarus_ and _Free Pascal Compiler_ come with lots of ready units for networking, GUI, database, file formats (XML, json, images...), threading and everything else you may need. I already mentioned my cool _Castle Game Engine_ earlier:)
+Вуаля! -- рабочее кроссплатформенное GUI приложение, с нативным видом, использующее удобные визуальные библиотеки. _Lazarus_ и _Free Pascal Compiler_ имеют множество готовых компонент для сетей, GUI, баз данных, чтения и записи различных форматов файлов (XML, json, изображения...), управления потоками и всем, что только может понадобиться программисту. Ярким тому примером является крутой _Castle Game Engine_, о котором упоминалось ранее:)
 // The libraries created in other languages (dll, so, dylib) can be easily used from FPC too (and for most of them, you'll find ready "header" units, and even units that wrap them in more modern object-oriented API).
 
-### Functions, procedures, primitive types
+### Функции, процедуры, простейшие типы
 
 [source,pascal]
 ----
 include::code-samples/functions_primitives.lpr[]
 ----
 
-To return a value from a function, assign something to the magic `Result` variable. You can read and set the `Result` freely, just like a local variable.
+Чтобы вернуть значение функции, присвой что-нибудь магическое переменной `Result`. Ты можешь свободно читать и устанавливать переменную `Result`, так же просто как локальную переменную.
 
 [source,pascal]
 ----
 function MyFunction(const S: string): string;
 begin
-  Result := S + 'something';
-  Result := Result + ' something more!';
-  Result := Result + ' and more!';
+  Result := S + 'что-нибудь';
+  Result := Result + ' ещё что-нибудь!';
+  Result := Result + ' И ещё немножко!';
 end;
 ----
 
-You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result.
+Ты так же можешь рассмативать имя функции (как `MyFunction` в примере выше) как переменную, к который ты можешь присваивать. Но я бы припятсвовал этому в новом коде, так как это выгладит "тусклым/подозрительным" когда использвано на правой стороне присваимого выражение. Просто используй `Result` всегда, когда ты хочешь читать или устанавливать значение функции.
 
-If you want to call the function itself recursively, you can of course do it. If you're calling a parameter-less function recursively, be sure to specify the parenthesis (even though in Pascal you can usually omit the parentheses for a parameter-less function), this makes a recursive call to a parameter-less function different from accessing this function's current result. Like this:
-
+Если ты хочешь вызвать функцию рекурсивно, ты кончено можешь сделать это, но не забудь указать специальные параметры (такой рекурсивный вызов с параметром получает другой результат в отличии от резульата доступа к текущему результату функции). Так:
 [source,pascal]
 ----
 function ReadIntegersUntilZero: string;
@@ -78,7 +78,7 @@ begin
 end;
 ----
 
-You can call `Exit` to end the execution of the procedure or function before it reaches the final `end;`. If you call parameter-less `Exit` in a function, it will return the last thing you set as `Result`. You can also use `Exit(X)` construct, to set the function result and exit *now* -- this is just like `return X` construct in C-like languages.
+Ты можешь вызвать `Exit`, чтобы окончить выполнение процедуры или функции до того, как она достигнет заверщаюгего `end;`. Если ты вызываешь без параметров `Exit` в функции, она вернет последнее, что ты присовоил `Result`. Ты так же можешь использовать конструкцию `Exit(X)`, чтобы установить результат функции и выйти *сейчас* — это тоже что и `return X` конструкция в С-подобных языках.
 
 [source,pascal]
 ----
@@ -90,9 +90,9 @@ begin
 end;
 ----
 
-### Testing (if)
+### Условные операторы (if)
 
-Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
+Конструкции `if .. then` или `if .. then .. else` запускают некий код, когда некое условие удовлетворительно. В отличии от C-подобных языков, в Pascal тебе не нужно ставить в скобки условие.
 
 [source,pascal]
 ----
@@ -114,7 +114,7 @@ begin
   else
     DoSomethingElse;
 
-  // equivalent to above
+  // идентично предыдущему примеру
   B := A > 10;
   if B then
     DoSomething
@@ -123,7 +123,7 @@ begin
 end;
 ----
 
-The `else` is paired with the last `if`. So this works as you expect:
+Оператор `else` относится к последнему условию `if`. Поэтому оно работает, как ты и ожидаешь:
 
 [source,pascal]
 ----
@@ -134,7 +134,7 @@ if A <> 0 then
     AIsNonzeroButBIsZero;
 ----
 
-While the example with nested `if` above is correct, it is often better to place the nested `if` inside a `begin` ... `end` block in such cases. This makes the code more obvious to the reader, and it will remain obvious even if you mess up the indentation. The improved version of the example is below. When you add or remove some `else` clause in the code below, it's obvious to which condition it will apply (to the `A` test or the `B` test), so it's less error-prone.
+Обертывание вложения `if` внутри `begin ... end` часто лучше, чем предыдущий пример. Оно более очевидно читателю, даже если ты перемешаешь, испортишь отступы. И когда ты добавляешь / удаляешь некий `else` пункт в коде ниже, оно очевидно к какому условию оно применяется (A тестируется или B тестируется), поэтому оно мене подвержено ошибкам.
 
 [source,pascal]
 ----
@@ -147,29 +147,27 @@ begin
 end;
 ----
 
-### Logical, relational and bit-wise operators
+### Логические операторы, операторы отношений и побитовые (поразрядные) операторы
 
-The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:)). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
+_Логические операторы_ - это `and`, `or`, `not`, `xor`. Их значение, вероятно, очевидно(ищи _"исключающее или"_ если ты не уверен что делает `xor` :)). Они берут _булевские аргументы (boolean)_, и возвращают также значение типа _boolean_. Они так же могут работать как _побитовые операторы_, когда оба аргумента целого типа (integer, byte или другие), в этом случае они также возвращают значение идентичного целого типа.
 
-The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
+_Операторы отношения (сравнения)_ - представлены очевидными комбинациями символов: `=`, `<>`, `>`, `<`, `\<=`, `>=`. Следует отметить, что в отличии от синтаксиса С-подобных языков, в Паскале оператор сравнения идентичности выглядит как один знак "равно" `A = B` (в отличии от С, где используется код `A == B`). Специальным _оператором присваивания_ в паскале является `:=`.
 
-The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions.
+_Логический (или побитовый) оператор имеет более высокий приоритет, чем операторы отношения_. Поэтому может понадобиться использовать круглые скобки вокруг сравниваемых выражений.
 
-For example this is a compilation error:
+Следующий пример вызовет ошибку компиляции:
 
 [source,pascal]
 ----
 var
   A, B: Integer;
 begin
-  if A = 0 and B <> 0 then ... // INCORRECT example
+  if A = 0 and B <> 0 then ... // так делать НЕЛЬЗЯ
 ----
 
-The above fails to compile, because the compiler first tries to preform a higher-priority bit-wise `and` in the middle of the expression which turns out to be: `(0 and B)` which returns an integer value. Then the compiler goes on and applies `=` operator which yields a boolean value `A = (0 and B)`. And finally the "type mismatch" error is risen after trying to compare the boolean value `A = (0 and B)` and integer value `0`.
+Ошибка связана с тем, что компилятор пытается в первую очередь пытается выполнить побитовый оператор `and` в середине выражения и в результате получается `(0 and B)`, которое возвращает целочисленную величину. Далее компиллятор выполняет оператор "равно" и получает булевскую величину `A = (0 and B)`. Финальная ошибка оказывается связана с попыткой сравнить булевскую величину `A = (0 and B)` с целочисленной величиной `0`.
 
-
-
-This is correct:
+Правильно будет делать таким образом:
 
 [source,pascal]
 ----
@@ -179,34 +177,32 @@ begin
   if (A = 0) and (B <> 0) then ...
 ----
 
-The _short-circuit evaluation_ is used. Consider this expression:
+Паскаль использует _"короткую оценку (short-circuit evaluation)"_ - оптимизацию, которая позволяет не рассчитывать выражение целиком, если его первая часть определяет результат. Рассмотрим пример:
 
 [source,pascal]
 ----
 if MyFunction(X) and MyOtherFunction(Y) then...
 ----
 
-* It's guaranteed that `MyFunction(X)` will be evaluated first.
-* And if `MyFunction(X)` returns `false`, then the value of expression is known (the value of `false and whatever` is always `false`), and `MyOtherFunction(Y)` will not be executed at all.
-* Analogous rule is for `or` expression. There, if the expression is known to be `true` (because the 1st operand is `true`), the 2nd operand is not evaluated.
-* This is particularly useful when writing expressions like
+* Значение функции `MyFunction(X)` всегда рассчитывается первым.
+* И если `MyFunction(X)` вернёт значение `false`, это означает, что мы уже знаем результат всего выражения (Какое бы ни было второе значение при выполнении `false and что-нибудь` мы всегда получим `false`). Таким образом `MyOtherFunction(Y)` вообще не будет выполняться.
+* Идентичная ситуация и с выражением `or`. В данном случае, если мы наперёд знаем, что результат будет `true` потому что первый аргумент имеет значение `true`, второй аргумент не влияет на результат и вообще не рассчитывается.
+* Это особенно полезно если нужно записать выражение типа:
 +
 [source,pascal]
 ----
 if (A <> nil) and A.IsValid then...
 ----
 +
-This will work OK, even when `A` is `nil` This will work OK, even when `A` is `nil` (i.e. null pointer).
-
-.
+Здесь не возникнет ошибки даже в случае если `A` имеет значение `nil` (т.е. нулевой указатель).
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 
 // * Using `and` between two integer values is a bit-wise `and`, and the result is integer. The operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
 
-### Testing single expression for multiple values (case)
+### Проверка одного выражения на множественные значения (оператор case)
 
-If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
+Если в зависимости от разных значений переменной должны быть исполнены разные действия, тогда может оказаться полезной конструкция `case .. of .. end`.
 
 [source,pascal]
 ----
@@ -223,11 +219,11 @@ case SomeValue of
 end;
 ----
 
-The `else` clause is optional. When no condition matches, and there's no `else`, then nothing happens.
+Условие `else` опционально. Если текущее значение анализируемого выражения не совпадает ни с одним из описанных случаев и нет условия `else`, то программа просто пропустит всю конструкцию и будет выполняться дальше.
 
-In you come from C-like languages, and compare this with `switch` statement in these languages, you will notice that there is no automatic _fall-through_. This is a deliberate blessing in Pascal. You don't have to remember to place `break` instructions. In every execution, _at most one_ branch of the `case` is executed, that's it.
+Программистам С-подобных языков полезно сравнить `case` с подобной конструкцией `switch` в этих языках. Стоит отметить, что `case` в Паскале защищён от случайного выполнения следующей инструкции. Нет необходимости помнить каждый раз размещать инструкцию `break` в конце каждого блока. После выполнения ветви условия программа автоматически закончит обработку конструкции `case` и продолжит выполнение дальше.
 
-### Enumerated and ordinal types and sets and constant-length arrays
+### Перечисляемый и порядковый типы, наборы и массивы постоянной длины
 
 Enumerated type in Pascal is a very nice, opaque type. You will probably use it much more often than enums in other languages:)
 
@@ -338,7 +334,6 @@ Writeln('You can output an integer: ', 3 * 4);
 Writeln('You can pad an integer: ', 666:10);
 Writeln('You can output a float: ', Pi:1:4);
 ----
-
 To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
 
 [source,pascal]
@@ -539,7 +534,6 @@ Sometimes you want to take an identifier from one unit, and _expose_ it in a new
 Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
 
 This can be done by redefining the identifier in your new unit.
-
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
@@ -627,7 +621,6 @@ if A is TMyClass then
 if A is TMyClass then
   TMyClass(A).CallSomeMethodOfMyClass;
 ----
-
 ### Properties
 
 Properties are a very nice _"syntax sugar"_ to
@@ -688,7 +681,6 @@ When declaring a property you specify:
 . And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
-
 
 Technically, for the compiler, the "getter" and "setter" methods are just normal methods and they can do absolutely anything (including side-effects or randomization). But it's a good convention to design properties to behave more-or-less like fields:
 
@@ -915,6 +907,7 @@ end;
 
 1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
 +
+
 [source,pascal]
 ----
 if O1 <> nil then
@@ -926,6 +919,7 @@ Trying to access a field of a `nil` instance results in a predictable exception 
 Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
 
 2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
+
 //(or call a method that accessed a field of such instance)
 results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
 
@@ -1017,7 +1011,6 @@ S := Download('file:///home/michalis/my_binary_file.data');
 
 [source,pascal]
 ----
-
 S := Download(ApplicationData('gui/my_image.png'));
 ----
 
@@ -1120,6 +1113,7 @@ The callback can be:
 ----
 include::code-samples/callbacks.lpr[]
 ----
+
 * A method: declare with `of object` at the end.
 +
 [source,pascal]
@@ -1288,7 +1282,6 @@ include::code-samples/records.lpr[]
 ----
 
 In modern Object Pascal, your first instinct should be to design a `class`, not a `record` -- because classes are packed with useful features, like constructors and inheritance.
-
 But records are still very useful when you need speed or a predictable memory layout:
 
 * Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count). So you have to be more careful when dealing with records, but it gives you some performance gain.
@@ -1801,7 +1794,9 @@ You can instead cast the instance as an interface implicitly:
 UseThroughInterface(Cx);
 ----
 
-In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
+In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`).
+
+But it will not compile for `C3`.
 
 In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
 
