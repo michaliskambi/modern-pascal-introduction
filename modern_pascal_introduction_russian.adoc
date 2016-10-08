@@ -325,44 +325,44 @@ include::code-samples/for_in_list.lpr[]
 
 ### Вывод информации и логов
 
-To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
+Чтобы просто вывести строки в Паскале используй процедуру `Write` или `Writeln`. Во втором случае в конце автоматически добавляется перенос строки.
 
-This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with a special syntax to specify padding and number precision.
+Это "волшебная" процедура в Паскале, Она принимает переменное число аргументов, которые могут иметь любой тип. Они все будут приведены к строке при выводе, также можно добавить специальный синтаксис для указания как отформатировать число.
 
 [source,pascal]
 ----
 Writeln('Hello world!');
-Writeln('You can output an integer: ', 3 * 4);
-Writeln('You can pad an integer: ', 666:10);
-Writeln('You can output a float: ', Pi:1:4);
+Writeln('Можно вывести целое число: ', 3 * 4);
+Writeln('Отформатировать его: ', 666:10);
+Writeln('А также вывести число с плавающей запятой: ', Pi:1:4);
 ----
-To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
+Чтобы явно завершить строку можно использовать константу `LineEnding` constant (из FPC RTL). (_Castle Game Engine_ имеет также более краткий вариант `NL`). В отличии от HTML и других подобных разметок в паскалевских строках обратная косая (`\`) не позволяет вставлять специальные символы. По этому:
 
 [source,pascal]
 ----
-Writeln('One line.\nSecond line.'); // INCORRECT example
+Writeln('Первая строка.\nВторая стока.'); // НЕВЕРНЫЙ пример
 ----
 
-doesn't work like some of you would think. This will work:
+не будет работать так, как можно было бы предположить. Правильно делать следующим образом:
 
 [source,pascal]
 ----
-Writeln('One line.' + LineEnding + 'Second line.');
+Writeln('Первая строка.' + LineEnding + 'Вторая строка.');
 ----
 
-or just this:
+или так:
 
 [source,pascal]
 ----
-Writeln('One line.');
-Writeln('Second line.');
+Writeln('Первая строка.');
+Writeln('Вторая строка.');
 ----
 
-Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
+Стоит отметить, что это будет работать только в _консольных_ приложениях. Для этого нужно указывать `{$apptype CONSOLE}` (*а не* `{$apptype GUI}`) в главном файле программы. На некоторых ОС это неважно и консоль присутствует всегда (Unix), но при попытке выполнения `write`/`writeln` из GUI приложения может привести к ошибке (например, в Windows).
 
-*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `Writeln` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
+В *Castle Game Engine:* категорически не советуется пользоваться `Writeln`, для этого есть специальная функция `WritelnLog` или `WritelnWarning` для вывода логов и отладочной информации, при этом. Их результат всегда будет направлен в полезном направлении: для Unix это будет стандартный вывод в консоль. Для Windows GUI приложений это будет лог-файл. В Android будет отображаться _Android logging facility_ (инструмент логов Андроида) (который можно просматривать с помощью команды `adb logcat`). Использовать `Writeln` есть смысл лишь в ограниченном наборе случаев, например, для консольных приложений (исполняемых из командной строки) и можно быть точно уверенным, что _стандартный вывод_ определён. Например, так можно делать в конвертере или генераторе трёхмерных моделей, который выполняется из командной строки.
 
-### Converting to a string
+### Преобразование данных в строчный тип
 
 To convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
 
@@ -384,9 +384,9 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 ** _Advantage_: It supports all the features of `Write`, including the special syntax for formatting like `Pi:1:4`.
 ** _Disadvantage_: The special syntax for formatting is a "compiler magic", implemented specifically for routines like this. This is sometimes troublesome, e.g. you cannot create your own routine `MyStringFormatter(...)` that would also allow the special syntax like `Pi:1:4`. For this reason (and also because it wasn't implemented for a long time in major Pascal compilers), this construction is not very popular.
 
-## Units
+## Модули (Units)
 
-Units allow you to group common stuff (anything that can be declared), for usage by other units and programs. They are equivalent to _modules_ and _packages_ in other languages. They have an interface section, where you declare what is available for other units and programs, and then the implementation. Save unit `MyUnit` as `myunit.pas` (lowercase with `.pas` extension).
+Модули позволяют группировать общие функции и объекты (всё, что может быть объявлено), для использования другими модулями и программами. Они эквиваленты _модулям_ и _пакетам_ в других языках. Они имеют секцию интерфейса, где объявляются доступные для других модулей и программ переменные, функции и т.п., секцию их реализации, где описано, как они работают. Сохрани юнит  `MyUnit` под именем `myunit.pas` (название должно быть без заглавных букв с расширением `.pas`).
 
 [source,pascal]
 ----
