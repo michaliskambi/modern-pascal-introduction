@@ -12,7 +12,7 @@ Michalis Kamburelis
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
 Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
- Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он  *сильно* эволюционировал от старого (Turbo) Pascal, который изучал каждый школьник давным давно. Сравнительно, Он вполне похож на C++, Java или C#.
+ Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах. Сравнительно, Он вполне похож на C++, Java или C#.
 
 * Он имеет все современные особенности, которые ты можешь ожидать — классы, юниты, интерфейсы, дженерики...
 * Он компилируется в быстрый машинный код,
@@ -149,7 +149,7 @@ end;
 
 ### Логические операторы, операторы отношений и побитовые (поразрядные) операторы
 
-_Логические операторы_ - это `and`, `or`, `not`, `xor`. Их значение, вероятно, очевидно(ищи _"исключающее или"_ если ты не уверен что делает `xor` :)). Они берут _булевские аргументы (boolean)_, и возвращают также значение типа _boolean_. Они так же могут работать как _побитовые операторы_, когда оба аргумента целого типа (integer, byte или другие), в этом случае они также возвращают значение идентичного целого типа.
+_Логические операторы_ - это `and`, `or`, `not`, `xor`. Их значение, вероятно, очевидно (разве что, за исключением оператора `xor`, который в русской литературе обычно называется _"исключающее или"_). Они берут _булевские аргументы (boolean)_, и возвращают также значение типа _boolean_. Они так же могут работать как _побитовые операторы_, когда оба аргумента целого типа (integer, byte или другие), в этом случае они также возвращают значение идентичного целого типа.
 
 _Операторы отношения (сравнения)_ - представлены очевидными комбинациями символов: `=`, `<>`, `>`, `<`, `\<=`, `>=`. Следует отметить, что в отличии от синтаксиса С-подобных языков, в Паскале оператор сравнения идентичности выглядит как один знак "равно" `A = B` (в отличии от С, где используется код `A == B`). Специальным _оператором присваивания_ в паскале является `:=`.
 
@@ -225,7 +225,7 @@ end;
 
 ### Перечисляемый и порядковый типы, наборы и массивы постоянной длины
 
-Enumerated type in Pascal is a very nice, opaque type. You will probably use it much more often than enums in other languages:)
+Перечисляемый тип в паскале очень аккуратный и комфортный. Возможно, Вы будете использовать его чаще чем перечисляемые типы в других языках:)
 
 [source,pascal]
 ----
@@ -233,15 +233,15 @@ type
   TAnimalKind = (akDuck, akCat, akDog);
 ----
 
-The convention is to prefix the enum names with a two-letter shortcut of type name, hence `ak` = shortcut for _"Animal Kind"_. This is a useful convention, since the enum names are in the unit (global) namespace. So by prefixing them with `ak` prefix, you minimize the chances of collisions with other identifiers.
+Общепринято, что префикс перечисляемого типа состоит из двух букв сокращения имени типа, следовательно `ak` = сокращение для _"Animal Kind"_. Это полезное соглашение, так как имена перечисляемых типов находятся в глобальном пространстве юнита. Так с помощью префикса `ak`, автоматически уменьшаются шансы на конфликт с другими идентификаторами.
 
-NOTE: The collisions in names are not a show-stopper. It's Ok for different units to define the same identifier. But it's a good idea to try to avoid the collisions anyway, to keep code simple to understand and grep.
+ПРИМЕЧАНИЕ: Конфликты в именах не приводят к неработоспособности программы. Это вполне допустимо в различных юнитах определять одинаковые идентификаторы. Но хорошей идеей будет попытка избежать столкновений в любом случае, чтобы код был прост в понимании и анализа. 
 
-NOTE: You can avoid placing enum names in the global namespace by directive `{$scopedenums on}`. This means you will have to access them qualified by a type name, like `TAnimalKind.akDuck`. The need for `ak` prefix disappears in this situation, and you will probably just call the enums `Duck, Cat, Dog`. This is similar to C# enums.
+ПРИМЕЧАНИЕ: Можно избежать помещения имён перечисляемых типов в глобальное пространство с помощью директивы компиллятора `{$scopedenums on}`. Это значит, что ты должен будешь обращаться к ним с помощью обращения к имени типа, как `TAnimalKind.akDuck`. Нужда в префиксе `ak` исчезает в этой ситуации, и ты возможно будешь вызывать только перечисляемый список `Duck, Cat, Dog`. Это похоже на перечисляемые списки C#. 
 
-The fact that enumerated type is _opaque_ means that it cannot be just assigned to and from an integer. However, for special use, you can use `Ord(MyAnimalKind)` to forcefully convert enum to int, or typecast `TAnimalKind(MyInteger)` to forcefully convert int to enum. In the latter case, make sure to check first whether `MyInteger` is in good range (0 to `Ord(High(TAnimalKind))`).
+Факт того, что перечисляемый тип _комфортен_ т.е. не может быть просто присвоен к целому и присвоен из целого. Тем не менее, для специального использования, ты можешь использовать `Ord(MyAnimalKind)`, чтобы насильно привести список к целому типу, или дать подходящюю роль `TAnimalKind(MyInteger)` чтобы конвертировать integer к перечисляемому типу. В последнем случае, проверь является ли `MyInteger` частью диапазона `(0 to Ord(High(TAnimalKind)))`.
 
-Enumerated and ordinal types can be used as array indexes:
+Перечисляемые и порядковые типы могут быть использованы как индексы массива:
 
 [source,pascal]
 ----
@@ -256,7 +256,7 @@ type
   TAnimalNames = array [TAnimalKind] of string;
 ----
 
-They can also be used to create sets (a bit-fields internally):
+Они так же могут быть использованы для создания наборов(внутренне битовое поле):
 
 [source,pascal]
 ----
