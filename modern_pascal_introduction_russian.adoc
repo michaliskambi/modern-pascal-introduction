@@ -12,7 +12,7 @@ Michalis Kamburelis
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
 Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
- Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он  *сильно* эволюционировал от старого (Turbo) Pascal, который изучал каждый школьник давным давно. Сравнительно, Он вполне похож на C++, Java или C#.
+ Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах. Сравнительно, Он вполне похож на C++, Java или C#.
 
 * Он имеет все современные особенности, которые ты можешь ожидать — классы, юниты, интерфейсы, дженерики...
 * Он компилируется в быстрый машинный код,
@@ -149,7 +149,7 @@ end;
 
 ### Логические операторы, операторы отношений и побитовые (поразрядные) операторы
 
-_Логические операторы_ - это `and`, `or`, `not`, `xor`. Их значение, вероятно, очевидно(ищи _"исключающее или"_ если ты не уверен что делает `xor` :)). Они берут _булевские аргументы (boolean)_, и возвращают также значение типа _boolean_. Они так же могут работать как _побитовые операторы_, когда оба аргумента целого типа (integer, byte или другие), в этом случае они также возвращают значение идентичного целого типа.
+_Логические операторы_ - это `and`, `or`, `not`, `xor`. Их значение, вероятно, очевидно (разве что, за исключением оператора `xor`, который в русской литературе обычно называется _"исключающее или"_). Они берут _булевские аргументы (boolean)_, и возвращают также значение типа _boolean_. Они так же могут работать как _побитовые операторы_, когда оба аргумента целого типа (integer, byte или другие), в этом случае они также возвращают значение идентичного целого типа.
 
 _Операторы отношения (сравнения)_ - представлены очевидными комбинациями символов: `=`, `<>`, `>`, `<`, `\<=`, `>=`. Следует отметить, что в отличии от синтаксиса С-подобных языков, в Паскале оператор сравнения идентичности выглядит как один знак "равно" `A = B` (в отличии от С, где используется код `A == B`). Специальным _оператором присваивания_ в паскале является `:=`.
 
@@ -225,7 +225,7 @@ end;
 
 ### Перечисляемый и порядковый типы, наборы и массивы постоянной длины
 
-Enumerated type in Pascal is a very nice, opaque type. You will probably use it much more often than enums in other languages:)
+Перечисляемый тип в паскале очень аккуратный и комфортный. Возможно, Вы будете использовать его чаще чем перечисляемые типы в других языках:)
 
 [source,pascal]
 ----
@@ -233,15 +233,15 @@ type
   TAnimalKind = (akDuck, akCat, akDog);
 ----
 
-The convention is to prefix the enum names with a two-letter shortcut of type name, hence `ak` = shortcut for _"Animal Kind"_. This is a useful convention, since the enum names are in the unit (global) namespace. So by prefixing them with `ak` prefix, you minimize the chances of collisions with other identifiers.
+Общепринято, что префикс перечисляемого типа состоит из двух букв сокращения имени типа, следовательно `ak` = сокращение для _"Animal Kind"_. Это полезное соглашение, так как имена перечисляемых типов находятся в глобальном пространстве юнита. Так с помощью префикса `ak`, автоматически уменьшаются шансы на конфликт с другими идентификаторами.
 
-NOTE: The collisions in names are not a show-stopper. It's Ok for different units to define the same identifier. But it's a good idea to try to avoid the collisions anyway, to keep code simple to understand and grep.
+ПРИМЕЧАНИЕ: Конфликты в именах не приводят к неработоспособности программы. Это вполне допустимо в различных юнитах определять одинаковые идентификаторы. Но хорошей идеей будет попытка избежать столкновений в любом случае, чтобы код был прост в понимании и анализа. 
 
-NOTE: You can avoid placing enum names in the global namespace by directive `{$scopedenums on}`. This means you will have to access them qualified by a type name, like `TAnimalKind.akDuck`. The need for `ak` prefix disappears in this situation, and you will probably just call the enums `Duck, Cat, Dog`. This is similar to C# enums.
+ПРИМЕЧАНИЕ: Можно избежать помещения имён перечисляемых типов в глобальное пространство с помощью директивы компиллятора `{$scopedenums on}`. Это значит, что ты должен будешь обращаться к ним с помощью обращения к имени типа, как `TAnimalKind.akDuck`. Нужда в префиксе `ak` исчезает в этой ситуации, и ты возможно будешь вызывать только перечисляемый список `Duck, Cat, Dog`. Это похоже на перечисляемые списки C#. 
 
-The fact that enumerated type is _opaque_ means that it cannot be just assigned to and from an integer. However, for special use, you can use `Ord(MyAnimalKind)` to forcefully convert enum to int, or typecast `TAnimalKind(MyInteger)` to forcefully convert int to enum. In the latter case, make sure to check first whether `MyInteger` is in good range (0 to `Ord(High(TAnimalKind))`).
+Факт того, что перечисляемый тип _комфортен_ т.е. не может быть просто присвоен к целому и присвоен из целого. Тем не менее, для специального использования, ты можешь использовать `Ord(MyAnimalKind)`, чтобы насильно привести список к целому типу, или дать подходящюю роль `TAnimalKind(MyInteger)` чтобы конвертировать integer к перечисляемому типу. В последнем случае, проверь является ли `MyInteger` частью диапазона `(0 to Ord(High(TAnimalKind)))`.
 
-Enumerated and ordinal types can be used as array indexes:
+Перечисляемые и порядковые типы могут быть использованы как индексы массива:
 
 [source,pascal]
 ----
@@ -256,7 +256,7 @@ type
   TAnimalNames = array [TAnimalKind] of string;
 ----
 
-They can also be used to create sets (a bit-fields internally):
+Они так же могут быть использованы для создания наборов(внутренне битовое поле):
 
 [source,pascal]
 ----
@@ -275,24 +275,24 @@ begin
 end;
 ----
 
-### Loops (for, while, repeat, for .. in)
+### Циклы (for, while, repeat, for .. in)
 
 [source,pascal]
 ----
 include::code-samples/loops.lpr[]
 ----
 
-Various notes:
+Примечания:
 
-* It may seem that the difference between the `while` and `repeat` loops is "cosmetic" (you specify a negated condition, because in `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_). Actually there's another important difference: in case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
+* Может казаться, что различие между `while` и `repeat` циклами лишь "косметические". Может показаться, что просто условие "с точностью до наоборот", в случае `while .. do` выполнение _продолжается_, пока условие _истино_, а в `repeat .. until` - выполнение _прекращается_, когда условие _выполняется_). В действительности есть другое важное отличие: в случае `repeat`, _условие не проверяется в начале_. Поэтому цикл `repeat` всегда выполняется как минимум один раз.
 
-* The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
+* Конструкция `for I := .. to .. do ...` похожа на C-подобный цикл `for`. Тем не менее, оно более ограничено, как вы не можете указать произвольное действие/тесты чтобы контролировать итерации цикла. В Паскале for используется строго для итерации через последовательные числа (или другие порядковые типы). Единственной уступкой является использование `downto` вместо `to`, чтобы производить счёт в обратном порядке.
 +
-In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
+С другой стороны, это существенно легче для понимания, и лучше для оптимизации в исполнении. Например, _значения верхней и нижней границы вычисляется один раз_, до начала исполнения цикла.
 
-* The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
-** It can iterate over all values in the array (example above).
-** It can iterate over all possible values of an enumerated type:
+*Циклfor `I in .. do ..` такой же как конструкция foreach в многих современных языках. Он хорошо понимает организацию всех встроенных типов:
+** Он может перебирать все значения массива (см. пример выше).
+** Он может перебирать все возможные значения перечисляемого типа:
 +
 [source,pascal]
 ----
@@ -301,7 +301,8 @@ var
 begin
   for AnimalKind in TAnimalKind do...
 ----
-** It can iterate over all items included in the set:
+
+** Он может перебирать все элементы набора:
 +
 [source,pascal]
 ----
@@ -312,55 +313,56 @@ begin
   Animals := [akDog, akCat];
   for AK in Animals do ...
 ----
-** And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
+
+** И так же работает на всех пользовательких/кастомных типах, включая дженерики, например, `TObjectList` или `TFPGObjectList`.
 +
 [source,pascal]
 ----
 include::code-samples/for_in_list.lpr[]
 ----
 +
-We didn't yet explain the concept of classes, so the last example may not be obvious to you yet -- just carry on, it will make sense later:)
+Мы еще не рассматривали концепцию классов, поэтому последний пример может показаться неочевидным, но мы обязательно рассмотрим этот вопрос чуть позже :)
 
-### Output, logging
+### Вывод информации и логов
 
-To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
+Чтобы просто вывести строки в Паскале используй процедуру `Write` или `Writeln`. Во втором случае в конце автоматически добавляется перенос строки.
 
-This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with a special syntax to specify padding and number precision.
+Это "волшебная" процедура в Паскале, Она принимает переменное число аргументов, которые могут иметь любой тип. Они все будут приведены к строке при выводе, также можно добавить специальный синтаксис для указания как отформатировать число.
 
 [source,pascal]
 ----
 Writeln('Hello world!');
-Writeln('You can output an integer: ', 3 * 4);
-Writeln('You can pad an integer: ', 666:10);
-Writeln('You can output a float: ', Pi:1:4);
+Writeln('Можно вывести целое число: ', 3 * 4);
+Writeln('Отформатировать его: ', 666:10);
+Writeln('А также вывести число с плавающей запятой: ', Pi:1:4);
 ----
-To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
+Чтобы явно завершить строку можно использовать константу `LineEnding` constant (из FPC RTL). (_Castle Game Engine_ имеет также более краткий вариант `NL`). В отличии от HTML и других подобных разметок в паскалевских строках обратная косая (`\`) не позволяет вставлять специальные символы. По этому:
 
 [source,pascal]
 ----
-Writeln('One line.\nSecond line.'); // INCORRECT example
+Writeln('Первая строка.\nВторая стока.'); // НЕВЕРНЫЙ пример
 ----
 
-doesn't work like some of you would think. This will work:
+не будет работать так, как можно было бы предположить. Правильно делать следующим образом:
 
 [source,pascal]
 ----
-Writeln('One line.' + LineEnding + 'Second line.');
+Writeln('Первая строка.' + LineEnding + 'Вторая строка.');
 ----
 
-or just this:
+или так:
 
 [source,pascal]
 ----
-Writeln('One line.');
-Writeln('Second line.');
+Writeln('Первая строка.');
+Writeln('Вторая строка.');
 ----
 
-Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
+Стоит отметить, что это будет работать только в _консольных_ приложениях. Для этого нужно указывать `{$apptype CONSOLE}` (*а не* `{$apptype GUI}`) в главном файле программы. На некоторых ОС это неважно и консоль присутствует всегда (Unix), но при попытке выполнения `write`/`writeln` из GUI приложения может привести к ошибке (например, в Windows).
 
-*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `Writeln` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
+В *Castle Game Engine:* категорически не советуется пользоваться `Writeln`, для этого есть специальная функция `WritelnLog` или `WritelnWarning` для вывода логов и отладочной информации, при этом. Их результат всегда будет направлен в полезном направлении: для Unix это будет стандартный вывод в консоль. Для Windows GUI приложений это будет лог-файл. В Android будет отображаться _Android logging facility_ (инструмент логов Андроида) (который можно просматривать с помощью команды `adb logcat`). Использовать `Writeln` есть смысл лишь в ограниченном наборе случаев, например, для консольных приложений (исполняемых из командной строки) и можно быть точно уверенным, что _стандартный вывод_ определён. Например, так можно делать в конвертере или генераторе трёхмерных моделей, который выполняется из командной строки.
 
-### Converting to a string
+### Преобразование данных в строчный тип
 
 To convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
 
@@ -382,9 +384,9 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 ** _Advantage_: It supports all the features of `Write`, including the special syntax for formatting like `Pi:1:4`.
 ** _Disadvantage_: The special syntax for formatting is a "compiler magic", implemented specifically for routines like this. This is sometimes troublesome, e.g. you cannot create your own routine `MyStringFormatter(...)` that would also allow the special syntax like `Pi:1:4`. For this reason (and also because it wasn't implemented for a long time in major Pascal compilers), this construction is not very popular.
 
-## Units
+## Модули (Units)
 
-Units allow you to group common stuff (anything that can be declared), for usage by other units and programs. They are equivalent to _modules_ and _packages_ in other languages. They have an interface section, where you declare what is available for other units and programs, and then the implementation. Save unit `MyUnit` as `myunit.pas` (lowercase with `.pas` extension).
+Модули позволяют группировать общие функции и объекты (всё, что может быть объявлено), для использования другими модулями и программами. Они эквиваленты _модулям_ и _пакетам_ в других языках. Они имеют секцию интерфейса, где объявляются доступные для других модулей и программ переменные, функции и т.п., секцию их реализации, где описано, как они работают. Сохрани юнит  `MyUnit` под именем `myunit.pas` (название должно быть без заглавных букв с расширением `.pas`).
 
 [source,pascal]
 ----
