@@ -1813,15 +1813,20 @@ UseThroughInterface(IMyInterface(Cx));
 
 This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
 
-## About this document
+## Про этот документ
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com . My homepage is https://michalis.ii.uni.wroc.pl/~michalis/ .
+Исходные файлы этого документа в формате AsciiDoc можно скачать по адресу: https://github.com/michaliskambi/modern-pascal-introduction .
+Автор будет рад любым пожеланиям, исправлениям, расширениям материала, доработкам и pull request-ам :). С автором можно связаться через профиль GitHub либо по e-mail: michalis.kambi@gmail.com . Домашняя страничка автора: https://michalis.ii.uni.wroc.pl/~michalis/ .
 
-You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
+Этот документ можно свободно распространять и изменять на лицензи идентичной лицензии Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
 * _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_
-* or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
+* Либо _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
 
-Thank you for reading!
+Благодарю за прочтение!
+
+Перевод на русский выполнен:
+Александр Скворцов и Евгений Лоза
+2016.
