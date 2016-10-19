@@ -393,29 +393,30 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 include::code-samples/myunit.pas[]
 ----
 
-Final programs are saved as `myprogram.lpr` files (`lpr` = Lazarus program file; in Delphi you would use `.dpr`). Note that other conventions are possible here, e.g. some projects just use `.pas` for main program file, some use `.pp` for units or programs. I advice using `.pas` for units and `.lpr` for FPC/Lazarus programs.
+Финальная программа сохраняются в виде файлов типа `myprogram.lpr` (`lpr` = Lazarus program file; в Delphi используются `.dpr`). Следует отметить, что возможны и другие расширения, например, некоторые проекты просто используют `.pas` в качестве основного файла программы, изредка для модулей используются расширения `.pp`. Лично я предпочитаю использовать `.pas` для модулей и `.lpr` для FPC/Lazarus программ.
 
-A program can use a unit by a `uses` keyword:
+Программа может подключать модуль с помощью ключевого слова `uses`:
 
 [source,pascal]
 ----
 include::code-samples/myunit_test.lpr[]
 ----
 
-### Units using each other
+### Перекрёстные ссылки между модулями
 
-One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use it's identifiers only in your implementation).
+Не только основная программа, но и модули также могут ссылаться на другие модули. Другой модуль может войти в секцию interface или только в implementation. Первый вариант позволяет создавать новые определения (процедуры, типы...), используя или наследуя информацию из другого модуля. Во втором варианте возможности более ограничены, если использовать модуль в секции implementation, то применить его идентификаторы возможно лишь в рамках implementation данного модуля.
 
 [source,pascal]
 ----
 include::code-samples/anotherunit.pas[]
 ----
 
-It is not allowed to have _circular unit dependencies in the interface_. That is, two units cannot use each other in the interface section.
+Запрещено применять _кольцевую взаимозависимость_ в разделе interface.  Т.е. два модуля не могут использовать друг друга в разделе interface.
 //that everything must be declared before it's used.
-The reason is that in order to "understand"
+Причина такого ограничения заключается в том, чтобы "понять"
 //(e.g. determine the memory layout of all the structures)
-the interface section of a unit, the compiler must first "understand" all the units it uses in the interface section. Pascal language follows this rule strictly, and it allows a fast compilation and fully automatic detection on the compiler side _what units need to be recompiled_. There is no need to use complicated ``Makefile`` files for a simple task of compilation in Pascal, and there is no need to _recompile everything_ just to make sure that all dependencies are updated correctly.
+секцию interface модуля, компилятор анализирует и "понимает" все модули, перечисленные в uses в секции interface.
+Pascal language follows this rule strictly, and it allows a fast compilation and fully automatic detection on the compiler side _what units need to be recompiled_. There is no need to use complicated ``Makefile`` files for a simple task of compilation in Pascal, and there is no need to _recompile everything_ just to make sure that all dependencies are updated correctly.
 //, but also makes circular dependencies _between units interfaces_ impossible.
 //(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
