@@ -532,11 +532,12 @@ end.
 
 ### Использование идентификаторов одного модуля в другом
 
-Sometimes you want to take an identifier from one unit, and _expose_ it in a new unit. The end result should be that using the new unit will make the identifier available in the namespace.
+Иногда возникает необходимость взять идентификатор из одного модуля, и _использовать_ либо _изменять_ его в другом модуле. Результатом должно быть тем, что использование нового модуля делает идентификатор доступным в пространстве имён.
 
-Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
+Иногда подобные манипуляции необходимы для сохранения совместимости с предыдущими версиями версиями модуля. Иногда неплохо "скрыть" внутренний unit в данной ситуации.
 
-This can be done by redefining the identifier in your new unit.
+Это может быть осуществлено с помощью переопределения идетификатора в твоем новом юните.
+
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
@@ -547,16 +548,16 @@ interface
 uses Graphics;
 
 type
-  { Expose TColor from Graphics unit as TMyColor. }
+  { Использовать TColor из модуля Graphics для определения TMyColor. }
   TMyColor = TColor;
 
-  { Alternatively, expose it under the same name.
-    Qualify with unit name in this case, otherwise
-    we would refer to ourselves with "TColor = TColor" definition. }
+  { Как вариант, можно переопределить его под тем же именем.
+    В таком варианте необходимо будет указать нименование модуля, иначе
+    получится несогласованное определение "TColor = TColor". }
   TColor = Graphics.TColor;
 
 const
-  { This works with constants too. }
+  { С константами это тоже работает. }
   clYellow = Graphics.clYellow;
   clBlue = Graphics.clBlue;
 
@@ -565,22 +566,22 @@ implementation
 end.
 ----
 
-Note that this trick cannot be done as easily with global procedures, functions and variables. With procedures and functions, you could expose a constant pointer to a procedure in another unit (see <<Callbacks>>), but that looks quite dirty.
+Стоит отметить, что данный трюк не пройдёт с глобальными процедурами, функциями и переменными. С ними необходимо объявить постоянный указатель на процедуру в другом модули (см. <<Callbacks>>), но такой код выглядит не совсем чисто.
 
-The usual solution is then to create a trivial "wrapper" functions that underneath simply call the functions from the internal unit, passing the parameters and return values around.
+Обычным решением является создание тривиальной "функции-обертки", которая под видом простого вызова функции из внешнего модуля, просто передаёт ему параметры и возвращает принимаемые значения обратно.
 
-To make this work with global variables, one can use global (unit-level) properties, see <<Properties>>.
+Чтобы проделать тоже с глобальными параметрами иногда используются глобальные (unit-level) свойства, см. <<Properties>>.
 
-## Classes
+## Классы (Classes)
 
-### Basics
+### Основы
 
-We have classes. At the basic level, a class is just a container for
+В Pascal для объектно-ориентированного программирования чаще всего используются классы (classes). На базовом уровне класс просто является контейнером для
 
-* _fields_ (which is fancy name for _"a variable inside a class"_),
-* _methods_ (which is fancy name for _"a procedure or function inside a class"_),
-* and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something; more in <<Properties>>).
-* Actually, you can put <<More stuff inside classes and nested classes>>, more about this in later section.
+* _поля (field)_ (удобное имя для _"переменной внутри класса"_),
+* _методы (method)_ (удобное имя для _"a процедуры или функции внутри класса"_),
+* и _свойства (property)_ (удобный синтаксис для конструкции подобной полю, однако в действительности являющейся парой методов, используемых для _чтения (get)_ и _записи (set)_ чего-либо; детальнее см. <<Properties>>).
+* Вообще говоря в классах можно разместить <<More stuff inside classes and nested classes>>, но об этом пойдёт речь чуть позже.
 
 [source,pascal]
 ----
@@ -596,9 +597,9 @@ begin
 end;
 ----
 
-### Inheritance, is, as
+### Наследование (Inheritance), проверка (is), и приведение типов (as)
 
-We have inheritance and virtual methods.
+Паскаль поддерживает наследование и виртуальные методы ООП.
 
 [source,pascal]
 ----
