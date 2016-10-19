@@ -606,28 +606,28 @@ end;
 include::code-samples/inheritance.lpr[]
 ----
 
-By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
+По умолчанию методы являются виртуальными, чтобы сделать их такими, необходимо использовать специальное ключевое слово `virtual`. Перекрытие или замещение виртуального метода осуществляется с помощью ключевого слова `override`, в ином случае будет ошибка. Чтобы скрыть метод без перекрытия следует использовать ключевое слово `reintroduce`, однако обычно не стоит так делать кроме случаев, когда для этого есть особые причины.
 
-To test the class of an instance at runtime, use the `is` operator. To typecast the instance to a specific class, use the `as` operator.
+Чтобы узнать, является ли класс из семейства классов конкретным его экземпляром можно использовать оператор `is`. Для выполнения приведения типа класса к конкретному экземпляру следует использовать оператор `as`.
 
 [source,pascal]
 ----
 include::code-samples/is_as.lpr[]
 ----
 
-Instead of casting using `X as TMyClass`, you can also use the _unchecked_ typecast `TMyClass(X)`. This is faster, but results in an undefined behavior if the `X` is not, in fact, a `TMyClass` descendant. So don't use the `TMyClass(X)` typecast, or use it only in a code where it's blindingly obvious that it's correct, for example right after testing with `is`:
+Вместо приведения типа `X as TMyClass`, можно также использовать приведение типа _без проверки_ с помощью выражения типа `TMyClass(X)`. Такой код будет работать чуть-чуть быстрее, но может привести к неопределённому поведению в случае если  `X` не является наследником `TMyClass`. По этому конструкцию `TMyClass(X)` лучше не использовать в программе кроме случаев, когда абсолютно очевидно, что здесь не может быть ошибок, например, если тип класса был проверен с помощью оператора `is`:
 
 [source,pascal]
 ----
 if A is TMyClass then
   (A as TMyClass).CallSomeMethodOfMyClass;
-// below is marginally faster
+// вариант ниже - работает незначительно быстрее
 if A is TMyClass then
   TMyClass(A).CallSomeMethodOfMyClass;
 ----
-### Properties
+### Свойства (Properties)
 
-Properties are a very nice _"syntax sugar"_ to
+Свойства (Properties) являются _"синтаксическим сахаром" (syntax sugar - жаргон, означающий синтаксические возможности, применение которых не влияет на поведение программы, но делает использование языка более удобным для программиста)_ который можно использовать с целью:
 
 1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and _setter_ methods. The typical usage is to perform some side-effect (e.g. redraw the screen) each time some value changes.
 2. Make something that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
