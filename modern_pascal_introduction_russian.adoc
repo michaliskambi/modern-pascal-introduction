@@ -420,29 +420,28 @@ Pascal language follows this rule strictly, and it allows a fast compilation and
 //, but also makes circular dependencies _between units interfaces_ impossible.
 //(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
-It is _OK to make a circular dependency between units when at least one "usage" is only in the implementation_. So it's OK for unit `A` to use unit `B` in the interface, and then unit `B` to use unit `A` in the implementation.
+Вполне возможно создавать кольцевые зависимости между модулями когда один из них "используется" только в implementation. Поэтому нормально для `A` использовать `B` в interface, и затем юнит `B` использует `A` в implementation.
 
-### Qualifying identifiers with unit name
+### Определение идентификаторов с именем модуля
 
-Different units may define the same identifier. To keep the code simple to read and search, you should usually avoid it, but it's not always possible.
+Различные юниты могут определять одинаковые идентификаторы. Чтобы поддерживать код простым для чтения и поиска, обычно следует избегать таких совпадений, но это не всегда возможно. В таких случаях, последний модуль в списке `uses` "перетягивает одеяло на себя", т.е. идентификаторы определенные в нём скрывают одноимённые идетификаторы вводимые другими модулями ранее.
 // in some situations (e.g. when you use a third-party library).
-In such cases, the last unit on the `uses` clause "wins", which means that the identifiers it introduces hide the same identifiers introduced by earlier units.
 
-You can always explicitly define a unit of a given identifier, by using it like `MyUnit.MyIdentifier`. This is the usual solution when the identifier you want to use from `MyUnit` is hidden by another unit. Of course you can also rearrange the order of units on your uses clause, although this can affect other declarations than the one you're trying to fix.
+Возможно всегда недвусмысленно определить модуль дающео идентификатор, используя как `MyUnit.MyIdentifier`. Это обычное решение когда используемый идентификатор из `MyUnit` скрыт в другом юните. Конечно ты так же можно перестроить порядок юнитов в списке uses, хотя это может действовать на другие объявления, которые ты пытаешься исправить.
 
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
 program showcolor;
 
-// Both Graphics and GoogleMapsEngine units define TColor type.
+// Модули Graphics и GoogleMapsEngine определяют свой тип TColor.
 uses Graphics, GoogleMapsEngine;
 
 var
-  { This doesn't work like we want, as TColor ends up
-    being defined by GoogleMapsEngine. }
+  { Это сработает не так, как ожидается, поскольку TColor
+    определяется последним модулем в списке - GoogleMapsEngine. }
   // Color: TColor;
-  { This works Ok. }
+  { А так будет правильно. }
   Color: Graphics.TColor;
 begin
   Color := clYellow;
@@ -450,14 +449,14 @@ begin
 end.
 ----
 
-In case of units, remember that they have two `uses` clauses: one in the interface, and another one in the implementation. The rule _later units hide the stuff from earlier units_ is applied here consistently, which means that _units used in the implementation section_ can hide identifiers from units _used in the interface section_. However, remember that when reading the `interface` section, only the units used in the interface matter. This may create a confusing situation, where two seemingly-equal declarations are considered different by the compiler:
+В случае модулей следует также опмнить, что они могут иметь два списка `uses`: один - в секции `interface`, другой - в `implementation`. Правило - _Позднейшие модули скрывают все что было делают предыдущие модули_ и применяется последовательно, что означает, что _модули использованые в секции implementation_ могут скрывать идентификаторы из _модулей использованных в секции interface_. Тем не менее не стоит забывать, что в процессе чтения секции interface компилятором, только модули использованные в секции interface имеют значение. Это может сбить с толку в ситуациях, когда два на вид одинаковых объявления обрабатываются по-разному компилятором:
 
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
 
-// INCORRECT example
+// НЕВЕРНЫЙ пример
 
 interface
 
@@ -477,15 +476,16 @@ end;
 end.
 ----
 
-The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compiler will fail to compile the above unit, claiming that you don't implement a procedure `ShowColor` that matches the interface declaration. The problem is that unit `GoogleMapsEngine` also defines a `TColor` type. And it is used only in the `implementation` section, therefore it _shadows_ the `TColor` definition only in the implementation. The equivalent version of the above unit, where the error is obvious, looks like this:
+Модуль `Graphics` (из набора библиотек Lazarus LCL) определяет тип `TColor`. Но компилятор указывает на ошибку в этом модуле, заявляя что заявленная в секции Interface процедура `ShowColor` не описана. Проблема в том, что модуль `GoogleMapsEngine` так же определяет тип `TColor`, который используется только в секции `implementation`, следовательно оно _перекрывает_ определение `TColor` только в секции implementation. Т.е. компилятор видит это буквально как:
+
 
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
 
-// INCORRECT example.
-// This is what the compiler "sees" when trying to compile previous example
+// НЕВЕРНЫЙ пример
+// демонстрирующий, как предыдущий пример "видит" компилятор
 
 interface
 
@@ -505,7 +505,7 @@ end;
 end.
 ----
 
-The solution is trivial in this case, just change the implementation to explicitly use `TColor` from `Graphics` unit. You could fix it also by moving the `GoogleMapsEngine` usage, to the interface section and earlier than `Graphics`, although this could result in other consequences in real-world cases, when `UnitUsingColors` would define more things.
+Решение в данном случае - тривиальное, нужно просто изменить implementation, чтобы явно использовать `TColor` из модуля `Graphics`. Это также можно исправить, переметив подключение модуля `GoogleMapsEngine` в секцию interface до модуля `Graphics`. Впрочем, это может привести к последствиям внутри модуля `UnitUsingColors` и коснётся всех его определений.
 
 [source,pascal]
 ----
@@ -530,7 +530,7 @@ end;
 end.
 ----
 
-### Exposing one unit identifiers from another
+### Использование идентификаторов одного модуля в другом
 
 Sometimes you want to take an identifier from one unit, and _expose_ it in a new unit. The end result should be that using the new unit will make the identifier available in the namespace.
 
