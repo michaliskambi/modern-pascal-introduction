@@ -1,4 +1,4 @@
-# Краткое введение в Современный Object Pascal для программистов
+# Краткое введение в современный Object Pascal для программистов
 Michalis Kamburelis
 :toc: left
 :toclevels: 4
@@ -14,14 +14,14 @@ Michalis Kamburelis
 Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
  Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах. Сравнительно, Он вполне похож на C++, Java или C#.
 
-* Он имеет все современные особенности, которые ты можешь ожидать — классы, юниты, интерфейсы, дженерики...
+* Он имеет все современные особенности, которые можно ожидать — классы, юниты, интерфейсы, дженерики...
 * Он компилируется в быстрый машинный код,
 * Он очень типобезопасен,
-* Высокоуровненвый, но может быть низкоуровневым если это необходимо.
+* Высокоуровневый, но может быть низкоуровневым если это необходимо.
 
 Он так же имеет превосходных, портативный компиляторов с открытым кодом названным _Free Pascal Compiler_, http://freepascal.org/ . И сопровождаемая IDE (редактор, отладчик, библиотека компонентов, создатель форм), названная _Lazarus_ http://lazarus.freepascal.org/ . Я являюсь создателем _Castle Game Engine_, http://castle-engine.sourceforge.net/ , является крутым портативным двух и трёхмерным игровым движком, использующим этот язык, чтобы создавать игры для многих платформ (Windows, Linux, MacOSX, Android, iOS, web плагины).
 
-Это введение больше направленно на программистов, которые уже имеют опыт в других языках. Мы не будем раскрывать здесь значения некоторых универсальных концепций, как _"что такое класс"_, мы только покажем как они реализуются в Pascal.
+Это введение больше направлено на программистов, которые уже имеют опыт в других языках. Мы не будем раскрывать здесь значения некоторых универсальных концепций, как _"что такое класс"_, мы только покажем как они реализуются в Pascal.
 
 ## Основы
 
@@ -50,7 +50,7 @@ include::code-samples/hello_world.lpr[]
 include::code-samples/functions_primitives.lpr[]
 ----
 
-Чтобы вернуть значение функции, присвой что-нибудь магическое переменной `Result`. Ты можешь свободно читать и устанавливать переменную `Result`, так же просто как локальную переменную.
+Чтобы вернуть значение функции, присвой что-нибудь магическое переменной `Result`. Можно свободно читать и устанавливать переменную `Result`, так же просто как локальную переменную.
 
 [source,pascal]
 ----
@@ -62,9 +62,9 @@ begin
 end;
 ----
 
-Ты так же можешь рассмативать имя функции (как `MyFunction` в примере выше) как переменную, к который ты можешь присваивать. Но я бы припятсвовал этому в новом коде, так как это выгладит "тусклым/подозрительным" когда использвано на правой стороне присваимого выражение. Просто используй `Result` всегда, когда ты хочешь читать или устанавливать значение функции.
+Можно рассматривать имя функции (как `MyFunction` в примере выше) как переменную, которой можно присвоить значение и использовать как обычную переменную. Но я бы препятствовал этому в новом коде, так как это выгладит "тусклым/подозрительным" когда использовано на правой стороне присваиваемого выражение. Просто используй `Result` всегда, когда нужно использовать или устанавливать значение функции.
 
-Если ты хочешь вызвать функцию рекурсивно, ты кончено можешь сделать это, но не забудь указать специальные параметры (такой рекурсивный вызов с параметром получает другой результат в отличии от резульата доступа к текущему результату функции). Так:
+Если необходимо вызвать функцию рекурсивно, ты кончено можешь сделать это, но не забудь указать специальные параметры (такой рекурсивный вызов с параметром получает другой результат в отличии от резульата доступа к текущему результату функции). Так:
 [source,pascal]
 ----
 function ReadIntegersUntilZero: string;
@@ -78,7 +78,7 @@ begin
 end;
 ----
 
-Ты можешь вызвать `Exit`, чтобы окончить выполнение процедуры или функции до того, как она достигнет заверщаюгего `end;`. Если ты вызываешь без параметров `Exit` в функции, она вернет последнее, что ты присовоил `Result`. Ты так же можешь использовать конструкцию `Exit(X)`, чтобы установить результат функции и выйти *сейчас* — это тоже что и `return X` конструкция в С-подобных языках.
+Можно вызвать `Exit`, чтобы окончить выполнение процедуры или функции до того, как она достигнет завершающего `end;`. Если вызвать без параметров `Exit` в функции, она вернёт последнее значение, присвоеное `Result`. Так же можно использовать конструкцию `Exit(X)`, чтобы установить результат функции и выйти *сейчас* — это тоже что и `return X` конструкция в С-подобных языках.
 
 [source,pascal]
 ----
@@ -123,7 +123,7 @@ begin
 end;
 ----
 
-Оператор `else` относится к последнему условию `if`. Поэтому оно работает, как ты и ожидаешь:
+Оператор `else` относится к последнему условию `if`. Поэтому оно работает, как и ожидается:
 
 [source,pascal]
 ----
@@ -237,9 +237,9 @@ type
 
 ПРИМЕЧАНИЕ: Конфликты в именах не приводят к неработоспособности программы. Это вполне допустимо в различных юнитах определять одинаковые идентификаторы. Но хорошей идеей будет попытка избежать столкновений в любом случае, чтобы код был прост в понимании и анализа. 
 
-ПРИМЕЧАНИЕ: Можно избежать помещения имён перечисляемых типов в глобальное пространство с помощью директивы компиллятора `{$scopedenums on}`. Это значит, что ты должен будешь обращаться к ним с помощью обращения к имени типа, как `TAnimalKind.akDuck`. Нужда в префиксе `ak` исчезает в этой ситуации, и ты возможно будешь вызывать только перечисляемый список `Duck, Cat, Dog`. Это похоже на перечисляемые списки C#. 
+ПРИМЕЧАНИЕ: Можно избежать помещения имён перечисляемых типов в глобальное пространство с помощью директивы компиллятора `{$scopedenums on}`. Это значит, будет необходимо обращаться к ним с помощью обращения к имени типа, как `TAnimalKind.akDuck`. В таком случае необходимость в префиксе `ak` исчезает, и можно будет просто оставить названия `Duck, Cat, Dog`. Это похоже на перечисляемые списки C#. 
 
-Факт того, что перечисляемый тип _комфортен_ т.е. не может быть просто присвоен к целому и присвоен из целого. Тем не менее, для специального использования, ты можешь использовать `Ord(MyAnimalKind)`, чтобы насильно привести список к целому типу, или дать подходящюю роль `TAnimalKind(MyInteger)` чтобы конвертировать integer к перечисляемому типу. В последнем случае, проверь является ли `MyInteger` частью диапазона `(0 to Ord(High(TAnimalKind)))`.
+Факт того, что перечисляемый тип _комфортен_ т.е. не может быть просто присвоен к целому и присвоен из целого. Тем не менее, для специального использования, можно использовать `Ord(MyAnimalKind)`, чтобы насильно привести список к целому типу, или дать подходящюю роль `TAnimalKind(MyInteger)` чтобы конвертировать integer к перечисляемому типу. В последнем случае, проверь является ли `MyInteger` частью диапазона `(0 to Ord(High(TAnimalKind)))`.
 
 Перечисляемые и порядковые типы могут быть использованы как индексы массива:
 
@@ -386,62 +386,62 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 
 ## Модули (Units)
 
-Модули позволяют группировать общие функции и объекты (всё, что может быть объявлено), для использования другими модулями и программами. Они эквиваленты _модулям_ и _пакетам_ в других языках. Они имеют секцию интерфейса, где объявляются доступные для других модулей и программ переменные, функции и т.п., секцию их реализации, где описано, как они работают. Сохрани юнит  `MyUnit` под именем `myunit.pas` (название должно быть без заглавных букв с расширением `.pas`).
+Модули позволяют группировать общие функции и объекты (всё, что может быть объявлено), для использования другими модулями и программами. Они эквивалентны _модулям_ и _пакетам_ в других языках. Они имеют секцию интерфейса, где объявляются доступные для других модулей и программ переменные, функции и т.п., секцию их реализации, где описано, как они работают. Сохрани юнит  `MyUnit` под именем `myunit.pas` (название должно быть без заглавных букв с расширением `.pas`).
 
 [source,pascal]
 ----
 include::code-samples/myunit.pas[]
 ----
 
-Final programs are saved as `myprogram.lpr` files (`lpr` = Lazarus program file; in Delphi you would use `.dpr`). Note that other conventions are possible here, e.g. some projects just use `.pas` for main program file, some use `.pp` for units or programs. I advice using `.pas` for units and `.lpr` for FPC/Lazarus programs.
+Финальная программа сохраняются в виде файлов типа `myprogram.lpr` (`lpr` = Lazarus program file; в Delphi используются `.dpr`). Следует отметить, что возможны и другие расширения, например, некоторые проекты просто используют `.pas` в качестве основного файла программы, изредка для модулей используются расширения `.pp`. Лично я предпочитаю использовать `.pas` для модулей и `.lpr` для FPC/Lazarus программ.
 
-A program can use a unit by a `uses` keyword:
+Программа может подключать модуль с помощью ключевого слова `uses`:
 
 [source,pascal]
 ----
 include::code-samples/myunit_test.lpr[]
 ----
 
-### Units using each other
+### Перекрёстные ссылки между модулями
 
-One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use it's identifiers only in your implementation).
+Не только основная программа, но и модули также могут ссылаться на другие модули. Другой модуль может войти в секцию interface или только в implementation. Первый вариант позволяет создавать новые определения (процедуры, типы...), используя или наследуя информацию из другого модуля. Во втором варианте возможности более ограничены, если использовать модуль в секции implementation, то применить его идентификаторы возможно лишь в рамках implementation данного модуля.
 
 [source,pascal]
 ----
 include::code-samples/anotherunit.pas[]
 ----
 
-It is not allowed to have _circular unit dependencies in the interface_. That is, two units cannot use each other in the interface section.
+Запрещено применять _кольцевую взаимозависимость_ в разделе interface.  Т.е. два модуля не могут использовать друг друга в разделе interface.
 //that everything must be declared before it's used.
-The reason is that in order to "understand"
+Причина такого ограничения заключается в том, чтобы "понять"
 //(e.g. determine the memory layout of all the structures)
-the interface section of a unit, the compiler must first "understand" all the units it uses in the interface section. Pascal language follows this rule strictly, and it allows a fast compilation and fully automatic detection on the compiler side _what units need to be recompiled_. There is no need to use complicated ``Makefile`` files for a simple task of compilation in Pascal, and there is no need to _recompile everything_ just to make sure that all dependencies are updated correctly.
+секцию interface модуля, компилятор анализирует и "понимает" все модули, перечисленные в uses в секции interface.
+Pascal language follows this rule strictly, and it allows a fast compilation and fully automatic detection on the compiler side _what units need to be recompiled_. There is no need to use complicated ``Makefile`` files for a simple task of compilation in Pascal, and there is no need to _recompile everything_ just to make sure that all dependencies are updated correctly.
 //, but also makes circular dependencies _between units interfaces_ impossible.
 //(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
-It is _OK to make a circular dependency between units when at least one "usage" is only in the implementation_. So it's OK for unit `A` to use unit `B` in the interface, and then unit `B` to use unit `A` in the implementation.
+Вполне возможно создавать кольцевые зависимости между модулями когда один из них "используется" только в implementation. Поэтому нормально для `A` использовать `B` в interface, и затем юнит `B` использует `A` в implementation.
 
-### Qualifying identifiers with unit name
+### Определение идентификаторов с именем модуля
 
-Different units may define the same identifier. To keep the code simple to read and search, you should usually avoid it, but it's not always possible.
+Различные модули могут определять одинаковые идентификаторы. Чтобы поддерживать код простым для чтения и поиска, обычно следует избегать таких совпадений, но это не всегда возможно. В таких случаях, последний модуль в списке `uses` "перетягивает одеяло на себя", т.е. идентификаторы определенные в нём скрывают одноимённые идетификаторы вводимые другими модулями ранее.
 // in some situations (e.g. when you use a third-party library).
-In such cases, the last unit on the `uses` clause "wins", which means that the identifiers it introduces hide the same identifiers introduced by earlier units.
 
-You can always explicitly define a unit of a given identifier, by using it like `MyUnit.MyIdentifier`. This is the usual solution when the identifier you want to use from `MyUnit` is hidden by another unit. Of course you can also rearrange the order of units on your uses clause, although this can affect other declarations than the one you're trying to fix.
+Возможно всегда недвусмысленно определить модуль дающего идентификатор, используя как `MyUnit.MyIdentifier`. Это обычное решение когда используемый идентификатор из `MyUnit` скрыт в другом модуле. Таким же образом можно перестроить порядок модулей в списке uses, хотя это может повлиять не только на исправляемые идентификаторы, но и на другие.
 
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
 program showcolor;
 
-// Both Graphics and GoogleMapsEngine units define TColor type.
+// Модули Graphics и GoogleMapsEngine определяют свой тип TColor.
 uses Graphics, GoogleMapsEngine;
 
 var
-  { This doesn't work like we want, as TColor ends up
-    being defined by GoogleMapsEngine. }
+  { Это сработает не так, как ожидается, поскольку TColor
+    определяется последним модулем в списке - GoogleMapsEngine. }
   // Color: TColor;
-  { This works Ok. }
+  { А так будет правильно. }
   Color: Graphics.TColor;
 begin
   Color := clYellow;
@@ -449,14 +449,14 @@ begin
 end.
 ----
 
-In case of units, remember that they have two `uses` clauses: one in the interface, and another one in the implementation. The rule _later units hide the stuff from earlier units_ is applied here consistently, which means that _units used in the implementation section_ can hide identifiers from units _used in the interface section_. However, remember that when reading the `interface` section, only the units used in the interface matter. This may create a confusing situation, where two seemingly-equal declarations are considered different by the compiler:
+В случае модулей следует также опмнить, что они могут иметь два списка `uses`: один - в секции `interface`, другой - в `implementation`. Правило - _Позднейшие модули скрывают все что было делают предыдущие модули_ и применяется последовательно, что означает, что _модули использованые в секции implementation_ могут скрывать идентификаторы из _модулей использованных в секции interface_. Тем не менее не стоит забывать, что в процессе чтения секции interface компилятором, только модули использованные в секции interface имеют значение. Это может сбить с толку в ситуациях, когда два на вид одинаковых объявления обрабатываются по-разному компилятором:
 
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
 
-// INCORRECT example
+// НЕВЕРНЫЙ пример
 
 interface
 
@@ -476,15 +476,16 @@ end;
 end.
 ----
 
-The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compiler will fail to compile the above unit, claiming that you don't implement a procedure `ShowColor` that matches the interface declaration. The problem is that unit `GoogleMapsEngine` also defines a `TColor` type. And it is used only in the `implementation` section, therefore it _shadows_ the `TColor` definition only in the implementation. The equivalent version of the above unit, where the error is obvious, looks like this:
+Модуль `Graphics` (из набора библиотек Lazarus LCL) определяет тип `TColor`. Но компилятор указывает на ошибку в этом модуле, заявляя что заявленная в секции Interface процедура `ShowColor` не описана. Проблема в том, что модуль `GoogleMapsEngine` так же определяет тип `TColor`, который используется только в секции `implementation`, следовательно оно _перекрывает_ определение `TColor` только в секции implementation. Т.е. компилятор видит это буквально как:
+
 
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
 
-// INCORRECT example.
-// This is what the compiler "sees" when trying to compile previous example
+// НЕВЕРНЫЙ пример
+// демонстрирующий, как предыдущий пример "видит" компилятор
 
 interface
 
@@ -504,7 +505,7 @@ end;
 end.
 ----
 
-The solution is trivial in this case, just change the implementation to explicitly use `TColor` from `Graphics` unit. You could fix it also by moving the `GoogleMapsEngine` usage, to the interface section and earlier than `Graphics`, although this could result in other consequences in real-world cases, when `UnitUsingColors` would define more things.
+Решение в данном случае - тривиальное, нужно просто изменить implementation, чтобы явно использовать `TColor` из модуля `Graphics`. Это также можно исправить, переметив подключение модуля `GoogleMapsEngine` в секцию interface до модуля `Graphics`. Впрочем, это может привести к последствиям внутри модуля `UnitUsingColors` и коснётся всех его определений.
 
 [source,pascal]
 ----
@@ -529,13 +530,14 @@ end;
 end.
 ----
 
-### Exposing one unit identifiers from another
+### Использование идентификаторов одного модуля в другом
 
-Sometimes you want to take an identifier from one unit, and _expose_ it in a new unit. The end result should be that using the new unit will make the identifier available in the namespace.
+Иногда возникает необходимость взять идентификатор из одного модуля, и _использовать_ либо _изменять_ его в другом модуле. Результатом должно быть тем, что использование нового модуля делает идентификатор доступным в пространстве имён.
 
-Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
+Иногда подобные манипуляции необходимы для сохранения совместимости с предыдущими версиями версиями модуля. Иногда неплохо "скрыть" внутренний unit в данной ситуации.
 
-This can be done by redefining the identifier in your new unit.
+Это может быть осуществлено с помощью переопределения идетификатора в твоем новом юните.
+
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
@@ -546,16 +548,16 @@ interface
 uses Graphics;
 
 type
-  { Expose TColor from Graphics unit as TMyColor. }
+  { Использовать TColor из модуля Graphics для определения TMyColor. }
   TMyColor = TColor;
 
-  { Alternatively, expose it under the same name.
-    Qualify with unit name in this case, otherwise
-    we would refer to ourselves with "TColor = TColor" definition. }
+  { Как вариант, можно переопределить его под тем же именем.
+    В таком варианте необходимо будет указать нименование модуля, иначе
+    получится несогласованное определение "TColor = TColor". }
   TColor = Graphics.TColor;
 
 const
-  { This works with constants too. }
+  { С константами это тоже работает. }
   clYellow = Graphics.clYellow;
   clBlue = Graphics.clBlue;
 
@@ -564,22 +566,22 @@ implementation
 end.
 ----
 
-Note that this trick cannot be done as easily with global procedures, functions and variables. With procedures and functions, you could expose a constant pointer to a procedure in another unit (see <<Callbacks>>), but that looks quite dirty.
+Стоит отметить, что данный трюк не пройдёт с глобальными процедурами, функциями и переменными. С ними необходимо объявить постоянный указатель на процедуру в другом модули (см. <<Callbacks>>), но такой код выглядит не совсем чисто.
 
-The usual solution is then to create a trivial "wrapper" functions that underneath simply call the functions from the internal unit, passing the parameters and return values around.
+Обычным решением является создание тривиальной "функции-обертки", которая под видом простого вызова функции из внешнего модуля, просто передаёт ему параметры и возвращает принимаемые значения обратно.
 
-To make this work with global variables, one can use global (unit-level) properties, see <<Properties>>.
+Чтобы проделать тоже с глобальными параметрами иногда используются глобальные (unit-level) свойства, см. <<Properties>>.
 
-## Classes
+## Классы (Classes)
 
-### Basics
+### Основы
 
-We have classes. At the basic level, a class is just a container for
+В Pascal для объектно-ориентированного программирования чаще всего используются классы (classes). На базовом уровне класс просто является контейнером для
 
-* _fields_ (which is fancy name for _"a variable inside a class"_),
-* _methods_ (which is fancy name for _"a procedure or function inside a class"_),
-* and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something; more in <<Properties>>).
-* Actually, you can put <<More stuff inside classes and nested classes>>, more about this in later section.
+* _поля (field)_ (удобное имя для _"переменной внутри класса"_),
+* _методы (method)_ (удобное имя для _"a процедуры или функции внутри класса"_),
+* и _свойства (property)_ (удобный синтаксис для конструкции подобной полю, однако в действительности являющейся парой методов, используемых для _чтения (get)_ и _записи (set)_ чего-либо; детальнее см. <<Properties>>).
+* Вообще говоря в классах можно разместить <<More stuff inside classes and nested classes>>, но об этом пойдёт речь чуть позже.
 
 [source,pascal]
 ----
@@ -595,40 +597,40 @@ begin
 end;
 ----
 
-### Inheritance, is, as
+### Наследование (Inheritance), проверка (is), и приведение типов (as)
 
-We have inheritance and virtual methods.
+Паскаль поддерживает наследование и виртуальные методы ООП.
 
 [source,pascal]
 ----
 include::code-samples/inheritance.lpr[]
 ----
 
-By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
+По умолчанию методы являются виртуальными, чтобы сделать их такими, необходимо использовать специальное ключевое слово `virtual`. Перекрытие или замещение виртуального метода осуществляется с помощью ключевого слова `override`, в ином случае будет ошибка. Чтобы скрыть метод без перекрытия следует использовать ключевое слово `reintroduce`, однако обычно не стоит так делать кроме случаев, когда для этого есть особые причины.
 
-To test the class of an instance at runtime, use the `is` operator. To typecast the instance to a specific class, use the `as` operator.
+Чтобы узнать, является ли класс из семейства классов конкретным его экземпляром можно использовать оператор `is`. Для выполнения приведения типа класса к конкретному экземпляру следует использовать оператор `as`.
 
 [source,pascal]
 ----
 include::code-samples/is_as.lpr[]
 ----
 
-Instead of casting using `X as TMyClass`, you can also use the _unchecked_ typecast `TMyClass(X)`. This is faster, but results in an undefined behavior if the `X` is not, in fact, a `TMyClass` descendant. So don't use the `TMyClass(X)` typecast, or use it only in a code where it's blindingly obvious that it's correct, for example right after testing with `is`:
+Вместо приведения типа `X as TMyClass`, можно также использовать приведение типа _без проверки_ с помощью выражения типа `TMyClass(X)`. Такой код будет работать чуть-чуть быстрее, но может привести к неопределённому поведению в случае если  `X` не является наследником `TMyClass`. По этому конструкцию `TMyClass(X)` лучше не использовать в программе кроме случаев, когда абсолютно очевидно, что здесь не может быть ошибок, например, если тип класса был проверен с помощью оператора `is`:
 
 [source,pascal]
 ----
 if A is TMyClass then
   (A as TMyClass).CallSomeMethodOfMyClass;
-// below is marginally faster
+// вариант ниже - работает незначительно быстрее
 if A is TMyClass then
   TMyClass(A).CallSomeMethodOfMyClass;
 ----
-### Properties
+### Свойства (Properties)
 
-Properties are a very nice _"syntax sugar"_ to
+Свойства (Properties) являются _"синтаксическим сахаром" (syntax sugar - жаргон, означающий синтаксические возможности, применение которых не влияет на поведение программы, но делает использование языка более удобным для программиста)_ который можно использовать с целью:
 
-1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and _setter_ methods. The typical usage is to perform some side-effect (e.g. redraw the screen) each time some value changes.
-2. Make something that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
+1. Сделать что-то внешнее похожее на поле (может быть прочитано и установлено) но ниже реализовано вызовом функциями _считывания значения (getter)_ и _установки значения (setter)_. Самое обычное применение такого подхода - выполннение дополнительных действий каждый раз, когда некоторое значение изменяется.
+2. Сделать что-то внешне похожее на поле, но только доступное для чтения. В результате, это что-то вроде константы или функции без параметров.
 
 [source,pascal]
 ----
@@ -639,9 +641,9 @@ type
     FColor: TColor;
     function SetColor(const Value: TColor);
   public
-    { No way to set it directly.
-      Call the Load method, like Load('http://www.freepascal.org/'),
-      to load a page and set this property. }
+    { Невозможно напрямую установить.
+      Следует вызвать метод вроде Load('http://www.freepascal.org/'),
+      для загрузки страницы и установки значения этого свойства. }
     property URL: string read FURL;
     procedure Load(const AnURL: string);
     property Color: TColor read FColor write SetColor;
@@ -658,11 +660,10 @@ begin
   if FColor <> Value then
   begin
     FColor := Value;
-    // for example, cause some update each time value changes
+    // Например, требовать обновления, каждый раз когда это значение изменяется
     Repaint;
-    // as another example, make sure that some underlying instance,
-    // like a "RenderingComponent" (whatever that is),
-    // has a synchronized value of Color.
+    // Ещё пример: обеспечить чтобы нечто изменялось синхронно
+    // с установкой цвета, например
     RenderingComponent.Color := Value;
   end;
 end;
@@ -677,7 +678,7 @@ end;
 
 Note that instead of specifying a method, you can also specify a field (typically a private field) to directly get or set. In the example above, the `Color` property uses a _setter_ method `SetColor`. But for getting the value, the `Color` property refers directly to the private field `FColor`. Directly referring to a field is faster than implementing trivial getter or setter methods (faster for you, and faster at execution).
 
-When declaring a property you specify:
+При объявлении свойства указывается:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
 . And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
@@ -703,16 +704,16 @@ Note that it's OK for _getter_ to have some _invisible_ side-effect, for example
 
 NOTE: Properties can also be defined outside of class, at a unit level. They serve an analogous purpose then: look like a global variable, but are backed by a _getter_ and _setter_ routines.
 
-### Exceptions
+### Исключения
 
-We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
+В паскале можно вызывать и использовать исключения. Их можно "ловить" с помощью конструкции `try ... except ... end`, также можно применять секцию "выполнить в конце" `try ... finally ... end`.
 
 [source,pascal]
 ----
 include::code-samples/exception_finally.lpr[]
 ----
 
-Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
+Обратите внимание, что раздел `finally` будет выполнен даже в случае, если выполнение будет прекращено командой `Exit` (из функции, процедуры или метода), операторами `Break` или `Continue` (внутри тела цикла).
 
 ### Visibility specifiers
 
@@ -1811,15 +1812,20 @@ UseThroughInterface(IMyInterface(Cx));
 
 This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
 
-## About this document
+## Про этот документ
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com . My homepage is https://michalis.ii.uni.wroc.pl/~michalis/ .
+Исходные файлы этого документа в формате AsciiDoc можно скачать по адресу: https://github.com/michaliskambi/modern-pascal-introduction .
+Автор будет рад любым пожеланиям, исправлениям, расширениям материала, доработкам и pull request-ам :). С автором можно связаться через профиль GitHub либо по e-mail: michalis.kambi@gmail.com . Домашняя страничка автора: https://michalis.ii.uni.wroc.pl/~michalis/ .
 
-You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
+Этот документ можно свободно распространять и изменять на лицензи идентичной лицензии Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
 * _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_
-* or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
+* Либо _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
 
-Thank you for reading!
+Благодарю за прочтение!
+
+Перевод на русский выполнен:
+Александр Скворцов и Евгений Лоза
+2016.
