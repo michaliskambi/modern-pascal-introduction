@@ -629,8 +629,8 @@ if A is TMyClass then
 
 Свойства (Properties) являются _"синтаксическим сахаром" (syntax sugar - жаргон, означающий синтаксические возможности, применение которых не влияет на поведение программы, но делает использование языка более удобным для программиста)_ который можно использовать с целью:
 
-1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and _setter_ methods. The typical usage is to perform some side-effect (e.g. redraw the screen) each time some value changes.
-2. Make something that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
+1. Сделать что-то внешнее похожее на поле (может быть прочитано и установлено) но ниже реализовано вызовом функциями _считывания значения (getter)_ и _установки значения (setter)_. Самое обычное применение такого подхода - выполннение дополнительных действий каждый раз, когда некоторое значение изменяется.
+2. Сделать что-то внешне похожее на поле, но только доступное для чтения. В результате, это что-то вроде константы или функции без параметров.
 
 [source,pascal]
 ----
@@ -641,9 +641,9 @@ type
     FColor: TColor;
     function SetColor(const Value: TColor);
   public
-    { No way to set it directly.
-      Call the Load method, like Load('http://www.freepascal.org/'),
-      to load a page and set this property. }
+    { Невозможно напрямую установить.
+      Следует вызвать метод вроде Load('http://www.freepascal.org/'),
+      для загрузки страницы и установки значения этого свойства. }
     property URL: string read FURL;
     procedure Load(const AnURL: string);
     property Color: TColor read FColor write SetColor;
@@ -660,11 +660,10 @@ begin
   if FColor <> Value then
   begin
     FColor := Value;
-    // for example, cause some update each time value changes
+    // Например, требовать обновления, каждый раз когда это значение изменяется
     Repaint;
-    // as another example, make sure that some underlying instance,
-    // like a "RenderingComponent" (whatever that is),
-    // has a synchronized value of Color.
+    // Ещё пример: обеспечить чтобы нечто изменялось синхронно
+    // с установкой цвета, например
     RenderingComponent.Color := Value;
   end;
 end;
@@ -679,7 +678,7 @@ end;
 
 Note that instead of specifying a method, you can also specify a field (typically a private field) to directly get or set. In the example above, the `Color` property uses a _setter_ method `SetColor`. But for getting the value, the `Color` property refers directly to the private field `FColor`. Directly referring to a field is faster than implementing trivial getter or setter methods (faster for you, and faster at execution).
 
-When declaring a property you specify:
+При объявлении свойства указывается:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
 . And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
@@ -705,16 +704,16 @@ Note that it's OK for _getter_ to have some _invisible_ side-effect, for example
 
 NOTE: Properties can also be defined outside of class, at a unit level. They serve an analogous purpose then: look like a global variable, but are backed by a _getter_ and _setter_ routines.
 
-### Exceptions
+### Исключения
 
-We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
+В паскале можно вызывать и использовать исключения. Их можно "ловить" с помощью конструкции `try ... except ... end`, также можно применять секцию "выполнить в конце" `try ... finally ... end`.
 
 [source,pascal]
 ----
 include::code-samples/exception_finally.lpr[]
 ----
 
-Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
+Обратите внимание, что раздел `finally` будет выполнен даже в случае, если выполнение будет прекращено командой `Exit` (из функции, процедуры или метода), операторами `Break` или `Continue` (внутри тела цикла).
 
 ### Visibility specifiers
 
