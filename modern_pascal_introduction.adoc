@@ -289,6 +289,8 @@ Various notes:
 * The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
 +
 In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
++
+Note that the value of the loop counter variable (`I` in this example) is undefined after the loop has finished. Unless you exited the loop prematurely by `Break` or `Exit`.
 
 * The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
 ** It can iterate over all values in the array (example above).
