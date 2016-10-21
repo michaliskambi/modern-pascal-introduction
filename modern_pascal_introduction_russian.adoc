@@ -8,13 +8,13 @@ Michalis Kamburelis
 
 ## Для чего это нужно?
 
-Существует множество книг и источников о Паскале, но слишком много из них говорят о старом Паскале, без классов, юнитов, дженериках (generics).
+Существует множество книг и источников о Паскале, но слишком много из них говорят о старом Паскале, без классов, модулей, дженериках (generics).
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
 Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
  Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах. Сравнительно, Он вполне похож на C++, Java или C#.
 
-* Он имеет все современные особенности, которые можно ожидать — классы, юниты, интерфейсы, дженерики...
+* Он имеет все современные особенности, которые можно ожидать — классы, модули, интерфейсы, дженерики...
 * Он компилируется в быстрый машинный код,
 * Он очень типобезопасен,
 * Высокоуровневый, но может быть низкоуровневым если это необходимо.
@@ -233,9 +233,9 @@ type
   TAnimalKind = (akDuck, akCat, akDog);
 ----
 
-Общепринято, что префикс перечисляемого типа состоит из двух букв сокращения имени типа, следовательно `ak` = сокращение для _"Animal Kind"_. Это полезное соглашение, так как имена перечисляемых типов находятся в глобальном пространстве юнита. Так с помощью префикса `ak`, автоматически уменьшаются шансы на конфликт с другими идентификаторами.
+Общепринято, что префикс перечисляемого типа состоит из двух букв сокращения имени типа, следовательно `ak` = сокращение для _"Animal Kind"_. Это полезное соглашение, так как имена перечисляемых типов находятся в глобальном пространстве модуля. Так с помощью префикса `ak`, автоматически уменьшаются шансы на конфликт с другими идентификаторами.
 
-ПРИМЕЧАНИЕ: Конфликты в именах не приводят к неработоспособности программы. Это вполне допустимо в различных юнитах определять одинаковые идентификаторы. Но хорошей идеей будет попытка избежать столкновений в любом случае, чтобы код был прост в понимании и анализа. 
+ПРИМЕЧАНИЕ: Конфликты в именах не приводят к неработоспособности программы. Это вполне допустимо в различных модулях определять одинаковые идентификаторы. Но хорошей идеей будет попытка избежать столкновений в любом случае, чтобы код был прост в понимании и анализа. 
 
 ПРИМЕЧАНИЕ: Можно избежать помещения имён перечисляемых типов в глобальное пространство с помощью директивы компиллятора `{$scopedenums on}`. Это значит, будет необходимо обращаться к ним с помощью обращения к имени типа, как `TAnimalKind.akDuck`. В таком случае необходимость в префиксе `ak` исчезает, и можно будет просто оставить названия `Duck, Cat, Dog`. Это похоже на перечисляемые списки C#. 
 
@@ -358,7 +358,7 @@ Writeln('Первая строка.');
 Writeln('Вторая строка.');
 ----
 
-Стоит отметить, что это будет работать только в _консольных_ приложениях. Для этого нужно указывать `{$apptype CONSOLE}` (*а не* `{$apptype GUI}`) в главном файле программы. На некоторых ОС это неважно и консоль присутствует всегда (Unix), но при попытке выполнения `write`/`writeln` из GUI приложения может привести к ошибке (например, в Windows).
+Стоит отметить, что это будет работать только в _консольных_ приложениях. Для этого нужно указывать `{$apptype CONSOLE}` (*но не* `{$apptype GUI}`) в главном файле программы. На некоторых ОС консоль явно или скрыто присутствует всегда (Unix) и этот параметр не используется, но в некоторых системах попытка выполнения `write`/`writeln` из GUI приложения может привести к ошибке (например, в Windows).
 
 В *Castle Game Engine:* категорически не советуется пользоваться `Writeln`, для этого есть специальная функция `WritelnLog` или `WritelnWarning` для вывода логов и отладочной информации, при этом. Их результат всегда будет направлен в полезном направлении: для Unix это будет стандартный вывод в консоль. Для Windows GUI приложений это будет лог-файл. В Android будет отображаться _Android logging facility_ (инструмент логов Андроида) (который можно просматривать с помощью команды `adb logcat`). Использовать `Writeln` есть смысл лишь в ограниченном наборе случаев, например, для консольных приложений (исполняемых из командной строки) и можно быть точно уверенным, что _стандартный вывод_ определён. Например, так можно делать в конвертере или генераторе трёхмерных моделей, который выполняется из командной строки.
 
@@ -386,7 +386,7 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 
 ## Модули (Units)
 
-Модули позволяют группировать общие функции и объекты (всё, что может быть объявлено), для использования другими модулями и программами. Они эквивалентны _модулям_ и _пакетам_ в других языках. Они имеют секцию интерфейса, где объявляются доступные для других модулей и программ переменные, функции и т.п., секцию их реализации, где описано, как они работают. Сохрани юнит  `MyUnit` под именем `myunit.pas` (название должно быть без заглавных букв с расширением `.pas`).
+Модули позволяют группировать общие функции и объекты (всё, что может быть объявлено), для использования другими модулями и программами. Они эквивалентны _модулям_ и _пакетам_ в других языках. Они имеют секцию интерфейса, где объявляются доступные для других модулей и программ переменные, функции и т.п., секцию их реализации, где описано, как они работают. Модуль `MyUnit` можно сохранить под именем `myunit.pas` (название должно быть без заглавных букв с расширением `.pas`).
 
 [source,pascal]
 ----
@@ -420,7 +420,7 @@ Pascal language follows this rule strictly, and it allows a fast compilation and
 //, but also makes circular dependencies _between units interfaces_ impossible.
 //(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
-Вполне возможно создавать кольцевые зависимости между модулями когда один из них "используется" только в implementation. Поэтому нормально для `A` использовать `B` в interface, и затем юнит `B` использует `A` в implementation.
+Вполне возможно создавать кольцевые зависимости между модулями когда один из них "используется" только в implementation. Поэтому нормально для `A` использовать `B` в interface, и затем модуль `B` использует `A` в implementation.
 
 ### Определение идентификаторов с именем модуля
 
@@ -536,7 +536,7 @@ end.
 
 Иногда подобные манипуляции необходимы для сохранения совместимости с предыдущими версиями версиями модуля. Иногда неплохо "скрыть" внутренний unit в данной ситуации.
 
-Это может быть осуществлено с помощью переопределения идетификатора в твоем новом юните.
+Это может быть осуществлено с помощью переопределения идетификатора в новом модуле.
 
 [source,pascal]
 ----
@@ -566,7 +566,7 @@ implementation
 end.
 ----
 
-Стоит отметить, что данный трюк не пройдёт с глобальными процедурами, функциями и переменными. С ними необходимо объявить постоянный указатель на процедуру в другом модули (см. <<Callbacks>>), но такой код выглядит не совсем чисто.
+Стоит отметить, что данный трюк не пройдёт с глобальными процедурами, функциями и переменными. С ними необходимо объявить постоянный указатель на процедуру в другом модуле (см. <<Callbacks>>), но такой код выглядит не совсем чисто.
 
 Обычным решением является создание тривиальной "функции-обертки", которая под видом простого вызова функции из внешнего модуля, просто передаёт ему параметры и возвращает принимаемые значения обратно.
 
@@ -680,29 +680,29 @@ Note that instead of specifying a method, you can also specify a field (typicall
 
 При объявлении свойства указывается:
 
-. Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
-. And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
+. может ли оно быть прочитано, и как (с помощью прямого чтения поля, или с использованием метода `getter`).
+. может ли оно быть установлено, и как (с помощью прямой записи поля, или вызовом метода `setter`).
 
-The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
+Компилятор следит за тем, чтобы типы и параметры соответствующих полей и методов совпадали с типом свойства с которым они работают. Например, чтобы прочитать свойство `Integer` следует или предоставить поле `Integer`, или беспараметрический метод (функцию), который возвращает `Integer`.
 
-Technically, for the compiler, the "getter" and "setter" methods are just normal methods and they can do absolutely anything (including side-effects or randomization). But it's a good convention to design properties to behave more-or-less like fields:
+С технической точки зрения, для компилятора, методы "getter" и "setter"  - обычные методы и они могут делать абсолютно что угодно (включая массу дополнительных функций). Но правилом хорошего тона является создавать такие свойства, которые ведут себя более-менее подобно обычному полю:
 
 // There are some good conventions to follow when creating properties. These are only conventions, the compiler doesn't prevent you from making something weird using properties -- f. But the good
 // They should be somewhat predictable, like fields:
 
-* The _getter_ function should have no visible side-effects (e.g. it should not read some input from file / keyboard). It should be deterministic (no randomization, not even pseudo-randomization :). Reading a property many times should be valid, and return the same value, if nothing changed in-between.
+* Функция _getter_ не должна иметь видимые побочные эффекты (например, она не должна читать некоторый ввод из файла / клавиатуры). Её значение должно быть детерменистическим (без рандомизации или псевдо-рандомизации :)) Чтение свойства каждый раз должно иметь смысл и возвращать одинаковый результат, если между операциями чтения ничего не изменилось.
 +
-Note that it's OK for _getter_ to have some _invisible_ side-effect, for example to cache a value of some calculation (known to produce the same results for given instance), to return it faster next time. This is in fact one of the cool possibilities of a "getter" function.
+Следует отметить, что вполне нормально если выполнение _getter_ имеет некие _невидимые_ последствия, например, сохранение в кеше результатов некоторого вычисления для ускорения выполнения кода при следующем вызове. По факту, это одна из очень полезных возможностей функции "getter".
 
-* The _setter_ function should always set the requested value, such that calling the _getter_ yields it back. Do not reject invalid values silently in the "setter" (raise an exception if you must). Do not convert or scale the requested value. The idea is that after `MyClass.MyProperty := 123;` the programmer can expect that `MyClass.MyProperty = 123`.
+* Функция _setter_ должна всегда устанавливать значение таким образом, чтобы _getter_ вернул его же обратно. Не стоит автоматически отбрасывать неверные значения "setter", если это необходимо, стоит вызвать exception. Также не следует конвертировать или масштабировать запрашиваемое значение. Главная идея заключается в том, чтобы после установки `MyClass.MyProperty := 123;` программист ожидал, что `MyClass.MyProperty = 123`.
 
-* The _read-only properties_ are often used to make some field read-only from the outside. Again, the good convention is to make it behave like a constant, at least constant for this object instance with this state. The value of the property should not change unexpectedly. _Make it a function, not a property, if using it has a side effect or returns something random._
+* _read-only свойства_ часто используют для создания неких полей доступных только для чтения снаружи. Снова таки, хорошеая практика - делать их поведение похожим на константу, по крайней мере для данного экземпляра объекта в его текущем состоянии. Значение свойства не должно меняться неожиданно. _Если необходимо возвращать что-то случайное, лучше сделать функцию, а не свойство._
 
-* The _"backing" field of a property is almost always private_, since the idea of a property is to encapsulate all outside access to it.
+* Поле, к которому обращаются свойства почти всегда находится в разделе _private_, поскольку главная идея свойств - служить обёрткой и методом доступа к нему.
 
-* It's technically possible to make _set-only properties_, but I have not yet seen a good example of such thing:)
+* Технически, возможно создать свойства, которые только устанавливают значение, но не читают его. Впрочем, хороших примеров такой реализации мне ещё не встречалось :)
 
-NOTE: Properties can also be defined outside of class, at a unit level. They serve an analogous purpose then: look like a global variable, but are backed by a _getter_ and _setter_ routines.
+ПРИМЕЧАНИЕ: Свойства так же могут быть определены вне класса, на уровне модуля. Они служат аналогичной цели: они внешне выглядят как глобальные переменные, но доступ к ним вызывает соответствующие функции _getter_ и _setter_.
 
 ### Исключения
 
@@ -715,15 +715,15 @@ include::code-samples/exception_finally.lpr[]
 
 Обратите внимание, что раздел `finally` будет выполнен даже в случае, если выполнение будет прекращено командой `Exit` (из функции, процедуры или метода), операторами `Break` или `Continue` (внутри тела цикла).
 
-### Visibility specifiers
+### Разделы видимости
 
-As in most object-oriented languages, we have visibility specifiers to hide fields / methods / properties.
+Как и в большинстве объектно-ориентированных языках, в паскале имеются визуальные спецификаторы для ограничения "видимости" полей / методов / свойств.
 
-The basic visibility levels are:
+Основные уровни видимости являются следующими:
 
-`public`:: everyone can access it, including the code in other units.
-`private`:: only accessible in this class.
-`protected`:: only accessible in this class and descendants.
+`public`:: каждый имеет доступ, включая код в других модулях.
+`private`:: доступен только только в этом классе.
+`protected`:: доступен только в этом классе и его наследниках.
 
 The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See <<private and strict private>> section.
 
