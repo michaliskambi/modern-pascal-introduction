@@ -891,42 +891,41 @@ end;
 
 ### Free notification
 
-If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
+Если создать дополнительную ссылку на instance получается, что две ссылки указывают на одну и ту же область памяти. Если освободить одну из них, вторая окажется _"болтающимся" указателем_. Нельзя пытаться получить доступ к области памяти, которая была освобождена. Это может привести к runtime ошибке (чаще всего SIGSEGV), либо может быть получено неопределённое значение (в случае, если эта область памяти уже повторно выделена для других элементов внутри текущей программы).
 
-Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references. Consider this code:
+В таком случае не достаточно просто вызывать `FreeAndNil` поскольку эта функция установит `nil` лишь для переданной её ссылки -- не существует автоматического метода. Рассмотрим следующий пример:
 
 [source,pascal]
 ----
 var
-  O1, O2: TObject;
+  Obj1, Obj2: TObject;
 begin
-  O1 := TObject.Create;
-  O2 := O1;
-  FreeAndNil(O1);
+  Obj1 := TObject.Create;
+  Obj2 := Obj1;
+  FreeAndNil(Obj1);
 
-  // what happens if we access O1 or O2 here?
+  // что произойдёт, если попытаться получить доступ к объекту Obj1 или Obj2?
 end;
 ----
 
-1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
+1. В конце данного блока ссылка `Obj1` является `nil`. Если необходимо получить доступ к ней в коде программы, для надёжности следует использовать проверку `if Obj1 <> nil then ...` чтобы случайно не вызвать метод уже освобождённой instance, например:
 +
 
 [source,pascal]
 ----
-if O1 <> nil then
-  Writeln(O1.ClassName);
+if Obj1 <> nil then
+  Writeln(Obj1.ClassName);
 ----
 +
-Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
+Попытка доступа к ссылке `nil` на instance приведёт к предсказуемой и понятной ошибке. Таким образом, даже если код не будет проверять `Obj1 <> nil`, и попытается вслепую получить доступ к `Obj1`, возникнет достаточно ясное сообщение об ошибке.
 +
-Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
+То же самое происходит и при попытке вызова virtual method, или не-virtual method который пытается получить доступ к полю освобождённой instance.
 
-2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
-
+2. Ситуация с `Obj2` -- куда сложнее. Её значение не `nil`, однако оно ошибочно. Попытка доступа к не-nil неверной ссылки на instance
 //(or call a method that accessed a field of such instance)
-results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
+приводит к непредсказуемому результату -- это может быть и access violation exception, а может и какое-то случайное значение.
 
-There are various solutions to it:
+К решению такой проблемы есть несколько путей:
 
 * One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 

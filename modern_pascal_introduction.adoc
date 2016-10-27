@@ -909,7 +909,7 @@ begin
 end;
 ----
 
-1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil ...` to avoid calling methods on a freed instance, like
+1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil then ...` to avoid calling methods on a freed instance, like
 +
 
 [source,pascal]
