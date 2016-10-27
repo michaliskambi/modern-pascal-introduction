@@ -899,30 +899,30 @@ Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets
 [source,pascal]
 ----
 var
-  O1, O2: TObject;
+  Obj1, Obj2: TObject;
 begin
-  O1 := TObject.Create;
-  O2 := O1;
-  FreeAndNil(O1);
+  Obj1 := TObject.Create;
+  Obj2 := Obj1;
+  FreeAndNil(Obj1);
 
-  // what happens if we access O1 or O2 here?
+  // what happens if we access Obj1 or Obj2 here?
 end;
 ----
 
-1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
+1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil ...` to avoid calling methods on a freed instance, like
 +
 
 [source,pascal]
 ----
-if O1 <> nil then
-  Writeln(O1.ClassName);
+if Obj1 <> nil then
+  Writeln(Obj1.ClassName);
 ----
 +
-Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
+Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `Obj1 <> nil`, and will blindly access `Obj1` field, you will get a clear exception at runtime.
 +
 Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
 
-2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
+2. With `Obj2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
 
 //(or call a method that accessed a field of such instance)
 results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
@@ -931,7 +931,7 @@ There are various solutions to it:
 
 * One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 
-* In the above example, right after freeing the `O1` instance, you can simply set the `O2` variable explicitly to `nil`. That's trivial in this simple case.
+* In the above example, right after freeing the `Obj1` instance, you can simply set the `Obj2` variable explicitly to `nil`. That's trivial in this simple case.
 
 * The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
 +
