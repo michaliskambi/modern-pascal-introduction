@@ -1,4 +1,4 @@
-# Краткое введение в современный Object Pascal для программистов
+﻿# Краткое введение в современный Object Pascal для программистов
 Michalis Kamburelis
 :toc: left
 :toclevels: 4
@@ -776,9 +776,9 @@ if A <> nil then
 
 ### Ручное и автоматическое освобождение памяти
 
-In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in the constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
+Во многих ситуациях, необходимость освобождать instance не является чем-то сложным. Просто пишется destructor, как пара соответствующему constructor-у, и освобождает все объекты, память для которых была выделена в constructor-е (а, точнее, в продолжение всего времени существования класса). Следует следить за тем, чтобы освобождать каждый объект лишь *один раз*. Хорошей практикой будет устанавливать значение освобождённой ссылки в  `nil`, а наиболее удобно сделать это, вызвав команду `FreeAndNil(A)`.
 
-So, like this:
+Например:
 
 [source,pascal]
 ----
@@ -809,7 +809,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+Чтобы избежать необходимости каждый раз явно освобождать instance, можно использовать полезную особенность `TComponent`, которая называется _"ownership"_ (владение дочерним объектом). Любой объект, который _owned_ (т.е. которым данный класс владеет) будет автоматически освобождён _owner_-ом (классом, который им владеет). Механизм очень гибкий и никогда не освобождает объекты, которые уже освобождены (таким образом всё будет работать правильно и для несозданных объектов или освобождённых ранее). Таким образом предыдущий пример можно переписать так:
 
 [source,pascal]
 ----
@@ -832,9 +832,9 @@ begin
 end;
 ----
 
-Note that we need to override a virtual `TComponent` constructor here. So we cannot change the constructor parameters. (Actually, you can -- declare a new constructor with `reintroduce`. But be careful, as some functionality, e.g. streaming, will still use the virtual constructor, so make sure it works right in either case.)
+Следует обратить внимание, что также необходимо override virtual-ный constructor от `TComponent`. Это в свою очередь означает, что нельзя изменять параметры  constructor-а. Впрочем, это возможно -- объявив новый constructor с ключевым словом `reintroduce`. Однако здесь стоит быть осторожным, так как некоторый функционал, например, streaming, настроена на использование virtual constructor, по этому следует удостовериться, что в любом случае всё будет работать верно.
 
-Another mechanism for automatic freeing is the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we can also write:
+Ещё один механизм автоматического освобождения памяти -- функционал `OwnsObjects` (который по умолчанию `true`) классов-списков, таких, как `TFPGObjectList` или `TObjectList`. Т.е. можно написать:
 
 [source,pascal]
 ----
@@ -856,7 +856,7 @@ type
 constructor TPlayer.Create;
 begin
   inherited;
-  // Actually, the parameter true (OwnsObjects) is already the default
+  // Вообще говоря, параметр OwnsObjects и так true по умолчанию
   Guns := TGunList.Create(true);
   Gun1 := TGun.Create(Self);
   Guns.Add(Gun1);
@@ -866,28 +866,28 @@ end;
 
 destructor TPlayer.Destroy;
 begin
-  { We have to take care to free the list.
-    It will automatically free it's contents. }
+  { Здесь достаточно освободить сам список.
+    Он сам автоматически освободит всё содержимое. }
   FreeAndNil(Guns);
 
-  { No need to free the Gun1, Gun2 anymore. It's a nice habit to set to "nil"
-    their references now, as we know they are freed. In this simple class,
-    with so simple destructor, it's obvious that they cannot be accessed
-    anymore -- but doing this pays off in case of larger and more complicated
-    destructors.
+  { Таким образом нет нужды освобождать Gun1, Gun2 отдельно.
+    Правда, хорошей практикой будет теперь установить их ссылку в "nil".
+    поскольку мы знаем, что они освобождены. В этом простом классе с простым
+    destructor-ом, очевидно, что к ним не произойдёт доступа, однако
+    в случае сложных destructor-ов это может оказаться полезно.
 
-    Alternatively, we could avoid declaring Gun1 and Gun2,
-    and instead use Guns[0] and Guns[1] in own code.
-    Or create a method like Gun1 that returns Guns[0]. }
+    Альтернативно, можно избежать объявления Gun1 и Gun2 отдельно
+    и использовать напрямую Guns[0] и Guns[1] в коде.
+    Можно также создать метод Gun1, который ссылается на Guns[0]. }
   Gun1 := nil;
   Gun2 := nil;
   inherited;
 end;
 ----
 
-Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means, while it's also contained within a list. Use the `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
+Заметим, что механизм "ownership" классов-списков простой и в случае высвобождения содержащейся в списке instance сторонним кодом возникнет ошибка. Чтобы исключить что-либо из списка без освобождения используется метод `Extract`, однако это также означает, что в дальнейшем элемент необходимо будет освобождать вручную.
 
-*In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+В *Castle Game Engine*: Все descendants класса `TX3DNode` автоматически управляют памятью при добавлении как children другой `TX3DNode`. Корневая X3D node, `TX3DRootNode`, в свою очередь обычно владеется классом `TCastleSceneCore`. Другие объекты также имеют простой механизм владения -- обычно это обозначено parameter-ом или property под названием подобным `OwnsXxx`.
 
 ### Free notification
 
