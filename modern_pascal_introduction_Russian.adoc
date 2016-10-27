@@ -927,17 +927,17 @@ if Obj1 <> nil then
 
 К решению такой проблемы есть несколько путей:
 
-* One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
+* Первое решение - внимательно читать документацию к объекту. Не предполагать ничего о длительности жизни ссылки, если она создана чужим кодом. Если в классе `TCar` есть поле, указывающее на instance типа `TWheel`, то есть _правило_ что ссылка на _wheel_ верна, пока существует класс _car_, и сам _car_ освободит все его _wheel_ используя свой destructor. Но это правило, в более сложных случаях в документации следует сделать упоминание того, как и что происходит со ссылками.
 
-* In the above example, right after freeing the `O1` instance, you can simply set the `O2` variable explicitly to `nil`. That's trivial in this simple case.
+* В примере выше, сразу после освобождения `Obj1` instance, можно просто вручную установить `Obj2` значение `nil`. В данном конкретном примере это просто и тривиально.
 
-* The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
+* Однако, наиболее перспективным решением использовать специальный механизм класса `TComponent` под названием "free notification" (извещение об освобождении). Этим образом один компонент может получить notification в случае освобождения одной из компонент, и далее установить ссылку на неё в `nil`.
 +
-Thus you get something like a _weak reference_. It can cope with various usage scenarios, for example you can let the code from outside of the class to set your reference, and the outside code can also free the instance at anytime.
+Таким образом можно получить _слабую ссылку_. Использовать эту механику можно в различных задачах, например, позволить коду извне изменять ссылки, в том числе, возможность освобождать память в любой момент.
 +
-This requires both classes to descend from `TComponent`. Using it in general boils down to calling `FreeNotification` , `RemoveFreeNotification`, and overriding `Notification`.
+Для этого оба класса должны наследовать `TComponent`. Обычно это сводится к использованию `FreeNotification` , `RemoveFreeNotification`, и override `Notification`.
 +
-Here's a complete example, showing how to use this mechanism, together with constructor / destructor and a setter property. Sometimes it can be done simpler, but this is the full-blown version that is always correct:)
+Следующий пример демонстрирует как использовать этот подход вместе с constructor / destructor и setter property. Иногда можно всё сделать намного проще, но здесь демонстрируется полномасштабная версия, которая будет верной в любом случае.
 +
 [source,pascal]
 ----
@@ -963,7 +963,7 @@ procedure TContainer.Notification(AComponent: TComponent; Operation: TOperation)
 begin
   inherited;
   if (Operation = opRemove) and (AComponent = FSomeSpecialControl) then
-    { set to nil by SetSomeSpecialControl to clean nicely }
+    { установить значение nil для SetSomeSpecialControl чтобы всё аккуратно подчистить }
     SomeSpecialControl := nil;
 end;
 
@@ -981,7 +981,7 @@ end;
 
 destructor TContainer.Destroy;
 begin
-  { set to nil by SetSomeSpecialControl, to detach free notification }
+  { Установить значение nil для SetSomeSpecialControl, чтобы запустить notification про освобождение памяти }
   SomeSpecialControl := nil;
   inherited;
 end;
@@ -989,7 +989,7 @@ end;
 
 ## Run-time library
 
-### Input/output using streams
+### Ввод/вывод с помощью потоков
 
 Modern programs should use `TStream` class and it's many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
 
