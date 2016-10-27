@@ -810,7 +810,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier or they weren't assigned). We can change the previous example to this:
 
 [source,pascal]
 ----
