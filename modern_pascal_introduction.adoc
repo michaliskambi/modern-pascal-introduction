@@ -921,7 +921,7 @@ if O1 <> nil then
 +
 Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
 +
-Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
+Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
 
 2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
 //(or call a method that accessed a field of such instance)
