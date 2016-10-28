@@ -289,6 +289,8 @@ Various notes:
 * The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
 +
 In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
++
+Note that the value of the loop counter variable (`I` in this example) should be considered undefined after the loop has finished due to possible optimizations. It may cause a compiler warning. Unless you exit the loop prematurely by `Break` or `Exit`, in which case the counter variable is guaranteed to retain the last value.
 
 * The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
 ** It can iterate over all values in the array (example above).
@@ -808,7 +810,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier or they weren't assigned). We can change the previous example to this:
 
 [source,pascal]
 ----
@@ -892,35 +894,35 @@ Beware that the list classes "ownership" mechanism is simple, and you will get a
 
 If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
 
-Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references. Consider this code:
+Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references automatically. Consider this code:
 
 [source,pascal]
 ----
 var
-  O1, O2: TObject;
+  Obj1, Obj2: TObject;
 begin
-  O1 := TObject.Create;
-  O2 := O1;
-  FreeAndNil(O1);
+  Obj1 := TObject.Create;
+  Obj2 := Obj1;
+  FreeAndNil(Obj1);
 
-  // what happens if we access O1 or O2 here?
+  // what happens if we access Obj1 or Obj2 here?
 end;
 ----
 
-1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
+1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil then ...` to avoid calling methods on a freed instance, like
 +
 
 [source,pascal]
 ----
-if O1 <> nil then
-  Writeln(O1.ClassName);
+if Obj1 <> nil then
+  Writeln(Obj1.ClassName);
 ----
 +
-Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
+Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `Obj1 <> nil`, and will blindly access `Obj1` field, you will get a clear exception at runtime.
 +
 Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
 
-2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
+2. With `Obj2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
 
 //(or call a method that accessed a field of such instance)
 results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
@@ -929,7 +931,7 @@ There are various solutions to it:
 
 * One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 
-* In the above example, right after freeing the `O1` instance, you can simply set the `O2` variable explicitly to `nil`. That's trivial in this simple case.
+* In the above example, right after freeing the `Obj1` instance, you can simply set the `Obj2` variable explicitly to `nil`. That's trivial in this simple case.
 
 * The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
 +

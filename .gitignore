@@ -33,3 +33,5 @@ code-samples/lazarus/showcolor
 code-samples/lazarus/*.bak
 code-samples/lazarus/*.lps
 code-samples/lazarus/lib/
+.~lock*
+*.odt

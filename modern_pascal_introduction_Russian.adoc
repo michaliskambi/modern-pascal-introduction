@@ -1,4 +1,4 @@
-# Краткое введение в современный Object Pascal для программистов
+﻿# Краткое введение в современный Object Pascal для программистов
 Michalis Kamburelis
 :toc: left
 :toclevels: 4
@@ -8,11 +8,11 @@ Michalis Kamburelis
 
 ## Для чего это нужно?
 
-Существует множество книг и источников о Паскале, но слишком много из них говорят о старом Паскале, без классов, модулей, дженериках (generics).
+Существует множество книг и источников о Паскале, но слишком много из них говорят о старом Паскале, без классов, модулей, дженериков (generics).
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
 Поэтому я написал это краткое введение о том , что я называю *современным Object Pascal*. Большинство программистов используют его, действительно не называя так _"современный Object Pascal"_, мы просто называем  _"наш Pascal"_.
- Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах. Сравнительно, Он вполне похож на C++, Java или C#.
+ Но представляя язык, я считаю важным подчеркнуть, что это современный, объектно-ориентированный язык. Он был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах. Сегодня его можно вполне сравнивать C++, Java или C#.
 
 * Он имеет все современные особенности, которые можно ожидать — классы, модули, интерфейсы, дженерики...
 * Он компилируется в быстрый машинный код,
@@ -92,7 +92,7 @@ end;
 
 ### Условные операторы (if)
 
-Конструкции `if .. then` или `if .. then .. else` запускают некий код, когда некое условие удовлетворительно. В отличии от C-подобных языков, в Pascal тебе не нужно ставить в скобки условие.
+Конструкции `if .. then` или `if .. then .. else` запускают некий код, когда некое условие удовлетворительно. В отличии от C-подобных языков, в Pascal нет необходимости ставить условие в скобки.
 
 [source,pascal]
 ----
@@ -167,7 +167,7 @@ begin
 
 Ошибка связана с тем, что компилятор пытается в первую очередь пытается выполнить побитовый оператор `and` в середине выражения и в результате получается `(0 and B)`, которое возвращает целочисленную величину. Далее компиллятор выполняет оператор "равно" и получает булевскую величину `A = (0 and B)`. Финальная ошибка оказывается связана с попыткой сравнить булевскую величину `A = (0 and B)` с целочисленной величиной `0`.
 
-Правильно будет делать таким образом:
+Правильно будет делать следующим образом:
 
 [source,pascal]
 ----
@@ -239,7 +239,7 @@ type
 
 ПРИМЕЧАНИЕ: Можно избежать помещения имён перечисляемых типов в глобальное пространство с помощью директивы компиллятора `{$scopedenums on}`. Это значит, будет необходимо обращаться к ним с помощью обращения к имени типа, как `TAnimalKind.akDuck`. В таком случае необходимость в префиксе `ak` исчезает, и можно будет просто оставить названия `Duck, Cat, Dog`. Это похоже на перечисляемые списки C#. 
 
-Факт того, что перечисляемый тип _комфортен_ т.е. не может быть просто присвоен к целому и присвоен из целого. Тем не менее, для специального использования, можно использовать `Ord(MyAnimalKind)`, чтобы насильно привести список к целому типу, или дать подходящюю роль `TAnimalKind(MyInteger)` чтобы конвертировать integer к перечисляемому типу. В последнем случае, проверь является ли `MyInteger` частью диапазона `(0 to Ord(High(TAnimalKind)))`.
+Факт того, что перечисляемый тип _комфортен_ т.е. не может быть просто присвоен к целому и присвоен из целого. Тем не менее, для специального использования, можно использовать `Ord(MyAnimalKind)`, чтобы насильно привести список к целому типу, или дать подходящую роль `TAnimalKind(MyInteger)` чтобы конвертировать integer к перечисляемому типу. В последнем случае, проверь является ли `MyInteger` частью диапазона `(0 to Ord(High(TAnimalKind)))`.
 
 Перечисляемые и порядковые типы могут быть использованы как индексы массива:
 
@@ -289,8 +289,9 @@ include::code-samples/loops.lpr[]
 * Конструкция `for I := .. to .. do ...` похожа на C-подобный цикл `for`. Тем не менее, оно более ограничено, как вы не можете указать произвольное действие/тесты чтобы контролировать итерации цикла. В Паскале for используется строго для итерации через последовательные числа (или другие порядковые типы). Единственной уступкой является использование `downto` вместо `to`, чтобы производить счёт в обратном порядке.
 +
 С другой стороны, это существенно легче для понимания, и лучше для оптимизации в исполнении. Например, _значения верхней и нижней границы вычисляется один раз_, до начала исполнения цикла.
-
-*Циклfor `I in .. do ..` такой же как конструкция foreach в многих современных языках. Он хорошо понимает организацию всех встроенных типов:
++
+Следует также обратить внимание, что переменная, которая использовалась для цикла (в примере выше - `I`) становится неопределённой после окончания цикла кроме случая досрочного выхода из цикла с помощью команд `Break` или `Exit`.
+*Цикл for `I in .. do ..` такой же как конструкция foreach в многих современных языках. Он хорошо понимает организацию всех встроенных типов:
 ** Он может перебирать все значения массива (см. пример выше).
 ** Он может перебирать все возможные значения перечисляемого типа:
 +
@@ -725,29 +726,28 @@ include::code-samples/exception_finally.lpr[]
 `private`:: доступен только только в этом классе.
 `protected`:: доступен только в этом классе и его наследниках.
 
-The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See <<private and strict private>> section.
+Краткое описание `private` и `protected`, данное выше, не полностью верно. Код в _текущем модуле_ может преодолевать эти границы, и получить доступ к `private` и `protected`. Иногда это полезная особенность, позволяющая реализовывать плотно связанные классы. В остальных же случаях следует использовать `strict private` или `strict protected` для организации полной недоступности данных методов, полей или свойств. Детальнее этот вопрос рассматривается в разделе <<private and strict private>>.
 
-By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
+По умолчанию если видимость не указана, то видимость соответствует `public`. исключение составляют классы, которые объявляются при включённой директиве `{$M+}`, либо наследники классов, которые были скомпиллированы при `{$M+}`, что включает в себя всех потомков `TPersistent`, а также потомков `TComponent` (поскольку `TComponent` является потомком `TPersistent`). Для таких классов по умолчанию видимость принимается `published`, которая подобна `public`, однако позволяет работать с ними с помощью потоковой (stream) системы.
 
-Not every field and property type is allowed in the `published` section (not every type can be streamed, and only classes can be streamed from simple fields). Just use `public` if you don't care about streaming but want something available to all users.
+Однако, не каждой области или свойству типа позволено быть в секции published (не каждый тип может быть конвертирован в поток (stream), и лишь классы могут быть в потоке из простых полей). Если нет необходимости создавать потоки, но нужно просто что-то доступное для всех пользователей, то следует использовать `public`.
 
-### Default ancestor
+### Предок по умолчанию
 
-If you don't declare the ancestor type, every `class` inherits from `TObject`.
+Если не объявить класс-предок по умолчанию, каждый `class` наследует `TObject`.
 
-## Freeing classes
+## Освобождение памяти классов
 
-### Remember to free the class instances
+### Всегда необходимо освобождать экземпляры класса
+Чтобы избежать утечек памяти, все экзэмпляры класса должны быть освобождены вручную. Хорошей практикой является использование опции компиллятора FPC -gl -gh, чтобы обнаруживать утечки памяти (детальнее см. http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
 
-The class instances have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
+Следует обратить внимание, что это не касается поднятых исключений (raised exceptions). Не смотря на то, что при поднятии исключения действительно создаётся класс (и это вполне обычный класс, для этих целей также можно создавать свои классы), этот экземпляр класса освобождается автоматически.
 
-Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
+### Каким образом освобождать память
 
-### How to free
+Самым лучшим методом освобождения класса является операция `FreeAndNil(A)` вызванная для данного экземпляра класса. Она проверяет, не имеет ли `A` значение `nil`, и если нет -- вызывает его деструктор (destructor), и устанавливает значение `A` в `nil`. Таким образом повторный вызов такой процедуры не приведёт к ошибке.
 
-To free the class instance, it's best to call `FreeAndNil(A)` on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
-
-It is more-or-less a shortcut for
+Приблизительно это соответствует следующему:
 
 [source,pascal]
 ----
@@ -758,9 +758,9 @@ begin
 end;
 ----
 
-Actually, that's an oversimplification, as `FreeAndNil` does a useful trick and sets the variable `A` to `nil` *before* calling the destructor on a suitable reference. This helps to prevent a certain class of bugs -- the idea is that the "outside" code should never access a half-destructed instance of the class.
+Впрочем, это слишком упрощено, поскольку `FreeAndNil` совершает ещё одно полезное действие, сразу устанавливая `A` значение `nil` *до того* как будет вызван destructor данного класса. Это позволяет избежать целой группы багов благодаря тому, что "внешний" код не сможет получить доступ к не до конца уничтоженному экземпляру класса.
 
-Often you will also see people using the `A.Free` method, which is like doing
+Иногда можно заметить, что применяется метод `A.Free` который соответствует следующему коду:
 
 [source,pascal]
 ----
@@ -768,17 +768,17 @@ if A <> nil then
   A.Destroy;
 ----
 
-This frees the `A`, unless it's `nil`.
+Т.е. освобождает класс `A`, если он не равен `nil`.
 
-Note that in normal circumstances, you should never call a method on an instance which may be `nil`. So the call `A.Free` may look suspicious at the first sight, if `A` can be `nil`. However, the `Free` method is an exception to this rule. It does something dirty in the implementation -- namely, checks whether `Self <> nil`. This dirty trick works only in non-virtual methods (that don't call any virtual methods and don't access any fields).
+Стоит отметить, что в нормальных условиях никогда не стоит вызывать метод класса, который может оказаться `nil`. По этому `A.Free` может выглядеть подозрительно на первый взгляд, поскольку `A` может иметь значение `nil`. Однако, метод `Free` является исключением из этого правила. Это выглядит немного "грязновато" -- а именно, выполняется проверка `Self <> nil`. Такой фокус работает только для не-виртуальных методов (т.е. в случае, если не вызываются виртуальные методы и не требуется доступ к полям класса).
 
-I advice using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_.
+По этому лучше всегда использовать `FreeAndNil(A)`, без исключений, и никогда не использовать метод `Free` или деструктор `Destroy`. Такой концепции придерживается _Castle Game Engine_. Это позволяет быть уверенным, что все ссылки _либо равны `nil`, либо указывают на существующий рабочий экземпляр класса_.
 
-### Manual and automatic freeing
+### Ручное и автоматическое освобождение памяти
 
-In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in the constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
+Во многих ситуациях, необходимость освобождать instance не является чем-то сложным. Просто пишется destructor, как пара соответствующему constructor-у, и освобождает все объекты, память для которых была выделена в constructor-е (а, точнее, в продолжение всего времени существования класса). Следует следить за тем, чтобы освобождать каждый объект лишь *один раз*. Хорошей практикой будет устанавливать значение освобождённой ссылки в  `nil`, а наиболее удобно сделать это, вызвав команду `FreeAndNil(A)`.
 
-So, like this:
+Например:
 
 [source,pascal]
 ----
@@ -809,7 +809,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+Чтобы избежать необходимости каждый раз явно освобождать instance, можно использовать полезную особенность `TComponent`, которая называется _"ownership"_ (владение дочерним объектом). Любой объект, который _owned_ (т.е. которым данный класс владеет) будет автоматически освобождён _owner_-ом (классом, который им владеет). Механизм очень гибкий и никогда не освобождает объекты, которые уже освобождены (таким образом всё будет работать правильно и для несозданных объектов или освобождённых ранее). Таким образом предыдущий пример можно переписать так:
 
 [source,pascal]
 ----
@@ -832,9 +832,9 @@ begin
 end;
 ----
 
-Note that we need to override a virtual `TComponent` constructor here. So we cannot change the constructor parameters. (Actually, you can -- declare a new constructor with `reintroduce`. But be careful, as some functionality, e.g. streaming, will still use the virtual constructor, so make sure it works right in either case.)
+Следует обратить внимание, что также необходимо override virtual-ный constructor от `TComponent`. Это в свою очередь означает, что нельзя изменять параметры  constructor-а. Впрочем, это возможно -- объявив новый constructor с ключевым словом `reintroduce`. Однако здесь стоит быть осторожным, так как некоторый функционал, например, streaming, настроена на использование virtual constructor, по этому следует удостовериться, что в любом случае всё будет работать верно.
 
-Another mechanism for automatic freeing is the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we can also write:
+Ещё один механизм автоматического освобождения памяти -- функционал `OwnsObjects` (который по умолчанию `true`) классов-списков, таких, как `TFPGObjectList` или `TObjectList`. Т.е. можно написать:
 
 [source,pascal]
 ----
@@ -856,7 +856,7 @@ type
 constructor TPlayer.Create;
 begin
   inherited;
-  // Actually, the parameter true (OwnsObjects) is already the default
+  // Вообще говоря, параметр OwnsObjects и так true по умолчанию
   Guns := TGunList.Create(true);
   Gun1 := TGun.Create(Self);
   Guns.Add(Gun1);
@@ -866,79 +866,78 @@ end;
 
 destructor TPlayer.Destroy;
 begin
-  { We have to take care to free the list.
-    It will automatically free it's contents. }
+  { Здесь достаточно освободить сам список.
+    Он сам автоматически освободит всё содержимое. }
   FreeAndNil(Guns);
 
-  { No need to free the Gun1, Gun2 anymore. It's a nice habit to set to "nil"
-    their references now, as we know they are freed. In this simple class,
-    with so simple destructor, it's obvious that they cannot be accessed
-    anymore -- but doing this pays off in case of larger and more complicated
-    destructors.
+  { Таким образом нет нужды освобождать Gun1, Gun2 отдельно.
+    Правда, хорошей практикой будет теперь установить их ссылку в "nil".
+    поскольку мы знаем, что они освобождены. В этом простом классе с простым
+    destructor-ом, очевидно, что к ним не произойдёт доступа, однако
+    в случае сложных destructor-ов это может оказаться полезно.
 
-    Alternatively, we could avoid declaring Gun1 and Gun2,
-    and instead use Guns[0] and Guns[1] in own code.
-    Or create a method like Gun1 that returns Guns[0]. }
+    Альтернативно, можно избежать объявления Gun1 и Gun2 отдельно
+    и использовать напрямую Guns[0] и Guns[1] в коде.
+    Можно также создать метод Gun1, который ссылается на Guns[0]. }
   Gun1 := nil;
   Gun2 := nil;
   inherited;
 end;
 ----
 
-Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means, while it's also contained within a list. Use the `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
+Заметим, что механизм "ownership" классов-списков простой и в случае высвобождения содержащейся в списке instance сторонним кодом возникнет ошибка. Чтобы исключить что-либо из списка без освобождения используется метод `Extract`, однако это также означает, что в дальнейшем элемент необходимо будет освобождать вручную.
 
-*In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+В *Castle Game Engine*: Все descendants класса `TX3DNode` автоматически управляют памятью при добавлении как children другой `TX3DNode`. Корневая X3D node, `TX3DRootNode`, в свою очередь обычно владеется классом `TCastleSceneCore`. Другие объекты также имеют простой механизм владения -- обычно это обозначено parameter-ом или property под названием подобным `OwnsXxx`.
 
 ### Free notification
 
-If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
+Если создать дополнительную ссылку на instance получается, что две ссылки указывают на одну и ту же область памяти. Если освободить одну из них, вторая окажется _"болтающимся" указателем_. Нельзя пытаться получить доступ к области памяти, которая была освобождена. Это может привести к runtime ошибке (чаще всего SIGSEGV), либо может быть получено неопределённое значение (в случае, если эта область памяти уже повторно выделена для других элементов внутри текущей программы).
 
-Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references. Consider this code:
+В таком случае не достаточно просто вызывать `FreeAndNil` поскольку эта функция установит `nil` лишь для переданной её ссылки -- не существует автоматического метода. Рассмотрим следующий пример:
 
 [source,pascal]
 ----
 var
-  O1, O2: TObject;
+  Obj1, Obj2: TObject;
 begin
-  O1 := TObject.Create;
-  O2 := O1;
-  FreeAndNil(O1);
+  Obj1 := TObject.Create;
+  Obj2 := Obj1;
+  FreeAndNil(Obj1);
 
-  // what happens if we access O1 or O2 here?
+  // что произойдёт, если попытаться получить доступ к объекту Obj1 или Obj2?
 end;
 ----
 
-1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
+1. В конце данного блока ссылка `Obj1` является `nil`. Если необходимо получить доступ к ней в коде программы, для надёжности следует использовать проверку `if Obj1 <> nil then ...` чтобы случайно не вызвать метод уже освобождённой instance, например:
 +
 
 [source,pascal]
 ----
-if O1 <> nil then
-  Writeln(O1.ClassName);
+if Obj1 <> nil then
+  Writeln(Obj1.ClassName);
 ----
 +
-Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
+Попытка доступа к ссылке `nil` на instance приведёт к предсказуемой и понятной ошибке. Таким образом, даже если код не будет проверять `Obj1 <> nil`, и попытается вслепую получить доступ к `Obj1`, возникнет достаточно ясное сообщение об ошибке.
 +
-Some goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
+То же самое происходит и при попытке вызова virtual method, или не-virtual method который пытается получить доступ к полю освобождённой instance.
 
-2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
-
+2. Ситуация с `Obj2` -- куда сложнее. Её значение не `nil`, однако оно ошибочно. Попытка доступа к не-nil неверной ссылки на instance
 //(or call a method that accessed a field of such instance)
-results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
+приводит к непредсказуемому результату -- это может быть и access violation exception, а может и какое-то случайное значение.
 
-There are various solutions to it:
+К решению такой проблемы есть несколько путей:
 
-* One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
+* Первое решение - внимательно читать документацию к объекту. Не предполагать ничего о длительности жизни ссылки, если она создана чужим кодом. Если в классе `TCar` есть поле, указывающее на instance типа `TWheel`, то есть _правило_ что ссылка на _wheel_ верна, пока существует класс _car_, и сам _car_ освободит все его _wheel_ используя свой destructor. Но это правило, в более сложных случаях в документации следует сделать упоминание того, как и что происходит со ссылками.
 
-* In the above example, right after freeing the `O1` instance, you can simply set the `O2` variable explicitly to `nil`. That's trivial in this simple case.
+* В примере выше, сразу после освобождения `Obj1` instance, можно просто вручную установить `Obj2` значение `nil`. В данном конкретном примере это просто и тривиально.
 
-* The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
+* Однако, наиболее перспективным решением использовать специальный механизм класса `TComponent` под названием "free notification" (извещение об освобождении). Этим образом один компонент может получить notification в случае освобождения одной из компонент, и далее установить ссылку на неё в `nil`.
 +
-Thus you get something like a _weak reference_. It can cope with various usage scenarios, for example you can let the code from outside of the class to set your reference, and the outside code can also free the instance at anytime.
+Таким образом можно получить _слабую ссылку_. Использовать эту механику можно в различных задачах, например, позволить коду извне изменять ссылки, в том числе, возможность освобождать память в любой момент.
 +
-This requires both classes to descend from `TComponent`. Using it in general boils down to calling `FreeNotification` , `RemoveFreeNotification`, and overriding `Notification`.
+Для этого оба класса должны наследовать `TComponent`. Обычно это сводится к использованию `FreeNotification` , `RemoveFreeNotification`, и override `Notification`.
 +
-Here's a complete example, showing how to use this mechanism, together with constructor / destructor and a setter property. Sometimes it can be done simpler, but this is the full-blown version that is always correct:)
+Следующий пример демонстрирует как использовать этот подход вместе с constructor / destructor и setter property. Иногда можно всё сделать намного проще, но здесь демонстрируется полномасштабная версия, которая будет верной в любом случае.
 +
 [source,pascal]
 ----
@@ -964,7 +963,7 @@ procedure TContainer.Notification(AComponent: TComponent; Operation: TOperation)
 begin
   inherited;
   if (Operation = opRemove) and (AComponent = FSomeSpecialControl) then
-    { set to nil by SetSomeSpecialControl to clean nicely }
+    { установить значение nil для SetSomeSpecialControl чтобы всё аккуратно подчистить }
     SomeSpecialControl := nil;
 end;
 
@@ -982,7 +981,7 @@ end;
 
 destructor TContainer.Destroy;
 begin
-  { set to nil by SetSomeSpecialControl, to detach free notification }
+  { Установить значение nil для SetSomeSpecialControl, чтобы запустить notification про освобождение памяти }
   SomeSpecialControl := nil;
   inherited;
 end;
@@ -990,7 +989,7 @@ end;
 
 ## Run-time library
 
-### Input/output using streams
+### Ввод/вывод с помощью потоков
 
 Modern programs should use `TStream` class and it's many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
 
