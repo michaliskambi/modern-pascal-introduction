@@ -1640,26 +1640,25 @@ So below works without any memory leaks:
 include::code-samples/exception_in_constructor_test.lpr[]
 ----
 
-## Interfaces
+## Интерфейсы
 
-### Good (CORBA) interfaces
+### Хорошие (CORBA) интерфейсы
 
-_An interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have one ancestor class.
+_Интерфейс_ объявляет API, так же как и класс, но он не определяет реализацию(implementation). Класс может выполнять множество интерфейсов, но он может иметь только один класс-предок.
 
-You can cast a class to any interface it supports, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. Useful when a simple class inheritance is not enough.
+Вы можете привести класс к любому интерфейсу, его поддерживающий,и тогда _вызывать методы через этот интерфейс_. Это позволяет обрабатывать классы единообразно, которые не происходят друг от друга, но которые имеют общие функциональные возможности. Полезно когда не хватает простого наследования классов.
 
-The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) or C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
+ _Интерфейсы CORBA_ в Object Pascal работают в значительной степени так, как и интерфейсы в Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) или в C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
 
-//This is much like Java, where interfaces are used whenever you think of multiple inheritance.
-
+//Это очень похоже на Java, когда интерфейсы используются, в тот момент, когда бы ты думал о множественном наследовании.
 [source,pascal]
 ----
 include::code-samples/interfaces_corba_test.lpr[]
 ----
 
-### CORBA and COM types of interfaces
+### CORBA и COM интерфейсы
 
-Why are the interfaces (presented above) called "CORBA"?::
+Почему интерфейсы (показанные выше) названны "CORBA"?::
 
   The name *CORBA* is unfortunate. A better name would be *bare interfaces*. These interfaces are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API.
 +
