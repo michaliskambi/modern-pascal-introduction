@@ -365,25 +365,25 @@ Writeln('Вторая строка.');
 
 ### Преобразование данных в строчный тип
 
-To convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
+Для преобразования произвольного количества аргументов в строку (вместо того, чтобы напрямую выводить их) есть несколько возможных подходов.
 
-* You can convert particular types to strings using specialized functions like `IntToStr` and `FloatToStr`. Furthermore, you can concatenate strings in Pascal simply by adding them. So you can create a string like this: `'My int number is ' + IntToStr(MyInt) + ', and the value of Pi is ' + FloatToStr(Pi)`.
-** _Advantage_: Absolutely flexible. There are many `XxxToStr` overloaded versions and friends (like `FormatFloat`), covering many types.
+* Некоторые конкретные типы можно преобразовать в строку используя специальные функции, такие как `IntToStr` и `FloatToStr`. В дальнейшем совмещать (concatenate) строки в Паскале возможно просто используя знак сложения. Таким образом можно создавать составные строки: `'Моё целое число ' + IntToStr(MyInt) + ', а значение числа пи составляет ' + FloatToStr(Pi)`.
+** _Преимущество_: Это очень удобно. Существует множество функций типа `XxxToStr` и им подобных (например, `FormatFloat`), для множества различных типов данных.
 // They give you a lot of flexibility in formatting.
-** _Another advantage_: Consistent with the reverse functions. To convert a string (for example, user input) back to an integer or float, you use `StrToInt`, `StrToFloat` and friends (like `StrToIntDef`).
-** _Disadvantage_: A long concatenation of many `XxxToStr` calls and strings doesn't look nice.
+** _Второе преимущество_: Имеют пару обратных функций. Чтобы преобразовать строку (например, введённую пользователем) обратно в целое или дробное число можно использовать `StrToInt`, `StrToFloat` и подобные (например, `StrToIntDef`).
+** _Недостаток_: Длинная сумма (concatenation) множества `XxxToStr` и строк выглядит некрасиво.
 //For classes, they can override the `TObject.ToString` method.
 //It doesn't have that clean _separation of pattern and arguments_ property of `Format` call.
 
-* The `Format` function, used like `Format('%d %f %s', [MyInt, MyFloat, MyString])`. This is like `sprintf` function in the C-like languages. It inserts the arguments into the placeholders in the pattern. The placeholders may use special syntax to influence formatting, e.g. `%.4f` results in a floating-point format with 4 digits after the decimal point.
-** _Advantage_: The separation of _pattern_ string from _arguments_ looks clean. If you need to change the pattern string without touching the arguments (e.g. when translating), you can do it easily.
-** _Another advantage_: No compiler magic. You can use the same syntax to pass any number of arguments of an arbitrary type in your own routines (declare parameter as an `array of const`). You can then pass these arguments downward to `Format`, or deconstruct the list of parameters and do anything you like with them.
-** _Disadvantage_: Compiler does not check whether the pattern matches the arguments. Using a wrong placeholder type will result in an exception at runtime (`EConvertError` exception, not anything nasty like a segmentation fault).
+* Функция `Format` используется в виде `Format('%d %f %s', [MyInt, MyFloat, MyString])`. Она подобна функции `sprintf` в си-подобных языках. Она вставляет аргументы в соответствующие placeholder-ы согласно заданному образцу. Эти placeholder-ы могут использовать специальный синтаксис, влияющий на форматирование, например `%.4f` это дробный формат с 4 знаками после запятой.
+** _Преимущество_: Отделение _строки_ от _аргументов_ выглядит чисто. Легко изменить текст строки, не изменяя аргументов (например, если необходимо выполнить перевод).
+** _Второе преимущество_: No compiler magic. You can use the same syntax to pass any number of arguments of an arbitrary type in your own routines (определите параметр как `array of const`). Затем Вы можете передать эти аргуметы функции `Format`, или деконструировать список параметров и делать с ним всё, что угодно.
+** _Недостаток_: Копиллятор не проверяет, соответствует ли строка-образец аргументам. Используя неверный тип placeholder-а приведёт к ошибке `EConvertError` exception, впрочем гораздо более понятной, чем segmentation fault.
 //Note that, unlike the C `sprintf`, the correctness at runtime can be completely verified (there are no dirty pointer tricks inside
 
-* `WriteStr(TargetString, ...)` routine behaves much like `Write(...)`, except that the result is saved to the `TargetString`.
-** _Advantage_: It supports all the features of `Write`, including the special syntax for formatting like `Pi:1:4`.
-** _Disadvantage_: The special syntax for formatting is a "compiler magic", implemented specifically for routines like this. This is sometimes troublesome, e.g. you cannot create your own routine `MyStringFormatter(...)` that would also allow the special syntax like `Pi:1:4`. For this reason (and also because it wasn't implemented for a long time in major Pascal compilers), this construction is not very popular.
+* Функция `WriteStr(TargetString, ...)` во многом подобна базовой функции `Write(...)`, с одним отличием - результат сохраняется в `TargetString`.
+** _Преимущество_: Имеет все возможности функции `Write`, в том числе и специальный синтаксис для форматирования, как например `Pi:1:4`.
+** _Недостаток_: Такой специальный синтаксис для форматирования является "compiler magic", написанный специально для конкретной процедуры. Часто это приводит к проблемам, например, невозможно создать свою функцию `MyStringFormatter(...)` которая бы принимала такой синтасис, как `Pi:1:4`. Именно по этому, а также из-за того, что эта функция долгое время не была доступна в основных компилляторах, такая конструкция не очень популярна.
 
 ## Модули (Units)
 
@@ -417,7 +417,7 @@ include::code-samples/anotherunit.pas[]
 Причина такого ограничения заключается в том, чтобы "понять"
 //(e.g. determine the memory layout of all the structures)
 секцию interface модуля, компилятор анализирует и "понимает" все модули, перечисленные в uses в секции interface.
-Pascal language follows this rule strictly, and it allows a fast compilation and fully automatic detection on the compiler side _what units need to be recompiled_. There is no need to use complicated ``Makefile`` files for a simple task of compilation in Pascal, and there is no need to _recompile everything_ just to make sure that all dependencies are updated correctly.
+В Паскале это правило придерживается строго, что позволяет достичь высокой скорости компилляции и полностью автоматическое определение компиллятором _что же именно необходимо перекомпилировать_. В Паскале нет необходимости создания сложных ``Makefile`` для выполнения простой задачи компилляции, а также нет нужды _перекомпилировать всё_ лишь для того, чтобы быть уверенным, что все зависимости правильно обновились.
 //, but also makes circular dependencies _between units interfaces_ impossible.
 //(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
