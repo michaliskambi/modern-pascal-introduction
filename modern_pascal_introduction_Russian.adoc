@@ -284,9 +284,9 @@ include::code-samples/loops.lpr[]
 
 Примечания:
 
-* Может казаться, что различие между `while` и `repeat` циклами лишь "косметические". Может показаться, что просто условие "с точностью до наоборот", в случае `while .. do` выполнение _продолжается_, пока условие _истино_, а в `repeat .. until` - выполнение _прекращается_, когда условие _выполняется_). В действительности есть другое важное отличие: в случае `repeat`, _условие не проверяется в начале_. Поэтому цикл `repeat` всегда выполняется как минимум один раз.
+* Может казаться, что различие между `while` и `repeat` циклами лишь "косметические" и лишь условие записано условие "с точностью до наоборот", в случае `while .. do` выполнение _продолжается_, пока условие _истино_, а в `repeat .. until` - выполнение _прекращается_, когда условие _выполняется_. Однако есть ещё одно важное отличие: в случае `repeat`, _условие проверяется не в начале, а в конце_. Поэтому цикл `repeat` всегда выполняется как минимум один раз.
 
-* Конструкция `for I := .. to .. do ...` похожа на C-подобный цикл `for`. Тем не менее, оно более ограничено, как вы не можете указать произвольное действие/тесты чтобы контролировать итерации цикла. В Паскале for используется строго для итерации через последовательные числа (или другие порядковые типы). Единственной уступкой является использование `downto` вместо `to`, чтобы производить счёт в обратном порядке.
+* Конструкция `for I := .. to .. do ...` похожа на C-подобный цикл `for`. Тем не менее, она более ограничено, как вы не можете указать произвольное действие/тесты чтобы контролировать итерации цикла. В Паскале for используется строго для итерации через последовательные числа (или другие порядковые типы). Единственной уступкой является использование `downto` вместо `to`, чтобы производить счёт в обратном порядке.
 +
 С другой стороны, это существенно легче для понимания, и лучше для оптимизации в исполнении. Например, _значения верхней и нижней границы вычисляется один раз_, до начала исполнения цикла.
 +
@@ -677,7 +677,7 @@ end;
 //   even if setting RenderingComponent.Color many times to the same value
 //   would be slow. }
 
-Note that instead of specifying a method, you can also specify a field (typically a private field) to directly get or set. In the example above, the `Color` property uses a _setter_ method `SetColor`. But for getting the value, the `Color` property refers directly to the private field `FColor`. Directly referring to a field is faster than implementing trivial getter or setter methods (faster for you, and faster at execution).
+Стоит обратить внимание, что вместо того, чтобы указать method, Вы можете также указать поле (field) (которое обычно является private) чтобы просто напрямую получать или устанавливать значение. В примере выше, свойство `Color` использует  _setter_-метод `SetColor`. Однако, для получения значения свойство `Color` напрямую ссылается на private field `FColor`. Прямая ссылка на конкретное field быстрее, чем написание дополнительных методов getter или setter - как с точки зрения разработки, так и с точки зрения исполнения программы.
 
 При объявлении свойства указывается:
 
@@ -991,14 +991,14 @@ end;
 
 ### Ввод/вывод с помощью потоков
 
-Modern programs should use `TStream` class and it's many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
+Для ввода / выода в современных программах на паскалях используется класс `TStream`. У него также есть множество полезных производных классов, таких как `TFileStream`, `TMemoryStream`, `TStringStream`.
 
 [source,pascal]
 ----
 include::code-samples/file_stream.lpr[]
 ----
 
-*In the Castle Game Engine*: You should use the `Download` method to create a stream that operates of resources (which includes files, data downloaded from URLs and Android assets). Moreover, to open the resource inside your game data (typically in `data` subdirectory) use the `ApplicationData` function.
+В *Castle Game Engine* следует использовать метод `Download` для создания потока, который оперирует ресурсами (это могут быть файлы, данные, скачанные с URL или Android assets). Более того, для открытия ресурсов в игровых данных (обычно это под-папка `data`) используйте функцию `ApplicationData`.
 
 [source,pascal]
 ----
@@ -1016,7 +1016,7 @@ S := Download('file:///home/michalis/my_binary_file.data');
 S := Download(ApplicationData('gui/my_image.png'));
 ----
 
-To read text files, I advice using `TTextReader` class from `CastleClassUtils`. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
+Чтобы прочитать обычный текстовый файл лучше использовать класс `TTextReader` из `CastleClassUtils`. Он предоставляет построчный API, как надстройку над `TStream`. URL можно задать через конструктор класса `TTextReader`, либо можно передать ему готовый `TStream` вручную.
 
 [source,pascal]
 ----
@@ -1025,13 +1025,13 @@ while not Text.Eof do
   WritelnLog('NextLine', Text.ReadLine);
 ----
 
-### Lists
+### Списки
 
-For dynamic-length lists of stuff, I advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
+Для создания различных списков переменной длинны, лично я советую использовать generic классы из unit-а `FGL`. Можно использовать `TFPGList` для простых типов данных (включая record-ы или устаревшие object-ы), и `TFPGObjectList` для списка экземпляров классов. В *Castle Game Engine:* можно также использовать  `CastleGenericLists` с `TGenericStructList` для создания списков record-ов или устаревших object-ов. Это позволяет обойти проблему невозможности override их операторов в старых версиях FPC.
 
-Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+Применение таких списков является хорошей идеей по нескольки причинам: они типо-безопасны и их API имеет много полезных функций, таких как поиск, сортировка, итерация и т.п. Вообще говоря, не стоит использовать _динамические массивы_ (`array of X`, `SetLength(X, ...)`) поскольку их API очень неудобный - можно применить лишь `SetLength`. Также не стоит использовать `TList` или `TObjectList` as it will require casting your references from `TObject` to your type.
 
-### Cloning: TPersistent.Assign
+### Клонирование объектов: TPersistent.Assign
 
 To allow copying a class instance, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. There is no magic copying here, you need to implement the `Assign` to actually copy the fields you want.
 
@@ -1048,9 +1048,9 @@ Be careful when calling `inherited` in the `Assign` implementation. You should _
 
 NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
 
-## Various language features
+## Различные полезные возможности языка
 
-### Local (nested) routines
+### Местные (вложенные) процедуры - Local (nested) routines
 
 Inside a larger _routine_ (function, procedure, method) you can define a helper routine.
 
