@@ -716,7 +716,7 @@ include::code-samples/exception_finally.lpr[]
 
 Обратите внимание, что раздел `finally` будет выполнен даже в случае, если выполнение будет прекращено командой `Exit` (из функции, процедуры или метода), операторами `Break` или `Continue` (внутри тела цикла).
 
-### Разделы видимости
+### Уровни видимости (Visibility specifiers)
 
 Как и в большинстве объектно-ориентированных языках, в паскале имеются визуальные спецификаторы для ограничения "видимости" полей / методов / свойств.
 
@@ -1033,33 +1033,33 @@ while not Text.Eof do
 
 ### Клонирование объектов: TPersistent.Assign
 
-To allow copying a class instance, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. There is no magic copying here, you need to implement the `Assign` to actually copy the fields you want.
+Для того, чтобы получить возможность копирования класса, стандартный подход является наследование этим классом `TPersistent` и затем override его метод `Assign`. Здесь нет ничего сложного, просто нужно в методе `Assign` прописать копирование полей, которые Вам необходимы.
 
-You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
+Однако, здесь понадобится достаточно аккуратный подход в имплементации метода `Assign`, поскольку копирование может происходить не только из данного класса, а и из производных от него.
 
 [source,pascal]
 ----
 include::code-samples/persistent.lpr[]
 ----
 
-Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the target class.
+Иногда более удобно написать альтернативный override метода `AssignTo` в копируемом классе, а не делать overriding метода `Assign` в классе, в который выполняется копирование.
 
-Be careful when calling `inherited` in the `Assign` implementation. You should _call inherited `TPersistent.Assign` only if you cannot handle the assignment in your code_ (this allows the `AssignTo` method to work, or otherwise raise an exception when assignment cannot be done). On the other hand, if your class descends from another class that already implements the `Assign` method, then _always call the inherited ``TMyClass.Assign``_. See the example above.
+Следует быть осторожным с `inherited` при написании `Assign`. _inherited `TPersistent.Assign` должен вызываться иселючительно в случаях, если Вы не можете самостоятельно выполнить копирование в своём коде (это позволит использовать метод `AssignTo`, т.к. в противоположном случае возникнет  exception, когда копирование не может быть выполнено). С другой стороны, если данный класс является производным от класса, в котором уже есть метод `Assign`, то в данном случае _обязательно необходимо вызывать inherited ``TMyClass.Assign``_. См. пример выше.
 
-NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
+Примечание: Обратите внимание, что наследуя класс `TPersistent` по умолчанию видимость полей становится `published`, чтобы дать возможность переводить в поток (streaming) производные от `TPersistent` классы. Однако, не все типы полей (field) и свойств (property) разрешены в секции `published`. Если возникают связанные с этим ошибки и нет необходимости передавать эти данные в поток, просто вручную измените уровень видимости на `public`. Детальнее см. раздел <<Уровни видимости (Visibility specifiers)>>.
 
 ## Различные полезные возможности языка
 
 ### Местные (вложенные) процедуры - Local (nested) routines
 
-Inside a larger _routine_ (function, procedure, method) you can define a helper routine.
+Внутри большой _процедуры_ (это может быть function, procedure, method, и т.п.) можно определить вложенную под-процедуру.
 
 //It has all the flexibility of a normal routine, it's just not
 //This is quite powerful feature that allows you to _easily_ split a long routine into many smaller ones.
 
-The local routine can freely access (read and write) all the parameters of a parent, _and all the local variables of the parent that were declared above it_. This is very powerful. It often allows to split long routines into a couple of small ones without much effort (as you don't have to pass around all the necessary information in the parameters). Be careful to not overuse this feature -- if many nested functions use (and even change) the same variable of the parent, the code may get hard to follow.
+Таким образом такая локальная под-процедура имеет полный доступ (чтение и запись) всех параметров процедуры, в которой она находится, _если они были объявлены раньше, чем эта процедура_. Это очень удобно, часто позволяя разделять длинные процедуры в несколько небольших частей без особых дополнительных усилий (поскольку нет необходимости передавать множество информации в виде параметров). Однако, не следует злоупотреблять этой возможностью. В случае, если местная (вложенная) использует и, тем более, изменяет много перемен процедуры, в которой она находится, тако код становится сложным для понимания.
 
-These two examples are equivalent:
+Данные два примера абсолютно эквивалентны:
 
 [source,pascal]
 ----
@@ -1079,7 +1079,7 @@ begin
 end;
 ----
 
-Another version, where we let the local routine `Square` to access `I` directly:
+И второй вариант, в котором `Square` получает прямой доступ к переменной `I`:
 
 [source,pascal]
 ----
@@ -1099,11 +1099,11 @@ begin
 end;
 ----
 
-Local routines can go to any depth -- which means that you can define a local routine within another local routine. So you can go wild (but please don't go _too wild_, or the code will get unreadable:).
+Местные процедуры могут быть много раз вложенными -- что означает, что внутри локальной процедуры можно определить местную локальную под-процедуру и т.д. Однако, не стоит этим злоупотреблять, поскольку в результате код может стать совершенно нечитабельным.
 
 [[Callbacks]]
 
-### Callbacks (aka events, aka pointers to functions, aka procedural variables)
+### Callbacks -- они же события, они же указатели на функции, они же процедурные переменные (procedural variables)
 
 They allow to call a function indirectly, through to a variable. The variable can be assigned at runtime to point to any function _with matching parameter types and return types_.
 
@@ -1147,7 +1147,7 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 * A (possibly) local routine: declare with `is nested` at the end, and make sure to use `{$modeswitch nestedprocvars}` directive for the code. These go hand-in-hand with <<Local (nested) routines>>.
 
-### Generics
+### Дженерики (Generics)
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
