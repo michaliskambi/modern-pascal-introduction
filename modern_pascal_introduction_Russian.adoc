@@ -1172,15 +1172,15 @@ include::code-samples/generic_functions.lpr[]
 
 По умолчанию overloading использует стиль FPC, что означает, что абсолютно все имена в пространстве имён (namespace) (в class-е или unit-е) равны, и скрывает все остальные методы в пространстве имён с более низким приоритетом. Например, если создать класс с методом `Foo(Integer)` и `Foo(string)`, и при этом класс наследует класс в котором уже есть `Foo(Float)`, то метод `Foo(Float)` невозможно будет вызвать напрямую, только с помощью typecast данного class на родительский класс. Чтобы избежать такого поведения, при объявлении процедур и функций следует использовать ключевое слово `overload`, где это необходимо.
 
-### Preprocessor
+### Предобработка кода
 
-You can use simple preprocessor directives for
+Можно использовать простые директивы предобработки кода для того, чтобы:
 
-* conditional compilation (code depending on platform, or some custom switches),
-* to include one file in another,
-* you can also use parameter-less macros.
+* компилляция на основании различных условий (например, если код зависит от платформы, или других заданных вручную параметров),
+* чтобы включить один файл внутри другого,
+* для вызова беспараметрических макросов.
 
-Note that macros with parameters are not allowed. In general, you should avoid using the preprocessor stuff... unless it's really justified. The preprocessing happens before parsing, which means that you can "break" the normal syntax of the Pascal language. This is a powerful, but also somewhat dirty, feature.
+Обратите внимание, макросы с параметрами запрещены. В общем, следует избегать предобработки кода кроме случаев, когда она действительно нужна. Предобработка происходит перед парсингом, что значит, что она вполне может "ломать" обычный синтаксис языка Паскаль. Это мощно, но немного "грязно".
 
 [source,pascal]
 ----
@@ -1189,29 +1189,30 @@ unit PreprocessorStuff;
 interface
 
 {$ifdef FPC}
-{ This is only defined when compiled by FPC, not other compilers (like Delphi). }
+{ всё что идёт внутри определено только для FPC, а не других компилляторов (например, Delphi). }
 procedure Foo;
 {$endif}
 
-{ Define a NewLine constant. Here you can see how the normal syntax of Pascal
-  is "broken" by preprocessor directives. When you compile on Unix
-  (includes Linux, Android, Mac OS X), the compiler sees this:
+{ Определить константу NewLine. Здесь представлен пример,
+  как "нормальный" синтаксис Паскаля "поломан" директивами предобработки. 
+  Если компилировать на Unix-системах (включая  Linux, Android, Mac OS X),
+  компиллятор увидит следующее:
 
     const NewLine = #10;
 
-  When you compile on Windows, the compiler sees this:
+  Если компилировать на Windows, компиллятор увидит так:
 
     const NewLine = #13#10;
 
-  On other operating systems, the code will fail to compile,
-  because a compiler sees this:
+  Однако, на других операционных системах, код не скомпилируется,
+  поскольку компиллятор увидит следующее:
 
     const NewLine = ;
 
-  It's a *good* thing that the compilation fails in this case -- if you
-  will have to port the program to an OS that is not Unix, not Windows,
-  you will be reminded by a compiler to choose the newline convention
-  on that system. }
+  Вообще, это *хорошо* что возникает ошибка в данном случае -- если возникнет
+  необходимость портировать программу на другую операционную систему,
+  которая не является ни Unix, ни Windows, то компиллятор "напомнит", что
+  необходимо выбрать правильное значение NewLine для такой системы. }
 
 const
   NewLine =
@@ -1236,15 +1237,15 @@ procedure RealProcedureName; CallingConventionMacro; external 'some_external_lib
 implementation
 
 {$include some_file.inc}
-// $I is just a shortcut for $include
+// $I это удобное сокращение от $include, они идентичны
 {$I some_other_file.inc}
 
 end.
 ----
 
-Include files have commonly the `.inc` extension, and are used for two purposes:
+Включаемые файлы обычно имеют расширение `.inc`, и используются для следующих двух целей:
 
-* The include file may only contain other compiler directives, that "configure" your source code. For example you could create a file `myconfig.inc` with these contents:
+* Включаемый файл может содержать лишь другие директивы компиллятора, которые "конфигурируют" исходный код программы. Например, можно создать файл `myconfig.inc` со следующим содержанием:
 +
 [source,pascal]
 ----
@@ -1257,12 +1258,12 @@ Include files have commonly the `.inc` extension, and are used for two purposes:
 {$endif}
 ----
 +
-Now you can include this file using `{$I myconfig.inc}` in all your sources.
+Теперь можно включить этот файл `{$I myconfig.inc}` в каждом unit-е исходного кода.
 
-* The other common use is to split a large unit into many files, while still keeping it a single unit as far as the language rules are concerned. Do not overuse this technique -- your first instinct should be to split a single unit into multiple units, not to split a single unit into multiple include files. Never the less, this is a useful technique.
-  . It allows to avoid "exploding" the number of units, while still keeping your source code files short. For example, it may be better to have a single unit with _"commonly used UI controls"_ than to create _one unit for each UI control class_, as the latter approach would make the typical "uses" clause long (since a typical UI code will depend on a couple of UI classes). But placing all these UI classes in a single `myunit.pas` file would make it a long file, unhandy to navigate, so splitting it into multiple include files may make sense.
+* Второй важный пример использования - разделение unit-а на несколько файлов, и при этом всё же держать его одним модулем (с учётом всех особенностей Паскаля). Не стоит злоупотреблять таким подходом. В первую очередь стоит думать о том, как разделить программу на несколько unit-ов, а не разделять её на множество include файлов. Однако, в общем, это довольно полезная и удобная техника.
+  . Такой подход позволяет избежать огромного количества unit-ов, и при этом исходные файлы будут не слишком длинными. Например, куда удобнее иметь один файл с _"часто используемыми GUI элементами"_, чем создавать _отдельные unit-ы для каждого GUI элемента"_, поскольку второй вариант сделает обычную "uses" неоправданно длинной (поскольку в GUI будут использоваться множество GUI элементов). Однако, размещение всех этих классов в одном файле `myunit.pas` приведёт к его большому размеру, что в свою очередь затруднит навигацию по файлу. Таким образом, разбить этот файл на несколько include файлов будет разумным.
 //For example, *Castle Game Engine* has a unit `CastleControls` with a couple of user-interface controls, like `TCastleButton`, `TCastleLabel`, `TCastleImageControl` and more. We could split it into many units, even to _one unit per class_, as the classes are not really tightly connected. But that would often force you to have a long `uses` clause, since a lot of user-interface code will want to use a couple of control classes. So we made a practical decision to just put all _often used controls_ in a single unit.
-  . It allows to have a cross-platform unit interface with platform-dependent implementation easily. Basically you can do
+  . Такой подход также позволяет легко создавать кросс-платформенный unit с уникальными частями для каждой платформы. Например, это может выглядеть так:
 +
 [source,pascal]
 ----
@@ -1270,7 +1271,7 @@ Now you can include this file using `{$I myconfig.inc}` in all your sources.
 {$ifdef MSWINDOWS} {$I my_windows_implementation.inc} {$endif}
 ----
 +
-Sometimes this is better than writing a long code with many `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` intermixed with normal code (variable declarations, routine implementation). The code is more readable this way. You can even use this technique more aggressively, by using the `-Fi` command-line option of FPC to include some subdirectories only for specific platforms. Then you can have many version of include file `{$I my platform_specific_implementation.inc}` and you simply include them, letting the compiler find the correct version.
+Иногда это более удобно, чем написать длинный код со множеством `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` в перемешку с нормальным кодом (определение переменных, описание процедур). Повышается и читабельность кода. Эту технику можно использовать более агрессивно, используя опцию коммандной строки `-Fi` при вызове FPC, чтобы включить целые папки только для конкретных платформ. Таким образом можно иметь множество версий include файлов типа `{$I my platform_specific_implementation.inc}`. При этом компилятор автоматически найдёт правильную версию.
 
 ### Records
 
@@ -1603,7 +1604,7 @@ begin
 end;
 ----
 
-ЗАМЕТКА: Более общяя концепция является _"type helper"_, используя которую становится возможным добавлять методы даже к самым примитивным типам, например integer. Можно даже создать _"record helpers_" чтобы... ну, Вы поняли. Детальнее см. здесь: http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
+ПРИМЕЧАНИЕ: Более общяя концепция является _"type helper"_, используя которую становится возможным добавлять методы даже к самым примитивным типам, например integer. Можно даже создать _"record helpers_" чтобы... ну, Вы поняли. Детальнее см. здесь: http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
 //And of course to records and old-style objects (both of them can also have regular methods, they are much like classes in this regard).
 
 ### Virtual constructors, destructors
