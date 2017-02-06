@@ -1105,25 +1105,25 @@ end;
 
 ### Callbacks -- они же события, они же указатели на функции, они же процедурные переменные (procedural variables)
 
-They allow to call a function indirectly, through to a variable. The variable can be assigned at runtime to point to any function _with matching parameter types and return types_.
+Они позволяют вызвать функцию не прямым указанием её названия, а через переменную. Эта переменная может быть назначена во время исполнения кода для указания на любую функцию _с указанными типами параметров и возвращаемых величин_.
 
-The callback can be:
+Callback-и могут быть:
 
-* Normal, which means it can point to any normal routine (not a method, not local).
+* Обычными, что означает, что они могут указывать на любую нормальную функцию (не метод и не локальная функция)
 +
 [source,pascal]
 ----
 include::code-samples/callbacks.lpr[]
 ----
 
-* A method: declare with `of object` at the end.
+* Указывающими на метод: для этого в конце добавляется `of object`.
 +
 [source,pascal]
 ----
 include::code-samples/callbacks_of_object.lpr[]
 ----
 +
-Note that you _cannot_ pass global procedures / functions as methods. They are incompatible. If you have to provide an `of object` callback, but don't want to create a dummy class instance, you can pass <<Class methods>> as methods.
+Следует заметить, что _невозможно_ передать глобальные процедуры или функции как методы. Они несовместимы. Если Вам необходимо использовать callback `of object`, но не хотите создавать экземпляр-пустышку для класса, Вы можете передавать <<Class methods>> в качестве метода.
 +
 [source,pascal]
 ----
@@ -1143,9 +1143,9 @@ begin
 end;
 ----
 +
-Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMyClass.Add`.
+К сожалению, придётся писать громоздкую конструкцию `@TMyClass(nil).Add`, а не просто `@TMyClass.Add`.
 
-* A (possibly) local routine: declare with `is nested` at the end, and make sure to use `{$modeswitch nestedprocvars}` directive for the code. These go hand-in-hand with <<Local (nested) routines>>.
+* Может указывать на локальную процедуру: для этого её нужно объявить с `is nested` в конце, а также установить директиву `{$modeswitch nestedprocvars}` для данного участка кода. Детальнее см. <<Местные (вложенные) процедуры - Local (nested) routines>>.
 
 ### Дженерики (Generics)
 
