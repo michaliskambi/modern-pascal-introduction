@@ -1149,9 +1149,9 @@ end;
 
 ### Дженерики (Generics)
 
-A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
+Это - очень мощная функция современных языков. Определение чего-либо (обычно - класса) может быть параметризировано с другим типом. Наиболее естественным примером является необходимость создать контейнер (список, словарь, дерево, граф...): Можно определить _a list of type T_, а потом _specialize_ (конкретизировать) его чтобы сразу получить _a list of integers_, _a list of strings_, _a list of TMyRecord_, и т.д.
 
-The generics in Pascal are realized much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+Generic-и в Паскале реализованы весьма подобно generic-ам в C++. Это означает, что они "конкретизируются" когда происходит specialize, что _немного_ похоже на поведение макросов (однако, когда тип "конкретизирован", используются только эти определения, и таким образом невозможно "добавить" какое-либо неожиданное поведение в дженерик без его "конкретизирования"). Преимуществом их является высокая скорость выполнения (оптимизированная для каждого конкретного типа) и поддержка типов любого размера. Можно использовать примитивные типы (integer, float) а также record, class и т.п. при specialize данного generic-а.
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
@@ -1159,18 +1159,18 @@ The generics in Pascal are realized much like generics in C++. Which means that 
 include::code-samples/generics.lpr[]
 ----
 
-Generics are not limited to classes, you can have generic functions and procedures as well:
+Возможности generic-ов не ограничиваются классами, можно создать generic функции и процедуры:
 
 [source,pascal]
 ----
 include::code-samples/generic_functions.lpr[]
 ----
 
-### Overloading
+### Оверлоадинг (Overloading)
 
-Methods (and global functions and procedures) with the same name are allowed, as long as they have different parameters. At compile time, the compiler detects which one you want to use, knowing the parameters you pass.
+Методы (и глобальные функции и процедуры) с одинаковым именем могут существовать при условии, что они принимают разные параметры. На основании передаваемых процедуре параметров компиллятор определяет, какую именно из этих функций использовать.
 
-By default, the overloading uses the FPC approach, which means that all the methods in given namespace (a class or a unit) are equal, and hide the other methods in namespaces with less priority. For example, if you define a class with methods `Foo(Integer)` and `Foo(string)`, and it descends from a class with method `Foo(Float)`, then the users of your new class will not be able to access the method `Foo(Float)` easily (they still can --- if they typecast the class to it's ancestor type). To overcome this, use the `overload` keyword.
+По умолчанию overloading использует стиль FPC, что означает, что абсолютно все имена в пространстве имён (namespace) (в class-е или unit-е) равны, и скрывает все остальные методы в пространстве имён с более низким приоритетом. Например, если создать класс с методом `Foo(Integer)` и `Foo(string)`, и при этом класс наследует класс в котором уже есть `Foo(Float)`, то метод `Foo(Float)` невозможно будет вызвать напрямую, только с помощью typecast данного class на родительский класс. Чтобы избежать такого поведения, при объявлении процедур и функций следует использовать ключевое слово `overload`, где это необходимо.
 
 ### Preprocessor
 
