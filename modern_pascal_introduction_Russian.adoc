@@ -1273,27 +1273,27 @@ end.
 +
 Иногда это более удобно, чем написать длинный код со множеством `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` в перемешку с нормальным кодом (определение переменных, описание процедур). Повышается и читабельность кода. Эту технику можно использовать более агрессивно, используя опцию коммандной строки `-Fi` при вызове FPC, чтобы включить целые папки только для конкретных платформ. Таким образом можно иметь множество версий include файлов типа `{$I my platform_specific_implementation.inc}`. При этом компилятор автоматически найдёт правильную версию.
 
-### Records
+### Record
 
-_Record_ is just a container for other variables. It's like a much, much simplified _class_: there is no inheritance or virtual methods. It is like a _structure_ in C-like languages.
+_Record_ является своеобразным контейнером для других переменных. Она является очень, очень упрощённым _классым_: нет наследования, нет виртуальных методов. Она также подобна _structure_ в C-подобных языках.
 
-If you use the `{$modeswitch advancedrecords}` directive, records *can* have methods and visibility specifiers. In general, language features that are available for classes, and _do not break the simple predictable memory layout of a record_, are then possible.
+Если использовать директиву `{$modeswitch advancedrecords}`, то в record *возможно* добавить методы и уровни видимости. В общем, тут можно использовать любые возможности языка, доступные классам, которые _не нарушают простую и предсказуемую раскладку памяти для record_.
 
 [source,pascal]
 ----
 include::code-samples/records.lpr[]
 ----
 
-In modern Object Pascal, your first instinct should be to design a `class`, not a `record` -- because classes are packed with useful features, like constructors and inheritance.
-But records are still very useful when you need speed or a predictable memory layout:
+В современном Паскале, в первую очередь лучше использовать `class`, а не `record` -- поскольку классы имеют множество полезных возможностей, как конструкторы и наследование.
+Однако, record-ы всё ещё могут быть полезными если необходима скорость или предсказуемая раскладка памяти:
 
-* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count). So you have to be more careful when dealing with records, but it gives you some performance gain.
-* Arrays of records are nicely linear in memory, so they are cache-friendly.
-* The memory layout of records (size, padding between fields) is clearly defined in some situations: when you request the _C layout_, or when you use `packed record`. This is useful:
-** to communicate with libraries written in other programming languages, when they expose an API based on records,
-** to read and write binary files,
-** to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
-* Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases. And it allows for more _dirty, low-level unsafe tricks_:)
+* Record-ам не требуется constructor или destructor. Они определяются как переменные. Их содержимое не определено в начале (так называемый "мусор в памяти"), кроме случаев, автоматически управляемых типов, таких как string, которые всегда инициализируются пустыми. Таким образом следует быть более аккуратным при их использовании, однако преимуществом такого подхода будет увеличение скорости исполнения программы.
+* Массивы, состоящие из record-ов однородно располагаются в памяти и таким образом их удобно кешировать.
+* Память для record-ов чётко определена (размер и расстояние между каждым полем) в некоторых ситуациях: когда запрашивается _C layout_ или если используется `packed record`. Это может быть полезным в следующих случаях:
+** для связи между библиотеками, написанными в других языках программирования и предоставляющих API, который основывается на данных типа record,
+** для чтения и записи бинарных файлов,
+** для выполнения "грязных" низкоуровневых оптимизаций (как небезопасное  typecasting одного типа в другой, когда понятно их представление в памяти).
+* В record-ах можно также использовать часть `case`, которая работает как _unions_ в C-подобных языках. Это позволяет интерпретировать один и тот же регион памяти, как различные типы данных, в зависимости от необходимости. Таким образом возможно достичь более высокой эффективности памяти в некоторых случаях. В том числе можно выполнять некоторые "грязные" низкоуровневые оптимизации.
 
 ### Old-style objects
 
