@@ -1658,51 +1658,51 @@ include::code-samples/interfaces_corba_test.lpr[]
 
 ### CORBA и COM интерфейсы
 
-Почему интерфейсы (показанные выше) названны "CORBA"?::
+Почему интерфейсы названы "CORBA"?::
 
-  The name *CORBA* is unfortunate. A better name would be *bare interfaces*. These interfaces are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API.
+  Название *CORBA* крайне неудачное. Куда лучший термин был бы *чистый интерфейс*. Эти интерфейсы являются _"чистой особенностью языка"_. Их можно использовать если возникает необходимость typecast различные классы как один и тот же интерфейс, поскольку у них одинаковая API.
 +
 //The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
 //+
-While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), they are _not_ tied to this technology in any way.
+При том, что эти интерфейсы могут использоваться вместе с _технологией CORBA (Common Object Request Broker Architecture)_ (см. https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), они _не_ имеют к ней никакого отношения.
 
-Is the `{$interfaces corba}` declaration needed?::
+Требуется ли задавать `{$interfaces corba}` ?::
 
-  Yes, because by default
+  Да, поскольку по умолчанию
 //(if we would omit the `{$interfaces corba}` directive)
-  you create _COM interfaces_. This can be stated explicitly by saying `{$interfaces com}`, but usually it's not needed since it's the default state.
+  будут созданы _COM интерфейсы_. Это же можно указать явно с помощью директивы `{$interfaces com}`, но не обязательно, так как это случай по умолчанию.
 +
-And I don't advice using _COM interfaces_. Especially if you know interfaces from other programming languages. The _CORBA interfaces_ in Pascal are exactly what you expect, equal to the interfaces in C# and Java. While the _COM interfaces_ bring additional "features" that you probably don't want.
+Лично я не советую использовать _COM интерфейсы. Особенно в случае, если Вам знакомы интерфейсы из других языков программирования. _Интерфейсы CORBA_ в Паскале это именно то, что ожидается от интерфейсов, они идентичны интерфейсам в C# и Java. При этом _COM интерфейсы_ привносят дополнительные "особенности", которые скорее всего не понадобятся.
 +
-Note that the `{$interfaces xxx}` declaration only affects the interfaces that do not have any explicit ancestor (just the keyword `interface`, not `interface(ISomeAncestor)`). When an interface has an ancestor, it has the same type as the ancestor, regardless of the `{$interfaces xxx}` declaration.
+Обратите внимание, что `{$interfaces xxx}` определяет только интерфейсы, родительский интерфейс которых явно не указан (лишь используется ключевое слово `interface`, а не `interface(ISomeAncestor)`). Если интерфейс имеет родительский интерфейс, он имеет такой же тип, как и родительский интерфейс и не зависит от директивы `{$interfaces xxx}`.
 
-What are COM interfaces?::
+Что такое COM интерфейсы?::
 
-  The _COM interface_ is synonymous with _an interface descending from a special `IUnknown` interface_. Descending from `IUnknown`:
+  Понятие _COM интерфейс_ является синонимом понятия _интерфейс, наследующий некоторый интерфейс `IUnknown`_. Такое наследование от `IUnknown` означает:
 +
-* Requires that your classes define the `_AddRef` and `_ReleaseRef` methods. Proper implementation of these methods can manage the lifetime of your objects using the reference-counting.
-* Adds the `QueryInterface` method.
-* Allows to interact with the _COM (Component Object Model) technology_.
+* Требует, чтобы классы определяли методы `_AddRef` и `_ReleaseRef`. Правильная имплементация этих методов позволит управлять объектом с помощью подсчёта ссылок (reference-counting).
+* Добавляет метод `QueryInterface`.
+* Позволяет взаимодействовать с технологией _COM (Компонентная модель объектов).
 
-What do you advice to not use the COM interfaces?::
+Почему я не советую использовать COM интерфейсы?::
 
-  The additional features brought by the COM interfaces are rather problematic in my view. Don't get me wrong -- the idea of reference-counting is very nice. But entangling these features with interfaces (instead of making them orthogonal features) is very unclean in my eyes. It definitely doesn't match my use cases.
+  Дополнительные возможности, привнесённые COM интерфейсами с моей точки зрения проблематичны. Не поймите превратно -- идея reference-counting очень хороша. Однако переплетать такой функционал с интерфейсами (вместо того, чтобы делать их "поперечными" свойствами) на мой взгляд является очень грязным. И явно не соответствует задачам, которые я встречал.
 +
 --
-* Sometimes I want to cast my (otherwise unrelated) classes to a common interface.
-* Sometimes I want to manage memory using the reference counting approach.
-* _Maybe_ some day I will want to interact with the _COM technology_.
+* Иногда возникает необходимость передать обычные классы (не имеющими ничего общего) через обычный интерфейс.
+* Иногда возникает желание управлять памятью с помощью технологии reference counting.
+* _Возможно_ когда-нибудь лично мне тоже пригодится _COM технология.
 --
 +
-But these are all separate, unrelated needs. Entangling them in a single language feature is counter-useful in my experience. And it does cause actual problems: the reference-counting mechanism of COM, even when disabled by a special `_AddRef` and `_ReleaseRef` implementation, is still troublesome. You still need to be careful to never have a temporary interface reference hanging, after you have freed the class instance. More details about it in the next section.
+Но всё это - ничем не связанные задачи. Переплетать их в единой особенности языка, лично на мой взгляд, нехорошо. И это не просто вопрос эстетики, такой подход причиняет реальные проблемы: механизм reference-counting интерфейса COM, даже если отключён с помощью специальных имплементаций `_AddRef` и `_ReleaseRef`, всё равно может привести к ошибкам. Придётся быть внимательным и следить, чтобы нигде не осталась временная ссылка на интерфейс, после освобождения экземпляра класса. Чуть подробнее речь об этом пойдёт дальше.
 +
-That is why I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces. The _COM_ interfaces are somewhat an _embarrassment to the language_, in my eyes.
+Именно по этому, лично мой совет: всегда использовать интерфейс в стиле _CORBA_ и соответствующую `{$interfaces corba}` директиву в современном коде, который работает с интерфейсами. На мой взгляд, _COM_ интерфейсы это некоторое _недоразумение языка_.
 +
-To be fair, the _COM interfaces_ are presented in more details in the next section anyway.
+Однако, чтобы быть честными, чуть дальше будет детально идти речь о _COM интерфейсах_.
 
-Can we have reference-counting with CORBA interfaces?::
+Можно ли использовать reference-counting совместно с интерфейсом CORBA?::
 
-  Yeah. Just add `_AddRef` / `_ReleaseRef` methods. There's no need to descend from the `IUnknown` interface. Although in most cases, if you want reference-counting with your interfaces, you may as well just use COM interfaces.
+  Естественно. Необходимо лишь добавить методы `_AddRef` / `_ReleaseRef`. Нет необходимости наследовать интерфейс `IUnknown`. Впрочем, в большинстве случаев, если возникает необходимость использовать reference-counting в интерфейсах, можно просто использовать COM интерфесы.
 //    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that iunknown doesn't just do refcounting though, it also plays a part in identity (queryinterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
