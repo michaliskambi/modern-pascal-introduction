@@ -1762,7 +1762,7 @@ include::code-samples/gen_guid.lpr[]
 include::code-samples/interfaces_com_with_ref_counting.lpr[]
 ----
 
-### Using COM interfaces with reference-counting disabled
+### Использование COM интерфейсов с отключённым reference-counting
 
 As mentioned in the previous section, your class can descend from `TComponent` (or a similar class like `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent`) which disables reference-counting for COM interfaces. This allows you to use COM interfaces, and still free the class instance manually.
 
@@ -1775,9 +1775,9 @@ To avoid this mess, it's usually better to use CORBA interfaces, if you don't wa
 include::code-samples/interfaces_com_test.lpr[]
 ----
 
-### Typecasting interfaces without "as" operator
+### Typecast интерфейсов без оператора "as"
 
-This section applies to both _CORBA_ and _COM_ interfaces.
+Этор раздел касается как _CORBA_, так и _COM_ интерфейсов.
 
 Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
 
