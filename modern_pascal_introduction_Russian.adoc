@@ -1295,16 +1295,17 @@ include::code-samples/records.lpr[]
 ** для выполнения "грязных" низкоуровневых оптимизаций (как небезопасное  typecasting одного типа в другой, когда понятно их представление в памяти).
 * В record-ах можно также использовать часть `case`, которая работает как _union_ в C-подобных языках. Это позволяет интерпретировать один и тот же регион памяти, как различные типы данных, в зависимости от необходимости. Таким образом возможно достичь более высокой эффективности памяти в некоторых случаях. В том числе можно выполнять некоторые "грязные" низкоуровневые оптимизации.
 
-### Old-style objects
+### Устаревшие object
 
-In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's somewhat of a blend between the concept of a `record` and a modern `class`.
+Давным-давно, в Turbo Pascal был введён новый тип синтаксиса с функциональностью, похожей на классы. Он был определён ключевым словом `object`. По сути, это нечто среднее между `record` и современным `class`.
 
-* The old-style objects can be allocated / freed, and during that operation you can call their constructor / destructor.
-* But they can also be simply declared and used, like records. A simple `record` or `object` type is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome.
+* Такие object-ы можно создавать / освобождать, и в этом процессе можно вызвать их constructor / destructor.
+* Но их можно просто объявить и использовать как обычную record. Простые типы `record` или `object` не являются указателями (pointer-ами) на что-либо, они являются данными. Это делает их весьма удобными в случаях небольших объёмов данных, когда многократное распределение или освобождение памяти не всегда оправдано.
 //It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
-* Old-style objects offer inheritance and virtual methods, although with small differences from the modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling it's constructor, and the object has virtual methods.
+* Устаревшие object-ы имеют наследование и виртуальные методы, впрочем, в несколько отличном виде от современных классов. Будьте внимательны -- если попытаться использовать object, имеющий виртуальные методы, без вызова его constructor-а, могут возникнуть ошибки.
 
-It's discouraged to use the old-style objects in most cases. Modern _classes_ provide much more functionality. And when needed, records (including _advanced records_) can be used for performance. These concepts are usually a better idea than old-style objects.
+В большинстве случаев крайне не советуется использовать устаревшие objects-ы. Современные _class-ы_ имеют гораздо более широкий функционал. А в случае если необходимо повысить скорость выполнения, можно использовать record-ы (включая _advanced records_). Такие подходы обычно лучше, чем устаревшие object-ы.
+
 
 ### Pointers
 
