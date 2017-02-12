@@ -1742,7 +1742,7 @@ include::code-samples/gen_guid.lpr[]
 * В классе необходимо создать магические методы `_AddRef`, `_Release` и `QueryInterface`. Или наследовать класс, который уже имеет их. Конкретная имплеметация этих методов позволяет включить или отключить такую возможность COM интерфейсов, как __reference-counting__. Впрочем, отключать её достаточно опасно -- см. следующий подраздел.
 
 ** Стандартный класс `TInterfacedObject` имеет эти методы выполненными в таком виде, чтобы _включить_ reference-counting.
-** Стандартный класс `TComponent` имеет эти методы выполненными в таком виде, чтобы _выключить_ reference-counting. В *Castle Game Engine* предоставлены дополнительные классы, от которых можно выполнять наследование: `TNonRefCountedInterfacedObject` и `TNonRefCountedInterfacedPersistent` для этих целей, см. детальнее://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
+** Стандартный класс `TComponent` имеет эти методы выполненными в таком виде, чтобы _выключить_ reference-counting. В *Castle Game Engine* предоставлены дополнительные классы, от которых можно выполнять наследование: `TNonRefCountedInterfacedObject` и `TNonRefCountedInterfacedPersistent` для этих целей, см. детальнее: https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
 
 //* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
