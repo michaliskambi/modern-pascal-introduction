@@ -1406,13 +1406,13 @@ end;
 
 Следует отметить, что constructor всегда работает, как class method когда вызывается "обычным образом" (`MyInstance := TMyClass.Create(...);`). Впрочем, можно вызвать конструктор в данном конкретном экземпляре класса как метод и он тогда и сработает как обычный метод. Таким образом можно сделать удобную "цепочку" constructor-ов, когда один constructor (например, перегруженный для принятия дополнительных параметров) выполняет какую-то свою работу, а потом вызывает другой constructor (например, беспараметрический).
 
-### More stuff inside classes and nested classes
+### Дополнительные возможности объявления классов и локальные классы
 
-You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, in particular the nested class can be private (not visible to the outside world), which is often useful.
+Внутри определения класса можно создавать константы (`const`) или типы (`type`). Таким образом можно даже создать класс внутри класса. Спецификаторы видимости будут работать как обычно, и такие локальные классы могут быть private (не видимые "внешнему миру"), что иногда удобно.
 //The compiler watches that you don't break the visibility rules (for example you cannot declare a _public function_ that returns a type that is _private_).
 // (I wish - it doesn't, unfortunately...)
 
-Note that to declare a field after a constant or type you will need to open a `var` block.
+Обратите внимание, чтобы определить поле после константы или типа будет необходимо использовать блок `var`:
 
 [source,pascal]
 ----
@@ -1447,8 +1447,7 @@ begin
   inherited;
 end;
 
-{ note that method definition is prefixed with
-  "TMyClass.TInternalClass" below. }
+{ Обратите внимание на префикс "TMyClass.TInternalClass". }
 procedure TMyClass.TInternalClass.DoSomething;
 begin
 end;
