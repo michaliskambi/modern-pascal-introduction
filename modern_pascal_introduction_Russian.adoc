@@ -1603,7 +1603,7 @@ begin
 end;
 ----
 
-ПРИМЕЧАНИЕ: Более общяя концепция является _"type helper"_, используя которую становится возможным добавлять методы даже к самым примитивным типам, например integer. Можно даже создать _"record helpers_" чтобы... ну, Вы поняли. Детальнее см. здесь: http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
+	ПРИМЕЧАНИЕ: Более общяя концепция является _"type helper"_, используя которую становится возможным добавлять методы даже к самым примитивным типам, например integer. Можно даже создать _"record helpers_" чтобы... ну, Вы поняли. Детальнее см. здесь: http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
 //And of course to records and old-style objects (both of them can also have regular methods, they are much like classes in this regard).
 
 ### Виртуальные constructor-ы, destructor-ы
