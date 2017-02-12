@@ -1606,17 +1606,17 @@ end;
 ПРИМЕЧАНИЕ: Более общяя концепция является _"type helper"_, используя которую становится возможным добавлять методы даже к самым примитивным типам, например integer. Можно даже создать _"record helpers_" чтобы... ну, Вы поняли. Детальнее см. здесь: http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
 //And of course to records and old-style objects (both of them can also have regular methods, they are much like classes in this regard).
 
-### Virtual constructors, destructors
+### Виртуальные constructor-ы, destructor-ы
 
-Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameter-less.
+Имя destructor-а всегда должно `Destroy`, и он всегда является virtual (поскольку он вызывается без указания конкретного класса при компилляции) и беспараметрический.
 
-Constructor name is by convention `Create`.
+Имя constructor-а принято использовать `Create`.
 
-You can change this name, although be careful with this -- if you define `CreateMy`, always redefine also the name `Create`, otherwise the user can still access the constructor `Create` of the ancestor, bypassing your `CreateMy` constructor.
+Его можно изменить, однако здесь следует быть аккуратным -- например, создав `CreateMy`, всегда создайте и `Create`, иначе constructor `Create` будет всё равно доступен из родительского класса и может быть вызван в обход конкретного `CreateMy` конструктора.
 
-In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
+В базовом классе `TObject` constructor не является виртуальным, и при создании наследников его можно изменить. Новый constructor просто спрячет constructor родительского класса (примечание: не используйте `overload` для этого, в данном случае это не сработает).
 
-In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see "class references" below).
+В наследниках класса `TComponent`, следует выполнять override constructor-а `constructor Create(AOwner: TComponent);`. Для решения задач потоковой передачи данных, а также для создания класса без указания конкретного типа при написании программы, виртуальные constructor-ы являются очень удобными (см. раздел <<Ссылки на класс>> выше).
 
 ### An exception in constructor
 
