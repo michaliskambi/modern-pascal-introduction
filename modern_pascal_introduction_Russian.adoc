@@ -1453,9 +1453,9 @@ begin
 end;
 ----
 
-### Class references
+### Ссылки на класс
 
-_Class reference_ allows you to choose the class at runtime, for example to call a class method or constructor without knowing the exact class at compile-time. It is a type declared as `class of TMyClass`.
+_Ссылки на класс_ позволяют выбрать класс в процессе исполнения программы, например, для вызова class method-а или constructor-а не определив, какой именно класс будет использоваться во время написания программы. Такой тип объявляется следующим образом: `class of TMyClass`.
 
 [source,pascal]
 ----
@@ -1475,13 +1475,13 @@ var
   C: TMyClass;
   ClassRef: TMyClassRef;
 begin
-  // Obviously you can do this:
+  // Можно сделать так:
 
   C := TMyClass.Create(nil); FreeAndNil(C);
   C := TMyClass1.Create(nil); FreeAndNil(C);
   C := TMyClass2.Create(nil); FreeAndNil(C);
 
-  // In addition, using class references, you can also do this:
+  // А с помощью ссылки на класс можно сделать следующее:
 
   ClassRef := TMyClass;
   C := ClassRef.Create(nil); FreeAndNil(C);
@@ -1494,7 +1494,7 @@ begin
 end;
 ----
 
-Class references can be combined with virtual class methods. This gives a similar effect as using classes with virtual methods -- the actual method to be executed is determined at runtime.
+Ссылки на класс можно комбинировать с виртуальными class method-ами. Работает это подобно классам с виртуальными методами -- конкретный метод, который необходимо выполнить определяется уже в процессе выполнения программы.
 
 [source,pascal]
 ----
@@ -1523,18 +1523,18 @@ begin
   ClassRef := TMyClass2;
   ClassRef.DoSomething;
 
-  { And this will cause an exception at runtime,
-    since DoSomething is abstract in TMyClass. }
+  { А следующяя строка приведёт к ошибке выполнения,
+    поскольку DoSomething является abstract в TMyClass. }
   ClassRef := TMyClass;
   ClassRef.DoSomething;
 end;
 ----
 
-If you have an instance, and you would like to get a reference to it's class (not the declared class, but the final descendant class used at its construction), you can use the `ClassType` property. The declared type of `ClassType` is `TClass`, which stands for `class of TObject`. Often you can safely typecast it to something more specific, when you know that the instance is something more specific than `TObject`.
+Если есть экземпляр класса и необходимо создать ссылку на этот класс (не на какой-либо объявленный класс, а на конкретного наследника, который был использован при его создании), можно использовать свойство `ClassType`. Вообще говоря, объявленный тип `ClassType` является `TClass`, который в свою очередь является `class of TObject`. Часто его можно typecast во что либо более конкретное, когда есть информация, чем именно является данный экземпляр.
 
-In particular, you can use the `ClassType` reference to call virtual methods, including virtual constructors. This allows you to create a method like `Clone` that constructs an instance of _the exact run-time class of the current object_. You can combine it with <<Cloning: TPersistent.Assign>> to have a method that returns a newly-constructed clone of the current instance.
+В общем, можно использовать `ClassType` для вызова виртуальных методов, включая виртуальные constructor-ы. Такой подход позволяет создать методы такие, как `Clone` которые создают экземпляр _как точную копию данного класса в этот момент исполнения программы_. Можно совместить такой подход с <<Cloning: TPersistent.Assign>> для того, чтобы метод возвращал новый, готовый к работе клон текущего экземпляра.
 
-Remember that it only works when the constructor of your class is virtual. For example, it can be used with the standard `TComponent` descendants, since they all must override `TComponent.Create(AOwner: TComponent)` virtual constructor.
+Следует обратить внимание, что подобный подход сработает только если constructor данного класса виртуальный. Например, такой подход можно использовать с наследниками стандартного класса `TComponent`, поскольку они все выполняют override виртуального constructor-а `TComponent.Create(AOwner: TComponent)`.
 
 [source,pascal]
 ----
@@ -1548,10 +1548,10 @@ type
 
 function TMyClass.Clone(AOwner: TComponent): TMyClass;
 begin
-  // This would always create an instance of exactly TMyClass:
+  // Таким образом будет создан объект конкретного типа TMyClass:
   //Result := TMyClass.Create(AOwner);
-  // This can potentially create an instance of TMyClass descendant:
-  Result := TMyClassRef(ClassType).Create(AOwner);
+  // А такой подход может создать объект как типа TMyClass так и его наследников:
+  Result := TMyClassRef(self.ClassType).Create(AOwner);
   Result.Assign(Self);
 end;
 ----
