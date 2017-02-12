@@ -1306,10 +1306,9 @@ include::code-samples/records.lpr[]
 
 В большинстве случаев крайне не советуется использовать устаревшие objects-ы. Современные _class-ы_ имеют гораздо более широкий функционал. А в случае если необходимо повысить скорость выполнения, можно использовать record-ы (включая _advanced records_). Такие подходы обычно лучше, чем устаревшие object-ы.
 
+### Указатели (Pointer)
 
-### Pointers
-
-You can create a _pointer_ to any other type. The pointer to type `TMyRecord` is declared as `^TMyRecord`, and by convention is called `PMyRecord`. This is a traditional example of a linked list of integers using records:
+В Паскале возможно создать указатель (_pointer_) на любой тип данных. Указатель на тип `TMyRecord` определяется с помощью синтаксиса `^TMyRecord`, и чаще всего такие указатели называют `PMyRecord`. Вот классический пример связанного списка целых чисел, организованного с помощью record:
 
 [source,pascal]
 ----
@@ -1321,15 +1320,15 @@ type
   end;
 ----
 
-Note that the definition is recursive (type `PMyRecord` is defined using type `TMyRecord`, while `TMyRecord` is defined using `PMyRecord`). It is allowed to define a pointer type to a _not-yet-defined type_, as long as it will be resolved within the same `type` block.
+Обратите внимание, тут было использовано рекурсивное определение (тип `PMyRecord` определяется с помощью `TMyRecord`, а `TMyRecord` использует в своём определении `PMyRecord`). Можно определить указатель на тип, _который ещё не был объявлен_, в том случае, если он будет определён в том же самом блоке `type`.
 
-You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not type-safe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator. To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator.
+Вы можете распределять и освобождать память для указателей с помощью методов `New` / `Dispose`, или (более низкоуровневых, но не типобезопасных) методов `GetMem` / `FreeMem`. Для доступа к данным, на которые pointer указывает после него следует добавить оператор `^` (в виде `PMyRecord^.Value`). Обратная операция (получить pointer на существующую переменную) выполняется с помощью оператора-префикса `@` (например `@myRecordVariable`).
 
-There is also an untyped `Pointer` type, similar to `void*` in C-like languages. It is completely unsafe, and can be typecasted to any other pointer type.
+Существует также самый общий тип `Pointer`, который не указывает на конкретный тип данных и подобен `void*` в C-подобных языках. Он совершенно не типобезопасен, и его можно typecast в любой другой тип pointer-а.
 
-Remember that a _class instance_ is also in fact a pointer, although it doesn't require any `^` or `@` operators to use it.
+Следует помнить, что _экземпляр класса_ также является pointer-ом, хоть для работы с ним и не нужно использовать дополнительных операторов `^` и `@`.
 //That's why it's called a _reference_.
-A linked list using classes is certainly possible, it would simply be this:
+Связанные списки в виде классов также возможны и в данном случае всё будет выглядеть ещё проще:
 
 [source,pascal]
 ----
