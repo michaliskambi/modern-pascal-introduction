@@ -1618,22 +1618,22 @@ end;
 
 В наследниках класса `TComponent`, следует выполнять override constructor-а `constructor Create(AOwner: TComponent);`. Для решения задач потоковой передачи данных, а также для создания класса без указания конкретного типа при написании программы, виртуальные constructor-ы являются очень удобными (см. раздел <<Ссылки на класс>> выше).
 
-### An exception in constructor
+### Ошибки при исполнении constructor-а
 
-What happens if an exception happens during a constructor? The line
+Что произойдёт если в процессе выполнения constructor-а возникнет ошибка? Строка
 
 [source,pascal]
 ----
 X := TMyClass.Create;
 ----
 
-does not execute to the end in this case, `X` cannot be assigned, so who will cleanup after a partially-constructed class?
+не будет выполнена до конца, и `X` не может быть присвоено какое-либо значение. Кто будет выполнять очистку после частично сконструированного класса?
 
-The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
+В Object Pascal существует следующее решение. Если возникла ошибка при исполнении constructor-а, то сразу вызывается destructor. Именно по этой причине _этот destructor должен быть "дубовым"_, т.е. сработать в любом случае, даже на частично сконструированном классе. Обычно это не сложно, если освобождать всё безопасно, например, с помощью `FreeAndNil`.
 
-We also have to depend in such cases that _the memory of the class is guaranteed to be zeroed right before the constructor code is executed_. So we know that at the beginning, all class references are `nil`, all integers are `0` and so on.
+Также можно полагаться на факт, что перед вызовом constructor-а _вся память гарантированно обнуляется_ перед его исполнением. Таким образом, при создании все ссылки внутри класса являются `nil`, а числа равны 0 и т.п.
 
-So below works without any memory leaks:
+Т.е. следующий код сработает без утечек памяти (memory leaks):
 
 [source,pascal]
 ----
