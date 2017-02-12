@@ -1379,9 +1379,9 @@ include::code-samples/operator_overloading_records_lists.lpr[]
 
 Таким же образом различаются спецификаторы видимости `protected` (видимый наследникам данного класса или "друзьям" в том же unit-е) и `strict protected` (видимы только и исключительно наследникам данного класса, точка).
 
-### Class methods
+### Class method
 
-These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
+Существуют методы, которые можно вызвать из класса вообще (`TMyClass`), не обязательно из его конкретного экземпляра.
 
 [source,pascal]
 ----
@@ -1402,9 +1402,9 @@ begin
 end;
 ----
 
-Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
+Обратите внимание, что они также могут быть виртуальными -- иногда это весьма удобно, особенно, если применяется совместно с <<Class references>>.
 
-Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
+Следует отметить, что constructor всегда работает, как class method когда вызывается "обычным образом" (`MyInstance := TMyClass.Create(...);`). Впрочем, можно вызвать конструктор в данном конкретном экземпляре класса как метод и он тогда и сработает как обычный метод. Таким образом можно сделать удобную "цепочку" constructor-ов, когда один constructor (например, перегруженный для принятия дополнительных параметров) выполняет какую-то свою работу, а потом вызывает другой constructor (например, беспараметрический).
 
 ### More stuff inside classes and nested classes
 
