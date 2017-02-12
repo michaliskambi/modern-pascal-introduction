@@ -1725,37 +1725,37 @@ GUID-ы это на первый взгляд случайная последо�
 include::code-samples/gen_guid.lpr[]
 ----
 
-### Ugly (COM) interfaces
+### Уродливые (COM) интерфейсы
 
-The _COM interfaces_ bring two additional features:
+Используя _COM интерфейсы_ даёт две дополнительных возможности:
 
-. integration with COM (a technology from Windows, also available on Unix through _XPCOM_, used by Mozilla),
-. reference counting (which gives you automatic destruction when all the interface references go out of scope).
+. интеграция с технологией COM (технология, использующаяся в Windows, также доступна в Unix-системах через _XPCOM_, который используется Mozilla),
+. подсчёт ссылок - reference counting (что позволяет автоматически уничтожать ???интерфейс, когда количество все ссылки на интерфейс уходят из поля переменных).
 
-In my eyes, it was rather ugly to entangle _interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class. When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology.
+Лично на мой взгляд это крайне неправильно переплетать _интерфейсы_ с такими возможностями. Это усложняет использование интерфейсов для того, для чего они предназначены: когда у многих классов один и тот же API, однако они не могут происходить от одного родительского класса. Используя же _COM интерфейс_, следует помнить о механизме _автоматического уничтожения_ и его отношении к технологии COM.
 
-In practice, this means that:
+На практике это означает следующее:
 
 // +
 // The relation to COM technology has . The reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
 
-* Your class needs to implement a magic `_AddRef`, `_Release`, and `QueryInterface` methods. Or descend from something that already implements them. A particular implementation of these methods may actually enable or disable the __reference-counting__ feature of COM interfaces (although disabling it is somewhat dangerous -- see the next point).
+* В классе необходимо создать магические методы `_AddRef`, `_Release` и `QueryInterface`. Или наследовать класс, который уже имеет их. Конкретная имплеметация этих методов позволяет включить или отключить такую возможность COM интерфейсов, как __reference-counting__. Впрочем, отключать её достаточно опасно -- см. следующий подраздел.
 
-** The standard class `TInterfacedObject` implements these methods to _enable_ the reference-counting.
-** The standard class `TComponent` implements these methods to _disable_ the reference-counting. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
+** Стандартный класс `TInterfacedObject` имеет эти методы выполненными в таком виде, чтобы _включить_ reference-counting.
+** Стандартный класс `TComponent` имеет эти методы выполненными в таком виде, чтобы _выключить_ reference-counting. В *Castle Game Engine* предоставлены дополнительные классы, от которых можно выполнять наследование: `TNonRefCountedInterfacedObject` и `TNonRefCountedInterfacedPersistent` для этих целей, см. детальнее://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
 
 //* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
-* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even if you hack the _AddRef method to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual (http://freepascal.org/docs-html/ref/refse47.html).
+* Необходимо быть аккуратным при освобождении класса, когда на него могут ссылаться некоторые переменные интерфейса. Поскольку интерфейсы освобождаются с помощью виртуального метода (потому что он _может использовать reference-counting, даже если _AddRef написан таким образом, чтобы отключить эту возможность_), то нельзя освобождать низлежащий экземпляр объекта из-за того, что какая-либо интерфейсная переменная может на него указывать. См. раздел _"7.7 Reference counting"_ в руководстве FPC (http://freepascal.org/docs-html/ref/refse47.html).
 //, http://bugs.freepascal.org/view.php?id=10374 .
 
-The safest approach to using _COM interfaces_ is to
+Чтобы безопасно использовать _COM интерфейсы_ необходимо
 
-* accept the fact that they are reference-counted,
-* derive the appropriate classes from `TInterfacedObject`,
-* and avoid using the class instance, instead accessing the instance always through the interface, letting reference-counting manage the deallocation.
+* осознавать факт, что в них используется reference-counting,
+* наследовать соответствующие классы от `TInterfacedObject`,
+* и избегать прямого обращения к экземпляру класса, вместо чего всегда использовать экземпляр через интерфейс, оставляя алгоритму reference-counting управлять освобождением памяти.
 
-This is an example of such interface use:
+Ниже представлен пример использования такого интерфейса:
 
 [source,pascal]
 ----
