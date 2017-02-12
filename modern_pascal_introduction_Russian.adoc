@@ -1706,19 +1706,19 @@ include::code-samples/interfaces_corba_test.lpr[]
 //    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that iunknown doesn't just do refcounting though, it also plays a part in identity (queryinterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
-### Interfaces GUIDs
+### GUID-ы интерфейсов
 
-GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see placed at every interface definition. Yes, they are just random. Unfortunately, they are necessary.
+GUID-ы это на первый взгляд случайная последовательность букв и цифр `['{ABCD1234-...}']` которую можно увидеть при каждом объявлении интерфейса. В действительности они и являются случайными. И, к сожалению, в них есть необходимость.
 
 //Yes, they look ugly.
 //, and I wish they would not be necessary.
-They have no meaning (if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_). But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
+В них не вкладывается никакого смысла (если не планируется интеграция с технологиями _COM_ или _CORBA_). Однако для исполнения программы они обязательны. И пусть не сбивает с толку компиллятор, который, увы, позволяет создавать интерфейсы без GUID-ов.
 
-Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID. This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
+Без присваивания (уникального) GUID-а, все интерфейсы будут идентичными для оператора `is`. Таким образом, он всегда будет возвращать `true` если данный класс поддерживает _любой_ из используемых интерфейсов. Волшебная функция `Supports(ObjectInstance, IMyInterface)` работает несколько лучше в данном случае, поскольку выдаст ошибку компилляции для интерфейсов без GUID. Это касается CORBA и COM интерфейсов, для версии FPC 3.0.0.
 
-So, to be on the safe side, you should always declare a GUID for your interface. You can use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor). Or you can use an online service like https://www.guidgenerator.com/ .
+Таким образом, необходимо обязательно объявлять GUID для каждого интерфейса. Можно использовать встроенный генератор GUID-ов _Lazarus GUID generator_ (горячая клавиша `Ctrl + Shift + G` в режиме редактирования). Или воспользоваться он-лайн сервисом, например https://www.guidgenerator.com/ .
 
-Or you can write your own tool for this, using the `CreateGUID` and `GUIDToString` functions in RTL. See the example below:
+А можно вообще написать свой инструмент, использующий `CreateGUID` и `GUIDToString` функции в RTL. Например таким образом:
 
 [source,pascal]
 ----
