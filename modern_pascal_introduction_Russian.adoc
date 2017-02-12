@@ -1339,30 +1339,30 @@ type
   end;
 ----
 
-### Operator overloading
+### Перегрузка операторов (overloading)
 
-You can override the meaning of many language operators, for example to allow addition and multiplication of your custom types. Like this:
+В Паскале существует возможность перегрузить (overload) значение многих операторов языка, например определить сложение и умножение пользовательских типов данных. Например:
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading.lpr[]
 ----
 
-You can override operators on classes too. Since you usually create new instances of your classes inside the operator function, the caller must remember to free the result.
+Можно также перегрузить операторы над классами. Учитывая то, что обычно в такой функции-операторе создаётся новый экземпляр класса, вызывающий объект должен позаботиться об надлежащем освобождении памяти.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_classes.lpr[]
 ----
 
-You can override operators on records too. This is usually easier than overloading them for classes, as the caller doesn't have to deal then with memory management.
+Можно перегрузить и операции над record-ами. Обычно это проще, чем в случае классов, поскольку нет необходимости выполнять операции по распределению или освобождению памяти.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_records.lpr[]
 ----
 
-For records, it's adviced to use `{$modeswitch advancedrecords}` and override operators as `class operator` inside the record. This allows to use generic classes that depend on some operator existence (like `TFPGList`, that depends on equality operator being available) with such records. Otherwise the "global" definition of an operator (not inside the record) would not be found (because it's not available at the code that implements the `TFPGList`), and you could not specialize a list like `specialize TFPGList<TMyRecord>`.
+При работе с record-ами лучше использовать режим `{$modeswitch advancedrecords}` и перегружать операторы как `class operator` внутри record-а. Такой подход позволяет использовать generic классы которые зависят от существования какого-либо оператора (например `TFPGList`, который зависит от доступности оператора равенства). В противоположном случае "глобальное" определение оператора (не внутри данной record) будет не найдено (поскольку он не доступен коду, который используется в `TFPGList`), и не удастся specialize список в виде `specialize TFPGList<TMyRecord>`.
 
 [source,pascal]
 ----
