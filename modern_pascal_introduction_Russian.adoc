@@ -1746,7 +1746,7 @@ include::code-samples/gen_guid.lpr[]
 
 //* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
-* Необходимо быть аккуратным при освобождении класса, когда на него могут ссылаться некоторые переменные интерфейса. Поскольку интерфейсы освобождаются с помощью виртуального метода (потому что он может использовать reference-counting, даже если `_AddRef` написан таким образом, _чтобы отключить эту возможность_), то нельзя освобождать низлежащий экземпляр объекта из-за того, что какая-либо интерфейсная переменная может на него указывать. См. раздел _"7.7 Reference counting"_ в руководстве FPC (http://freepascal.org/docs-html/ref/refse47.html).
+* Необходимо быть аккуратным при освобождении класса, когда на него могут ссылаться некоторые переменные интерфейса. Поскольку интерфейсы освобождаются с помощью виртуального метода (потому что он может использовать reference-counting, даже если `_AddRef` написан таким образом, чтобы отключить эту возможность), то нельзя освобождать низлежащий экземпляр объекта из-за того, что какая-либо интерфейсная переменная может на него указывать. См. раздел _"7.7 Reference counting"_ в руководстве FPC (http://freepascal.org/docs-html/ref/refse47.html).
 //, http://bugs.freepascal.org/view.php?id=10374 .
 
 Чтобы безопасно использовать _COM интерфейсы_ необходимо
