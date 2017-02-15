@@ -15,17 +15,17 @@ constructor TPlayer.Create;
 begin
   inherited;
   Gun1 := TGun.Create;
-  raise Exception.Create('Raising an exception from constructor!');
+  raise Exception.Create('Вызваем exception из constructor-а!');
   Gun2 := TGun.Create;
 end;
 
 destructor TPlayer.Destroy;
 begin
-  { in case since the constructor crashed, we can
-    have Gun1 <> nil and Gun2 = nil now. Deal with it.
-    ...Actually, in this case, FreeAndNil deals with it without
-    any additional effort on our side, because FreeAndNil checks
-    whether the instance is nil before calling it's destructor. }
+  { в данном случае вследствие ошибки в constructor-е crashed, у нас
+    может оказаться Gun1 <> nil и Gun2 = nil. Смиритесь.
+    ...Вообще, в таком случае, FreeAndNil справиться с задачей
+    без каких-либо действий с нашей стороны, поскольку FreeAndNil проверяет
+    является ли экземпляр класса nil перед вызовом destructor-а. }
   FreeAndNil(Gun1);
   FreeAndNil(Gun2);
   inherited;
@@ -36,6 +36,6 @@ begin
     TPlayer.Create;
   except
     on E: Exception do
-      Writeln('Caught ' + E.ClassName + ': ' + E.Message);
+      Writeln('Ошибка ' + E.ClassName + ': ' + E.Message);
   end;
 end.
