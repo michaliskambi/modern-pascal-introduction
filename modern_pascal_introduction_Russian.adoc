@@ -1779,36 +1779,36 @@ include::code-samples/interfaces_com_test.lpr[]
 
 Этор раздел касается как _CORBA_, так и _COM_ интерфейсов.
 
-Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
+Typecast интерфейса через оператор `as` выполняет проверку в режиме исполнения. Рассмотрим пример:
 
 [source,pascal]
 ----
 UseThroughInterface(Cx as IMyInterface);
 ----
 
-It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface` (but we avoid the error by checking `Cx is IMyInterface` before doing the cast).
+Это сработает для всех экземпляров `C1`, `C2`, `C3` из примера в предыдущем подразделе. При выполнении программы это вызовет ошибку для `C3`, у которого не описан `IMyInterface` (впрочем, мы можем избежать такой ошибки, проверив `Cx is IMyInterface` перед выполнением typecast).
 
-You can instead cast the instance as an interface implicitly:
+Однако, возможно typecast данный экземпляр самым прямым образом:
 
 [source,pascal]
 ----
 UseThroughInterface(Cx);
 ----
 
-In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`).
+В таком случае проверка выполняется в момент компилляции. Такой код скомпилируется для `C1` и `C2` (которые определены, как классы, использующие `IMyInterface`).
 
-But it will not compile for `C3`.
+Но не скомпилируется для `C3`.
 
-In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
+По большому счёту такой typecast работает как для обычных классов. В случае, если требуется экземпляр класса `TMyClass`, всегда можно использовать переменную, объявленную как `TMyClass`, *или как любой наследник `TMyClass`*. Точно такая же ситуация и для интерфейсов. Не требуется выполнять явные typecast в такой ситуации.
 
-An equivalent is also
+Эквивалент этого также:
 
 [source,pascal]
 ----
 UseThroughInterface(IMyInterface(Cx));
 ----
 
-This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
+Это тоже typecast, который должен быть верным при компилляции. Обратите внимание, что такой синтаксис не похож на typecast обычных классов. Если написать что-либо вроде `TMyClass\(C)` для классов, то в результате получится _небезопасный, непроверяемый_ typecast. В случае же интерфейсов, писать `IMyInterface\(C)` безопасно и быстро (проверяется лишь при компилляции) для выполнения typecast-а.
 
 ## Про этот документ
 
