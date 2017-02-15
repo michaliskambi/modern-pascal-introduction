@@ -29,7 +29,7 @@ Michalis Kamburelis
 
 [source,pascal]
 ----
-include::code-samples/hello_world.lpr[]
+include::code-samples_rus/hello_world.lpr[]
 ----
 
 Это полноценная программа, которую можно _скомпилировать_ и _запустить_.
@@ -47,7 +47,7 @@ include::code-samples/hello_world.lpr[]
 
 [source,pascal]
 ----
-include::code-samples/functions_primitives.lpr[]
+include::code-samples_rus/functions_primitives.lpr[]
 ----
 
 Чтобы вернуть значение функции, присвой что-нибудь магическое переменной `Result`. Можно свободно читать и устанавливать переменную `Result`, так же просто как локальную переменную.
@@ -279,7 +279,7 @@ end;
 
 [source,pascal]
 ----
-include::code-samples/loops.lpr[]
+include::code-samples_rus/loops.lpr[]
 ----
 
 Примечания:
@@ -319,7 +319,7 @@ begin
 +
 [source,pascal]
 ----
-include::code-samples/for_in_list.lpr[]
+include::code-samples_rus/for_in_list.lpr[]
 ----
 +
 Мы еще не рассматривали концепцию классов, поэтому последний пример может показаться неочевидным, но мы обязательно рассмотрим этот вопрос чуть позже :)
@@ -391,7 +391,7 @@ Writeln('Вторая строка.');
 
 [source,pascal]
 ----
-include::code-samples/myunit.pas[]
+include::code-samples_rus/myunit.pas[]
 ----
 
 Финальная программа сохраняются в виде файлов типа `myprogram.lpr` (`lpr` = Lazarus program file; в Delphi используются `.dpr`). Следует отметить, что возможны и другие расширения, например, некоторые проекты просто используют `.pas` в качестве основного файла программы, изредка для модулей используются расширения `.pp`. Лично я предпочитаю использовать `.pas` для модулей и `.lpr` для FPC/Lazarus программ.
@@ -400,7 +400,7 @@ include::code-samples/myunit.pas[]
 
 [source,pascal]
 ----
-include::code-samples/myunit_test.lpr[]
+include::code-samples_rus/myunit_test.lpr[]
 ----
 
 ### Перекрёстные ссылки между модулями
@@ -604,7 +604,7 @@ end;
 
 [source,pascal]
 ----
-include::code-samples/inheritance.lpr[]
+include::code-samples_rus/inheritance.lpr[]
 ----
 
 По умолчанию методы являются виртуальными, чтобы сделать их такими, необходимо использовать специальное ключевое слово `virtual`. Перекрытие или замещение виртуального метода осуществляется с помощью ключевого слова `override`, в ином случае будет ошибка. Чтобы скрыть метод без перекрытия следует использовать ключевое слово `reintroduce`, однако обычно не стоит так делать кроме случаев, когда для этого есть особые причины.
@@ -613,7 +613,7 @@ include::code-samples/inheritance.lpr[]
 
 [source,pascal]
 ----
-include::code-samples/is_as.lpr[]
+include::code-samples_rus/is_as.lpr[]
 ----
 
 Вместо приведения типа `X as TMyClass`, можно также использовать приведение типа _без проверки_ с помощью выражения типа `TMyClass(X)`. Такой код будет работать чуть-чуть быстрее, но может привести к неопределённому поведению в случае если  `X` не является наследником `TMyClass`. По этому конструкцию `TMyClass(X)` лучше не использовать в программе кроме случаев, когда абсолютно очевидно, что здесь не может быть ошибок, например, если тип класса был проверен с помощью оператора `is`:
@@ -711,7 +711,7 @@ end;
 
 [source,pascal]
 ----
-include::code-samples/exception_finally.lpr[]
+include::code-samples_rus/exception_finally.lpr[]
 ----
 
 Обратите внимание, что раздел `finally` будет выполнен даже в случае, если выполнение будет прекращено командой `Exit` (из функции, процедуры или метода), операторами `Break` или `Continue` (внутри тела цикла).
@@ -995,7 +995,7 @@ end;
 
 [source,pascal]
 ----
-include::code-samples/file_stream.lpr[]
+include::code-samples_rus/file_stream.lpr[]
 ----
 
 В *Castle Game Engine* следует использовать метод `Download` для создания потока, который оперирует ресурсами (это могут быть файлы, данные, скачанные с URL или Android assets). Более того, для открытия ресурсов в игровых данных (обычно это под-папка `data`) используйте функцию `ApplicationData`.
@@ -1039,7 +1039,7 @@ while not Text.Eof do
 
 [source,pascal]
 ----
-include::code-samples/persistent.lpr[]
+include::code-samples_rus/persistent.lpr[]
 ----
 
 Иногда более удобно написать альтернативный override метода `AssignTo` в копируемом классе, а не делать overriding метода `Assign` в классе, в который выполняется копирование.
@@ -1156,14 +1156,14 @@ Generic-и в Паскале реализованы весьма подобно 
 
 [source,pascal]
 ----
-include::code-samples/generics.lpr[]
+include::code-samples_rus/generics.lpr[]
 ----
 
 Возможности generic-ов не ограничиваются классами, можно создать generic функции и процедуры:
 
 [source,pascal]
 ----
-include::code-samples/generic_functions.lpr[]
+include::code-samples_rus/generic_functions.lpr[]
 ----
 
 ### Оверлоадинг (Overloading)
@@ -1281,7 +1281,7 @@ _Record_ является своеобразным контейнером для
 
 [source,pascal]
 ----
-include::code-samples/records.lpr[]
+include::code-samples_rus/records.lpr[]
 ----
 
 В современном Паскале, в первую очередь лучше использовать `class`, а не `record` -- поскольку классы имеют множество полезных возможностей, как конструкторы и наследование.
@@ -1345,7 +1345,7 @@ type
 
 [source,pascal]
 ----
-include::code-samples/operator_overloading.lpr[]
+include::code-samples_rus/operator_overloading.lpr[]
 ----
 
 Можно также перегрузить операторы над классами. Учитывая то, что обычно в такой функции-операторе создаётся новый экземпляр класса, вызывающий объект должен позаботиться об надлежащем освобождении памяти.
@@ -1637,7 +1637,7 @@ X := TMyClass.Create;
 
 [source,pascal]
 ----
-include::code-samples/exception_in_constructor_test.lpr[]
+include::code-samples_rus/exception_in_constructor_test.lpr[]
 ----
 
 ## Интерфейсы
@@ -1653,7 +1653,7 @@ _Интерфейсы CORBA_ в Object Pascal работают в значите
 //Это очень похоже на Java, когда интерфейсы используются, в тот момент, когда бы ты думал о множественном наследовании.
 [source,pascal]
 ----
-include::code-samples/interfaces_corba_test.lpr[]
+include::code-samples_rus/interfaces_corba_test.lpr[]
 ----
 
 ### CORBA и COM интерфейсы
@@ -1759,7 +1759,7 @@ include::code-samples/gen_guid.lpr[]
 
 [source,pascal]
 ----
-include::code-samples/interfaces_com_with_ref_counting.lpr[]
+include::code-samples_rus/interfaces_com_with_ref_counting.lpr[]
 ----
 
 ### Использование COM интерфейсов с отключённым reference-counting
@@ -1772,7 +1772,7 @@ include::code-samples/interfaces_com_with_ref_counting.lpr[]
 
 [source,pascal]
 ----
-include::code-samples/interfaces_com_test.lpr[]
+include::code-samples_rus/interfaces_com_test.lpr[]
 ----
 
 ### Typecast интерфейсов без оператора "as"
