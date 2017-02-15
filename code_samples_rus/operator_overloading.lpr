@@ -7,5 +7,5 @@ begin
 end;
 
 begin
-  Writeln('bla' * 10);
+  Writeln('повтор' * 10);
 end.
