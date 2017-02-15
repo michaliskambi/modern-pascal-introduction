@@ -1,4 +1,4 @@
-{$mode objfpc}{$H+}{$J-}
+﻿{$mode objfpc}{$H+}{$J-}
 
 program MyProgram;
 
@@ -12,7 +12,7 @@ type
 procedure TMyClass.MyMethod;
 begin
   if Random > 0.5 then
-    raise Exception.Create('Raising an exception!');
+    raise Exception.Create('Вызываем exception!');
 end;
 
 var
