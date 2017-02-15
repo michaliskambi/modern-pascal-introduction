@@ -9,7 +9,7 @@ type
 
 procedure TMyRecord.WritelnDescription;
 begin
-  Writeln('Square of ', I, ' is ', Square);
+  Writeln('Квадрат числа ', I, ' составляет ', Square);
 end;
 
 var
