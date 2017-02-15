@@ -1,37 +1,37 @@
 {$mode objfpc}{$H+}{$J-}
-{$R+} // range checking on - nice for debugging
+{$R+} // включаем проверку на диапазон величин, очень полезно для отладки
 var
   MyArray: array [0..9] of Integer;
   I: Integer;
 begin
-  // initialize
+  // инициализация
   for I := 0 to 9 do
     MyArray[I] := I * I;
 
-  // show
+  // отображение
   for I := 0 to 9 do
-    Writeln('Square is ', MyArray[I]);
+    Writeln('Квадрат составляет ', MyArray[I]);
 
-  // does the same as above
+  // делает то же самое, что и предыдущий вариант
   for I := Low(MyArray) to High(MyArray) do
-    Writeln('Square is ', MyArray[I]);
+    Writeln('Квадрат составляет ', MyArray[I]);
 
-  // does the same as above
+  // делает то же самое
   I := 0;
   while I < 10 do
   begin
-    Writeln('Square is ', MyArray[I]);
+    Writeln('Квадрат составляет ', MyArray[I]);
     I := I + 1; // or "I += 1", or "Inc(I)"
   end;
 
-  // does the same as above
+  // делает то же самое
   I := 0;
   repeat
-    Writeln('Square is ', MyArray[I]);
+    Writeln('Квадрат составляет ', MyArray[I]);
     Inc(I);
   until I = 10;
 
-  // does the same as above
+  // делает то же самое
   for I in MyArray do
     Writeln('Square is ', I);
 end.
