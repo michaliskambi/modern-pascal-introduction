@@ -18,6 +18,7 @@ end;
 var
   C: TMyClass;
 begin
+  randomize;
   C := TMyClass.Create;
   try
     C.MyMethod;
