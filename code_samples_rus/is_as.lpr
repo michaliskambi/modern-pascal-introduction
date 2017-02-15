@@ -27,12 +27,12 @@ begin
     Descendant.MyMethod;
     Descendant.MyMethodInDescendant;
 
-    { Descendant has all functionality expected of
-      the TMyClass, so this assignment is OK }
+    { производные классы сохраняют все функции класса
+      TMyClass, по этому можно таким образом создавать ссылку }
     C := Descendant;
     C.MyMethod;
 
-    { this cannot work, since TMyClass doesn't define this method }
+    { так не сработает, поскольку TMyClass не определяет этот метод }
     //C.MyMethodInDescendant;
     if C is TMyClassDescendant then
       (C as TMyClassDescendant).MyMethodInDescendant;
