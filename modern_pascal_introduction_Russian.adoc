@@ -409,7 +409,7 @@ include::code-samples_rus/myunit_test.lpr[]
 
 [source,pascal]
 ----
-include::code-samples/anotherunit_rus.pas[]
+include::code-samples_rus/anotherunit.pas[]
 ----
 
 Запрещено применять _кольцевую взаимозависимость_ в разделе interface.  Т.е. два модуля не могут использовать друг друга в разделе interface.
