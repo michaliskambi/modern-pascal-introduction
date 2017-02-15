@@ -16,5 +16,5 @@ begin
     S.ReadBuffer(OutputInt, SizeOf(OutputInt));
   finally FreeAndNil(S) end;
 
-  Writeln('Read from file got integer: ', OutputInt);
+  Writeln('Из файла прочитано целое число: ', OutputInt);
 end.
