@@ -38,7 +38,7 @@ end;
 
 procedure UseThroughInterface(I: IMyInterface);
 begin
-  Write('Shooting... ');
+  Write('Стреляем... ');
   I.Shoot;
 end;
 
