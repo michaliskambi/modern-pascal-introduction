@@ -1,7 +1,7 @@
 {$mode objfpc}{$H+}{$J-}
 uses SysUtils;
 
-{ Note: this example requires FPC 3.1.1 (will not compile with FPC 3.0.0 or older). }
+{ Примечание: этот пример требует FPC 3.1.1 (не может быть скомпиллирован в FPC 3.0.0 или более ранних версиях). }
 
 generic function Min<T>(const A, B: T): T;
 begin
