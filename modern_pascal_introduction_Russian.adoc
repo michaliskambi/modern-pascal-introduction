@@ -1550,7 +1550,7 @@ function TMyClass.Clone(AOwner: TComponent): TMyClass;
 begin
   // Таким образом будет создан объект конкретного типа TMyClass:
   //Result := TMyClass.Create(AOwner);
-  // А такой подход может создать объект как типа TMyClass так и его наследников:
+  // А такой подход может создать объект как типа TMyClass, так и его наследников:
   Result := TMyClassRef(self.ClassType).Create(AOwner);
   Result.Assign(Self);
 end;
