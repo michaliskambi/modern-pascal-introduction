@@ -1,6 +1,3 @@
 "NOTE:" automatically creates a "note" field. But Russian "ПРИМЕЧАНИЕ:" doesn't. Need to look up at AsciiDoctor extended syntax...
-What is the way to translate comments in "include" files? Create another copy?
-See color highlighted in *.odt file
-Re-read text in columns
 Proof-read thorough text in print
 All terms (Unit, generics, property, etc) give in English, first-time translate to Russian.
