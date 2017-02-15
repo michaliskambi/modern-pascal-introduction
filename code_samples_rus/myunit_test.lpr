@@ -7,6 +7,6 @@ uses MyUnit;
 var
   X: Single;
 begin
-  Writeln(MyFunction('Note: '));
+  Writeln(MyFunction('Примечание: '));
   MyProcedure(5);
 end.
