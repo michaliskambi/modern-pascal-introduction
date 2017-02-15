@@ -29,8 +29,8 @@ begin
 
   StringCalc := TMyStringCalculator.Create;
   try
-    StringCalc.Add('something');
-    StringCalc.Add(' more');
+    StringCalc.Add('что-нибудь');
+    StringCalc.Add(' ещё');
     Writeln('StringCalc: ', StringCalc.Value);
   finally FreeAndNil(StringCalc) end;
 end.
