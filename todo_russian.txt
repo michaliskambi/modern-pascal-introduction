@@ -1,3 +1,0 @@
-"NOTE:" automatically creates a "note" field. But Russian "ПРИМЕЧАНИЕ:" doesn't. Need to look up at AsciiDoctor extended syntax...
-Proof-read thorough text in print
-All terms (Unit, generics, property, etc) give in English, first-time translate to Russian.
