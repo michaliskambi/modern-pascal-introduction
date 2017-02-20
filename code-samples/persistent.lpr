@@ -24,7 +24,9 @@ begin
     MyInt := SourceMyClass.MyInt;
     // Xxx := SourceMyClass.Xxx; // add new fields here
   end else
-    { call inherited ONLY when you cannot handle Source class }
+    { Since TMyClass is a direct TPersistent descendant,
+      it calls inherited ONLY when it cannot handle Source class.
+      See comments below. }
     inherited Assign(Source);
 end;
 
@@ -39,8 +41,10 @@ begin
     // Xxx := SourceMyClassDescendant.Xxx; // add new fields here
   end;
 
-  { call inherited ALWAYS, to allow TMyClass.Assign to handle
-    remaining fields. }
+  { Since TMyClassDescendant has an ancestor that already overrides
+    Assign (in TMyClass.Assign), it calls inherited ALWAYS,
+    to allow TMyClass.Assign to handle remaining fields.
+    See comments below for a detailed reasoning. }
   inherited Assign(Source);
 end;
 

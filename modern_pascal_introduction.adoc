@@ -1036,18 +1036,90 @@ Using these lists is a good idea, as you get type-safety, and their API is rich 
 
 ### Cloning: TPersistent.Assign
 
-To allow copying a class instance, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. There is no magic copying here, you need to implement the `Assign` to actually copy the fields you want.
+Copying the class instances by a simple assignment operator copies the *reference*.
 
-You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
+[source,pascal]
+----
+var
+  X, Y: TMyObject;
+begin
+  X := TMyObject.Create;
+  Y := X;
+  // X and Y are now two pointers to the same data
+  Y.MyField := 123; // this also changes X.MyField
+  FreeAndNil(X);
+end;
+----
+
+To copy the *class instance contents*, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. Once it's implemented properly in `TMyObject`, you use it like this:
+
+[source,pascal]
+----
+var
+  X, Y: TMyObject;
+begin
+  X := TMyObject.Create;
+  Y := TMyObject.Create;
+  Y.Assign(X);
+  Y.MyField := 123; // this does not change X.MyField
+  FreeAndNil(X);
+  FreeAndNil(Y);
+end;
+----
+
+To make it work, you need to implement the `Assign` method to actually copy the fields you want. You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
 
 [source,pascal]
 ----
 include::code-samples/persistent.lpr[]
 ----
 
-Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the target class.
+Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the destination class.
 
-Be careful when calling `inherited` in the `Assign` implementation. You should _call inherited `TPersistent.Assign` only if you cannot handle the assignment in your code_ (this allows the `AssignTo` method to work, or otherwise raise an exception when assignment cannot be done). On the other hand, if your class descends from another class that already implements the `Assign` method, then _always call the inherited ``TMyClass.Assign``_. See the example above.
+Be careful when you call `inherited` in the overridden `Assign` implementation. There are two situations:
+
+Your class is a direct descendant of the `TPersistent` class. (Or, it's not a direct descendant of `TPersistent`, but no ancestor has overridden the `Assign` method.)::
+
+  In this case, your class should use the `inherited` keyword (to call the `TPersistent.Assign`) _only if you cannot handle the assignment in your code_.
+
+Your class descends from some class that has already overridden the `Assign` method.::
+
+  In this case, your class should _always_ use the `inherited` keyword (to call the ancestor `Assign`). In general, calling `inherited` in overridden methods is _usually_ a good idea.
+
+To understand the need when to call (or not to call) `inherited` from the `Assign` implementation, and how it relates to the `AssignTo` method, it's best to look at the `TPersistent.Assign` and `TPersistent.AssignTo` implementations:
+
+[source,pascal]
+----
+procedure TPersistent.Assign(Source: TPersistent);
+begin
+  if Source <> nil then
+    Source.AssignTo(Self)
+  else
+    raise EConvertError...
+end;
+
+procedure TPersistent.AssignTo(Destination: TPersistent);
+begin
+  raise EConvertError...
+end;
+----
+
+NOTE: This is not the *exact* implementation of `TPersistent`, I simplified it to hide the boring details about how the exception message is build.
+//The exact source code, in the FPC standard library, can be found in the `rtl/objpas/classes/persist.inc` source file. It's behavior is 100% compatible with the Delphi standard library, as far as I know.
+
+The conclusions you can get from the above are:
+
+* _If neither `Assign` nor `AssignTo` are overridden_, then calling them will result in an exception.
+
+* Also, note that there is _no_ code in `TPersistent` implementation that automatically copies all the fields (or all the published fields) of the classes. That's why you need to do that yourself, by overriding `Assign` in all the classes. You can use RTTI (runtime type information) for that, but for simple cases you will probably just list the fields to be copied manually.
+
+When you have a class like `TApple`, your `TApple.Assign` implementation usually deals with copying fields that are specific to the `TApple` class (not to the `TApple` ancestor, like `TFruit`). So, the `TApple.Assign` implementation usually checks whether `Source is TApple` at the beginning, before copying apple-related fields. Then, it calls `inherited` to allow `TFruit` to handle the rest of the fields.
+
+Assuming that you implemented `TFruit.Assign` and `TApple.Assign` following the standard pattern (as shown in the example above), the effect is like this:
+
+* If you pass `TApple` instance to `TApple.Assign`, it will work and copy all the fields.
+* If you pass `TOrange` instance to `TApple.Assign`, it will work and only copy the common fields shared by both `TOrange` and `TApple`. In other words, the fields defined at `TFruit`.
+* If you pass `TWerewolf` instance to `TApple.Assign`, it will raise an exception (because `TApple.Assign` will call `TFruit.Assign` which will call `TPersistent.Assign` which raises an exception).
 
 NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
 
