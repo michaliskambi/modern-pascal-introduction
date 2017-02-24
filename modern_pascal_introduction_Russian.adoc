@@ -427,6 +427,13 @@ include::code-samples_rus/myunit.pas[]
 include::code-samples_rus/myunit_test.lpr[]
 ----
 
+Ещё одной полезной особенностью unit-ов являются секции `initialization` и `finalization` которые выполняются при запуске и завершении выполнения программы.
+
+[source,pascal]
+----
+include::code-samples/initialization_finalization.pas[]
+----
+
 ### Перекрёстные ссылки между unit-ами
 
 Не только основная программа, но и unit-ы также могут ссылаться на другие unit-ы. Другой unit может войти в секцию interface или только в implementation. Первый вариант позволяет создавать новые определения (процедуры, типы...), используя или наследуя информацию из другого unit-а. Во втором варианте возможности более ограничены - если использовать unit в секции implementation, то применить его идентификаторы возможно лишь в рамках implementation данного unit-а.
