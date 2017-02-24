@@ -424,6 +424,13 @@ A program can use a unit by a `uses` keyword:
 include::code-samples/myunit_test.lpr[]
 ----
 
+Another very useful feature of units is `initialization` and `finalization` sections that contain actions preformed at program start and end.
+
+[source,pascal]
+----
+include::code-samples/initialization_finalization.pas[]
+----
+
 ### Units using each other
 
 One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use it's identifiers only in your implementation).
