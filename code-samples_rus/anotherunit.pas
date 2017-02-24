@@ -5,7 +5,7 @@ interface
 uses Classes;
 
 { Тип класса "TComponent" определён в unit-е Classes.
-  По этому необходимо использовать unit Classes, как видно выше. }
+  По этому необходимо использовать uses Classes, как видно выше. }
 procedure DoSomethingWithComponent(var C: TComponent);
 
 implementation
