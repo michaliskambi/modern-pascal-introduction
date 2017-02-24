@@ -90,6 +90,26 @@ begin
 end;
 ----
 
+Another useful feature of Pascal is that function result can be discarded and the function may be used identically to a procedure. For example:
+
+[source,pascal]
+----
+var count: Integer;
+    myCount: Integer;
+
+function CountMe: Integer;
+begin
+  inc(count);
+  result := count;
+end;
+
+begin
+  count := 10;
+  CountMe; //function result is discarded, but the function is executed
+  myCount := CountMe; //normal usage of the function
+end.
+----
+
 ### Testing (if)
 
 Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
