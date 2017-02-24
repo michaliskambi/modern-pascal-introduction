@@ -173,7 +173,7 @@ The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is p
 
 The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
 
-The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions.
+The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions to specify the correct order of their processing.
 
 For example this is a compilation error:
 
