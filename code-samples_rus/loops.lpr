@@ -21,7 +21,7 @@ begin
   while I < 10 do
   begin
     Writeln('Квадрат составляет ', MyArray[I]);
-    I := I + 1; // or "I += 1", or "Inc(I)"
+    I := I + 1; // это идентично "I += 1" или "Inc(I)"
   end;
 
   // делает то же самое
@@ -33,5 +33,5 @@ begin
 
   // делает то же самое
   for I in MyArray do
-    Writeln('Square is ', I);
+    Writeln('Квадрат составляет ', I);
 end.
