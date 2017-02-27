@@ -32,6 +32,7 @@ begin
   until I = 10;
 
   // does the same as above
+  // note: here I enumerates MyArray values, not indexes
   for I in MyArray do
     Writeln('Square is ', I);
 end.

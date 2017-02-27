@@ -424,7 +424,7 @@ A program can use a unit by a `uses` keyword:
 include::code-samples/myunit_test.lpr[]
 ----
 
-Another very useful feature of units is `initialization` and `finalization` sections that contain actions preformed at program start and end.
+Another very useful feature of units is `initialization` and `finalization` sub-sections inside `implementation` that contain actions preformed at program start and end.
 
 [source,pascal]
 ----
