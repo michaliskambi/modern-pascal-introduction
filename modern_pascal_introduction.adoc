@@ -614,8 +614,9 @@ We have classes. At the basic level, a class is just a container for
 ----
 type
   TMyClass = class
-    MyInt: Integer;
-    procedure MyMethod;
+    MyInt: Integer; // this is a field
+    property MyIntProperty: Integer read MyInt write MyInt; // this is a property
+    procedure MyMethod; //this is a method
   end;
 
 procedure TMyClass.MyMethod;
