@@ -13,10 +13,10 @@ type
   end;
 
 procedure TMyClass.MyMethod;
-begin Writeln('MyMethod') end;
+begin Writeln('Это MyMethod') end;
 
 procedure TMyClassDescendant.MyMethodInDescendant;
-begin Writeln('MyMethodInDescendant') end;
+begin Writeln('Это MyMethodInDescendant') end;
 
 var
   Descendant: TMyClassDescendant;
@@ -27,13 +27,14 @@ begin
     Descendant.MyMethod;
     Descendant.MyMethodInDescendant;
 
-    { производные классы сохраняют все функции класса
+    { производные классы сохраняют все функции родительского класса
       TMyClass, по этому можно таким образом создавать ссылку }
     C := Descendant;
     C.MyMethod;
 
-    { так не сработает, поскольку TMyClass не определяет этот метод }
+    { так не сработает, поскольку в TMyClass не определён этот метод }
     //C.MyMethodInDescendant;
+    { правильно записать следующим образом: }
     if C is TMyClassDescendant then
       (C as TMyClassDescendant).MyMethodInDescendant;
 
