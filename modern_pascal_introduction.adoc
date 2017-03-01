@@ -711,6 +711,7 @@ When declaring a property you specify:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
 . And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
+. Moreover, the property may have a default value (provided after `default` keyword).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
 
@@ -774,7 +775,7 @@ Note that this doesn't concern raised exceptions. Although you do create a class
 
 ### How to free
 
-To free the class instance, it's best to call `FreeAndNil(A)` on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
+To free the class instance, it's best to call `FreeAndNil(A)` from  `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
 
 It is more-or-less a shortcut for
 
