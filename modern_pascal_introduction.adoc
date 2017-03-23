@@ -1760,7 +1760,7 @@ What are COM interfaces?::
 * Adds the `QueryInterface` method.
 * Allows to interact with the _COM (Component Object Model) technology_.
 
-What do you advice to not use the COM interfaces?::
+Why do you advice to not use the COM interfaces?::
 
   The additional features brought by the COM interfaces are rather problematic in my view. Don't get me wrong -- the idea of reference-counting is very nice. But entangling these features with interfaces (instead of making them orthogonal features) is very unclean in my eyes. It definitely doesn't match my use cases.
 +
