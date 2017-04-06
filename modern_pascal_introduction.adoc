@@ -1762,7 +1762,7 @@ What are COM interfaces?::
 
 Why do you advice to not use the COM interfaces?::
 
-  The additional features brought by the COM interfaces are rather problematic in my view. Don't get me wrong -- the idea of reference-counting is very nice. But entangling these features with interfaces (instead of making them orthogonal features) is very unclean in my eyes. It definitely doesn't match my use cases.
+  The additional features brought by the COM interfaces are rather problematic in my view. To be clear -- _reference-counting_, that provides an automatic memory management (in simple situations, i.e. without cycles), _is a very useful concept_. But _entangling this feature with interfaces (instead of making them orthogonal features) is very unclean in my eyes_. It definitely doesn't match my use cases.
 +
 --
 * Sometimes I want to cast my (otherwise unrelated) classes to a common interface.
@@ -1770,7 +1770,12 @@ Why do you advice to not use the COM interfaces?::
 * _Maybe_ some day I will want to interact with the _COM technology_.
 --
 +
-But these are all separate, unrelated needs. Entangling them in a single language feature is counter-useful in my experience. And it does cause actual problems: the reference-counting mechanism of COM, even when disabled by a special `_AddRef` and `_ReleaseRef` implementation, is still troublesome. You still need to be careful to never have a temporary interface reference hanging, after you have freed the class instance. More details about it in the next section.
+But these are all separate, unrelated needs. Entangling them in a single language feature is counter-useful in my experience. It does cause actual problems:
++
+--
+* If I want the feature of _casting classes to a common interface API_, but I don't want the reference-counting mechanism (I want to manually free objects), then the COM interfaces are problematic. Even when reference-counting is disabled by a special `_AddRef` and `_ReleaseRef` implementation, you still need to be careful to never have a temporary interface reference hanging, after you have freed the class instance. More details about it in the next section.
+* If I want the feature of _reference counting_, but I have no need for an interface hierarchy to represent something different than the class hierarchy, then I have to duplicate my classes API in interfaces. Thus creating a single interface for each class. This is counter-productive. I would much rather have _smart pointers_ as a separate language feature, not entangled with interfaces (and luckily, it's coming:).
+--
 +
 That is why I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces. The _COM_ interfaces are somewhat an _embarrassment to the language_, in my eyes.
 +
@@ -1779,7 +1784,7 @@ To be fair, the _COM interfaces_ are presented in more details in the next secti
 Can we have reference-counting with CORBA interfaces?::
 
   Yeah. Just add `_AddRef` / `_ReleaseRef` methods. There's no need to descend from the `IUnknown` interface. Although in most cases, if you want reference-counting with your interfaces, you may as well just use COM interfaces.
-//    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that iunknown doesn't just do refcounting though, it also plays a part in identity (queryinterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
+//    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that IUnknown doesn't just do ref-counting though, it also plays a part in identity (QueryInterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
 ### Interfaces GUIDs
