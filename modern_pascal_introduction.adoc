@@ -1,4 +1,4 @@
-# Quick Modern Object Pascal for Programmers
+# Modern Object Pascal Introduction for Programmers
 Michalis Kamburelis
 :toc: left
 :toclevels: 4
