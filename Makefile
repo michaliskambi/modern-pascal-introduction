@@ -1,11 +1,12 @@
 NAME:=modern_pascal_introduction
 ALL_OUTPUT:=$(NAME).html $(NAME).pdf $(NAME).xml
+TEST_BROWSER:=firefox
 
 all: $(ALL_OUTPUT)
 
 $(NAME).html: $(NAME).adoc
 	asciidoctor $< -o $@
-	firefox $@
+	$(TEST_BROWSER) $@ &
 
 $(NAME).xml: $(NAME).adoc
 	asciidoctor -b docbook5 $< -o $@
@@ -28,5 +29,5 @@ test:
 .PHONY: upload
 upload: test clean all
 	scp modern_pascal_introduction.html modern_pascal_introduction.pdf michalis@michalis.ii.uni.wroc.pl:/home/michalis/public_html/modern_pascal_introduction/
-	firefox http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.html
-	firefox http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.pdf
+	$(TEST_BROWSER) http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.html &
+	$(TEST_BROWSER) http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.pdf &
