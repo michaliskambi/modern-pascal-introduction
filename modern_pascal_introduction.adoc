@@ -335,7 +335,6 @@ begin
   Animals := [akDog, akCat];
   for AK in Animals do ...
 ----
-
 ** And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
 +
 [source,pascal]
@@ -358,6 +357,7 @@ Writeln('You can output an integer: ', 3 * 4);
 Writeln('You can pad an integer: ', 666:10);
 Writeln('You can output a float: ', Pi:1:4);
 ----
+
 To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
 
 [source,pascal]
@@ -565,6 +565,7 @@ Sometimes you want to take an identifier from one unit, and _expose_ it in a new
 Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
 
 This can be done by redefining the identifier in your new unit.
+
 [source,pascal]
 ----
 {$mode objfpc}{$H+}{$J-}
@@ -653,6 +654,7 @@ if A is TMyClass then
 if A is TMyClass then
   TMyClass(A).CallSomeMethodOfMyClass;
 ----
+
 ### Properties
 
 Properties are a very nice _"syntax sugar"_ to
@@ -714,6 +716,7 @@ When declaring a property you specify:
 . Moreover, the property may have a default value (provided after `default` keyword).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
+
 
 Technically, for the compiler, the "getter" and "setter" methods are just normal methods and they can do absolutely anything (including side-effects or randomization). But it's a good convention to design properties to behave more-or-less like fields:
 
@@ -952,7 +955,6 @@ Trying to access a field of a `nil` instance results in a predictable exception 
 Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
 
 2. With `Obj2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
-
 //(or call a method that accessed a field of such instance)
 results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
 
@@ -1146,7 +1148,6 @@ The callback can be:
 ----
 include::code-samples/callbacks.lpr[]
 ----
-
 * A method: declare with `of object` at the end.
 +
 [source,pascal]
@@ -1315,6 +1316,7 @@ include::code-samples/records.lpr[]
 ----
 
 In modern Object Pascal, your first instinct should be to design a `class`, not a `record` -- because classes are packed with useful features, like constructors and inheritance.
+
 But records are still very useful when you need speed or a predictable memory layout:
 
 * Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count). So you have to be more careful when dealing with records, but it gives you some performance gain.
@@ -1827,9 +1829,7 @@ You can instead cast the instance as an interface implicitly:
 UseThroughInterface(Cx);
 ----
 
-In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`).
-
-But it will not compile for `C3`.
+In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
 
 In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
 
