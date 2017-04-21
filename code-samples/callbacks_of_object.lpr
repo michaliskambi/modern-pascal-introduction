@@ -35,11 +35,9 @@ var
 begin
   C := TMyClass.Create;
   try
-    C.CurrentValue := 1;
     C.ProcessTheList(@C.Add);
     Writeln('1 + 2 + 3 ... + 10 = ', C.CurrentValue);
 
-    C.CurrentValue := 1;
     C.ProcessTheList(@C.Multiply);
     Writeln('1 * 2 * 3 ... * 10 = ', C.CurrentValue);
   finally FreeAndNil(C) end;

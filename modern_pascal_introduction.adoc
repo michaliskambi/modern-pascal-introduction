@@ -888,9 +888,9 @@ begin
   inherited;
   // Actually, the parameter true (OwnsObjects) is already the default
   Guns := TGunList.Create(true);
-  Gun1 := TGun.Create(Self);
+  Gun1 := TGun.Create;
   Guns.Add(Gun1);
-  Gun2 := TGun.Create(Self);
+  Gun2 := TGun.Create;
   Guns.Add(Gun2);
 end;
 
@@ -1182,7 +1182,7 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
-The generics in Pascal are realized much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+The generics in Pascal are implemented much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
@@ -1604,12 +1604,12 @@ Simple way to do it is then to create a global procedure that takes an instance 
 
 [source,pascal]
 ----
-procedure Render(const O: TMy3DObject; const Color: TColor);
+procedure Render(const Obj1: TMy3DObject; const Color: TColor);
 var
   I: Integer;
 begin
-  for I := 0 to O.ShapesCount - 1 do
-    RenderMesh(O.Shape[I].Mesh, Color);
+  for I := 0 to Obj1.ShapesCount - 1 do
+    RenderMesh(Obj1.Shape[I].Mesh, Color);
 end;
 ----
 
@@ -1628,7 +1628,7 @@ procedure TMy3DObjectHelper.Render(const Color: TColor);
 var
   I: Integer;
 begin
-  // note that we access ShapesCount, Shape without any qualifiers here
+  { note that we access ShapesCount, Shape without any qualifiers here }
   for I := 0 to ShapesCount - 1 do
     RenderMesh(Shape[I].Mesh, Color);
 end;

@@ -24,13 +24,13 @@ begin
   try
     FloatCalc.Add(3.14);
     FloatCalc.Add(1);
-    Writeln('FloatCalc: ', FloatCalc.Value:1:2);
+    Writeln('Сложение величин типа Float: ', FloatCalc.Value:1:2);
   finally FreeAndNil(FloatCalc) end;
 
   StringCalc := TMyStringCalculator.Create;
   try
     StringCalc.Add('что-нибудь');
     StringCalc.Add(' ещё');
-    Writeln('StringCalc: ', StringCalc.Value);
+    Writeln('Сложвнеие величин типа String: ', StringCalc.Value);
   finally FreeAndNil(StringCalc) end;
 end.

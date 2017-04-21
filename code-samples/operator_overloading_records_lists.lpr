@@ -37,5 +37,7 @@ begin
       R := ListItem + R;
 
     Writeln('1 + 10 + 100 = ', R.MyInt);
-  finally FreeAndNil(L) end;
+  finally
+    FreeAndNil(L);
+  end;
 end.
