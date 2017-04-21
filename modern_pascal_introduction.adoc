@@ -323,7 +323,6 @@ var
 begin
   for AnimalKind in TAnimalKind do...
 ----
-
 ** It can iterate over all items included in the set:
 +
 [source,pascal]
@@ -943,7 +942,6 @@ end;
 
 1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil then ...` to avoid calling methods on a freed instance, like
 +
-
 [source,pascal]
 ----
 if Obj1 <> nil then
