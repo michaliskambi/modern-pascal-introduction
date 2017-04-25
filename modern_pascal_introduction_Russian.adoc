@@ -324,7 +324,7 @@ include::code-samples_rus/loops.lpr[]
 var
   AK: TAnimalKind;
 begin
-  for AnimalKind in TAnimalKind do...
+  for AK in TAnimalKind do...
 ----
 
 ** Он может перебирать все элементы набора:
@@ -333,7 +333,7 @@ begin
 ----
 var
   Animals: TAnimals;
-  AK: AnimalKind;
+  AK: TAnimalKind;
 begin
   Animals := [akDog, akCat];
   for AK in Animals do ...

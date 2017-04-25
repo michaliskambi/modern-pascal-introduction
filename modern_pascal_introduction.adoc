@@ -321,7 +321,7 @@ Note that the value of the loop counter variable (`I` in this example) should be
 var
   AK: TAnimalKind;
 begin
-  for AnimalKind in TAnimalKind do...
+  for AK in TAnimalKind do...
 ----
 ** It can iterate over all items included in the set:
 +
@@ -329,7 +329,7 @@ begin
 ----
 var
   Animals: TAnimals;
-  AK: AnimalKind;
+  AK: TAnimalKind;
 begin
   Animals := [akDog, akCat];
   for AK in Animals do ...
