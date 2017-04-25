@@ -31,6 +31,6 @@ begin
   try
     StringCalc.Add('что-нибудь');
     StringCalc.Add(' ещё');
-    Writeln('Сложвнеие величин типа String: ', StringCalc.Value);
+    Writeln('Сложение величин типа String: ', StringCalc.Value);
   finally FreeAndNil(StringCalc) end;
 end.
