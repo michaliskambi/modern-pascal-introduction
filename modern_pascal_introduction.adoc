@@ -738,6 +738,10 @@ Not every field and property type is allowed in the `published` section (not eve
 
 If you don't declare the ancestor type, every `class` inherits from `TObject`.
 
+### Self
+
+The special keyword `Self` can be used within the class implementation to explicitly refer to your own instance. It is equivalent to `this` from C++, Java and similar languages.
+
 ### Calling inherited method
 
 Within a method implementation, if you call another method, then by default you call the method of your own class. In the example code below, `TMyClass2.MyOtherMethod` calls `MyMethod`, which ends up calling `TMyClass2.MyMethod`.
