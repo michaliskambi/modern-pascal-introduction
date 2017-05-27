@@ -55,6 +55,8 @@ begin
       UseThroughInterface(C1 as IMyInterface);
     if C2 is IMyInterface then
       UseThroughInterface(C2 as IMyInterface);
+    // The "C3 is IMyInterface" below is false,
+    // so "UseThroughInterface(C3 as IMyInterface)" will not execute.
     if C3 is IMyInterface then
       UseThroughInterface(C3 as IMyInterface);
   finally
