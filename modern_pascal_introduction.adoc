@@ -778,6 +778,7 @@ TIP: In the above example, all the `inherited Xxx;` calls could be replaced by a
 
 Note that you usually want to make the `MyMethod` _virtual_ in such case. More about the virtual methods in section below. But the `inherited` keyword works regardless if the method is virtual or not. It merely means that the compiler starts searching the method in an ancestor.
 
+[[virtual-methods-section]]
 ### Virtual methods, override and reintroduce
 
 By default, the methods are _not virtual_. This is similar to C++, and unlike Java.
@@ -982,6 +983,27 @@ end;
 Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means, while it's also contained within a list. Use the `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
 
 *In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+
+### The virtual destructor called Destroy
+
+As you saw in the examples above, when the class is destroyed, it's `destructor` called `Destroy` is called.
+
+In theory, you could have multiple destructors, but in practice it's almost never a good idea. It's much easier to have only one destructor called `Destroy`, which is in turn called by the `Free` method, which is in turn called by the `FreeAndNil` procedure.
+
+The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in the descendants. This makes the `Free` method work correcrtly. Recall how the virtual methods work from the <<virtual-methods-section>>.
+
+[NOTE]
+====
+This information about _destructors_ is, indeed, inconsistent with the _constructors_.
+
+It's normal that a class has multiple constructors. Usually they are all called `Create`, and only have different parameters, but it's also OK to invent other names for constructors.
+
+Also, the `Create` constructor in the `TObject` is _not virtual_, so you do not mark it with `override` in the descendants.
+
+This all gives you a bit of extra flexibility when defining constructors. It is often not necessary to make them virtual, so by default you're not forced to do it.
+
+Note, however, that this changes for `TComponent` descendants. The `TComponent` defines a virtual constructor `Create(AOwner: TComponent)`. It needs a virtual constructor in order for the streaming system to work. When defining descendants of the `TComponent`, you should override this constructor (and mark it with the `override` keyword), and perform all your initialization inside it. It is stil OK to define additional constructors, but they should only act as _"helpers"_. The instance should always work when created using the `Create(AOwner: TComponent)` constructor, otherwise it will not be correctly constructed when streaming. The _streaming_ is used e.g. when saving and loading this component on a Lazarus form.
+====
 
 ### Free notification
 
