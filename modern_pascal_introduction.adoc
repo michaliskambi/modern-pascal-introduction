@@ -1830,7 +1830,10 @@ A _class property_ is a property that can be accessed through a class reference 
 
 It is quite straightforward analogy of a regular property (see <<Properties>>). For a _class property_, you define a _getter_ and / or a _setter_. They may refer to a _class variable_ or a _static class method_.
 
-A _class variable_ is, you guessed it, like a regular field but you don't need a class instance to access it. In effect, it's just like a global variable, but with the namespace limited to the containing class. It can be declared within the `class var` section of the class. Alternatively (in FPC) it can be declared by following the normal field definition with the keyword `static`.
+A _class variable_ is, you guessed it, like a regular field but you don't need a class instance to access it. In effect, it's just like a global variable, but with the namespace limited to the containing class. It can be declared within the `class var` section of the class. Alternatively
+//(in FPC) ??
+// See https://freepascal.org/docs-html/ref/refse30.html
+it can be declared by following the normal field definition with the keyword `static`.
 
 And a _static class method_ is just like a global procedure / function, but with the namespace limited to the containing class. More about static class methods in the section above, see <<Static class methods>>.
 
