@@ -756,14 +756,16 @@ If the method is not defined in a given class, then it calls the method of an an
 
 You can test it by commenting out the `TMyClass2.MyMethod` definition in the example above. In effect, `TMyClass1.MyMethod` will be called by `TMyClass2.MyOtherMethod`.
 
-You can also _force_ the compiler to start searching from an ancestor class by using:
+Sometimes, you don't want to call the method of your own class. You want to call the method of an ancestor (or ancestor's ancestor, and so on). To do this, add the keyword `inherited` before the call to `MyMethod`, like this:
 
 [source,pascal]
 ----
 inherited MyMethod;
 ----
 
-TIP: Go ahead, change the implementation of `TMyClass2.MyOtherMethod` above to use `inherited MyMethod`, and see what happens.
+This way you _force_ the compiler to start searching from an ancestor class. In our example, it means that compiler is searching for `MyMethod` inside `TMyClass1.MyMethod`, then `TObject.MyMethod`, and then gives up. It does not even consider using the implementation of `TMyClass2.MyMethod`.
+
+TIP: Go ahead, change the implementation of `TMyClass2.MyOtherMethod` above to use `inherited MyMethod`, and see the difference in the output.
 
 The `inherited` call is often used to call the ancestor method of the same name. This way the descendants can enhance the ancestors (keeping the ancestor functionality, instead of replacing the ancestor functionality). Like in the example below.
 
@@ -772,11 +774,11 @@ The `inherited` call is often used to call the ancestor method of the same name.
 include::code-samples/method_calls_inherited.lpr[]
 ----
 
-Since using `inherited` to call a method with the same name, with the same arguments, is a very often case, there is a special shortcut for it: you can just write `inherited;` (`inherited` keyword followed immediately by a semicolon). This means "_call an inherited method with the same name, passing it the same arguments as the current method_".
+Since using `inherited` to call a method with the same name, with the same arguments, is a very often case, there is a special shortcut for it: you can just write `inherited;` (`inherited` keyword followed immediately by a semicolon, instead of a method name). This means "_call an inherited method with the same name, passing it the same arguments as the current method_".
 
-TIP: In the above example, all the `inherited Xxx;` calls could be replaced by a simple `inherited;`.
+TIP: In the above example, all the `inherited ...;` calls could be replaced by a simple `inherited;`.
 
-Note that you usually want to make the `MyMethod` _virtual_ in such case. More about the virtual methods in section below. But the `inherited` keyword works regardless if the method is virtual or not. It merely means that the compiler starts searching the method in an ancestor.
+Note that you usually want to make the `MyMethod` _virtual_ in such case. More about the virtual methods in the section below. But the `inherited` keyword works regardless if the method is virtual or not. It means that the compiler starts searching for the method in an ancestor, and it makes sense for both _virtual_ and _not virtual_ methods.
 
 [[virtual-methods-section]]
 ### Virtual methods, override and reintroduce
@@ -826,7 +828,7 @@ We eat it:
 Eating an apple
 ----
 
-Internally, virtual methods work by having so-called _virtual method table_ associated with each class. This table is a list of pointers to the implementations of virtual methods for this class. When calling the `Eat` method, the compiler looks into a virtual method table associated with the actual class of `Fruit`, and uses a pointer to the `Eat` method defined there.
+Internally, virtual methods work by having so-called _virtual method table_ associated with each class. This table is a list of pointers to the implementations of virtual methods for this class. When calling the `Eat` method, the compiler looks into a virtual method table associated with the actual class of `Fruit`, and uses a pointer to the `Eat` implementation stored there.
 
 If you don't use the `override` keyword, the compiler will warn you that you're _hiding_ (obscuring) the virtual method of an ancestor with a non-virtual definition. If you're sure that this is what you want, you can add a `reintroduce` keyword. But in most cases, you will rather want to keep the method virtual, and add the `override` keyword, thus making sure that it's always invoked correctly.
 
@@ -990,7 +992,7 @@ As you saw in the examples above, when the class is destroyed, it's `destructor`
 
 In theory, you could have multiple destructors, but in practice it's almost never a good idea. It's much easier to have only one destructor called `Destroy`, which is in turn called by the `Free` method, which is in turn called by the `FreeAndNil` procedure.
 
-The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in the descendants. This makes the `Free` method work correcrtly. Recall how the virtual methods work from the <<virtual-methods-section>>.
+The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in all your classes (since all classes descend from `TObject`). This makes the `Free` method work correcrtly. Recall how the virtual methods work from the <<virtual-methods-section>>.
 
 [NOTE]
 ====
@@ -1034,7 +1036,7 @@ if O1 <> nil then
 +
 Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
 +
-Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
+Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a `nil` instance.
 
 2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
 //(or call a method that accessed a field of such instance)
