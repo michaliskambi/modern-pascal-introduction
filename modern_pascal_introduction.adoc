@@ -782,7 +782,22 @@ Since using `inherited` to call a method with the same name, with the same argum
 
 TIP: In the above example, all the `inherited ...;` calls could be replaced by a simple `inherited;`.
 
-Note that you usually want to make the `MyMethod` _virtual_ in such case. More about the virtual methods in the section below. But the `inherited` keyword works regardless if the method is virtual or not. It means that the compiler starts searching for the method in an ancestor, and it makes sense for both _virtual_ and _not virtual_ methods.
+Note 1: The `inherited;` is really just a shortcut for calling the ancestor's method with the _same variables passed in_. If you have modified your own parameter (which is possible, if the parameter is not `const`), then the ancestor's method can receive different input values from your descendant. Consider this:
+
+[source,pascal]
+----
+procedure TMyClass2.MyMethod(A: Integer);
+begin
+  Writeln('TMyClass2.MyMethod beginning ', A);
+  A := 456;
+  { This calls TMyClass1.MyMethod with A = 456,
+    regardless of the A value passed to this method (TMyClass2.MyMethod). }
+  inherited;
+  Writeln('TMyClass2.MyMethod ending ', A);
+end;
+----
+
+Note 2: You usually want to make the `MyMethod` _virtual_ when many classes (along the "_inheritance chain_") define it. More about the virtual methods in the section below. But the `inherited` keyword works regardless if the method is virtual or not. The `inherited` always means that the compiler starts searching for the method in an ancestor, and it makes sense for both _virtual_ and _not virtual_ methods.
 
 [[virtual-methods-section]]
 ### Virtual methods, override and reintroduce
