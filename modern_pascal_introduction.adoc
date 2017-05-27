@@ -1824,6 +1824,23 @@ Here comes the `static` class method. It is, in essense, just a global procedure
 include::code-samples/static_class_method.lpr[]
 ----
 
+### Class properties and variables
+
+A _class property_ is a property that can be accessed through a class reference (it does not need a class instance).
+
+It is quite straightforward analogy of a regular property (see <<Properties>>). For a _class property_, you define a _getter_ and / or a _setter_. They may refer to a _class variable_ or a _static class method_.
+
+A _class variable_ is, you guessed it, like a regular field but you don't need a class instance to access it. In effect, it's just like a global variable, but with the namespace limited to the containing class. It can be declared within the `class var` section of the class. Alternatively it can be declared by following the normal field definition with the keyword `static`.
+
+And a _static class method_ is just like a global procedure / function, but with the namespace limited to the containing class. More about static class methods in the section above, see <<Static class methods>>.
+
+[source,pascal]
+----
+include::code-samples/class_properties.lpr[]
+----
+
+// NOTE: Why the _class properties_ have to be backed by _static class methods_, not _normal class methods_? Noone really knows (see http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050131.html , http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050135.html , https://www.mail-archive.com/fpc-devel@lists.freepascal.org/msg30511.html ), the initial implementation (Delphi) made it like that. Presumably for speed, or ease of implementation of the compiler.
+
 ### Class helpers
 
 The _method_ is just a procedure or function inside a class. From the outside of the class, you call it with a special syntax `MyInstance.MyMethod(...)`. After a while you grow accustomed to thinking that _if I want to make action Action on instance X, I write `X.Action(...)`_.

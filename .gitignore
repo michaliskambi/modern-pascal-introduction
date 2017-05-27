@@ -34,6 +34,7 @@ code-samples/method_calls_inherited
 code-samples/with_virtual_methods
 code-samples/without_virtual_methods
 code-samples/static_class_method
+code-samples/class_properties
 code-samples/lazarus/showcolor
 code-samples/lazarus/*.bak
 code-samples/lazarus/*.lps
