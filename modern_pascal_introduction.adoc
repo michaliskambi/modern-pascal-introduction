@@ -780,7 +780,54 @@ Note that you usually want to make the `MyMethod` _virtual_ in such case. More a
 
 ### Virtual methods, override and reintroduce
 
-By default, the methods are _not virtual_. This is similar to C++, and unlike Java. It means that TODO
+By default, the methods are _not virtual_. This is similar to C++, and unlike Java.
+
+When a method is _not virtual_, the compiler determines which method to call based on the currently _declared_ class type, not based on the _actually created_ class type. The difference seems subtle, but it's important when your variable is declared to have a class like `TFruit`, but it may be in fact a descendant class like `TApple`.
+
+The idea of the object-oriented programming is that _the descendant class is always as good as the ancestor_, so the compiler allows to use a descendant class always when the ancestor is expected. When your method is not virtual, this can have undesired consequences. Consider the example below:
+
+[source,pascal]
+----
+include::code-samples/without_virtual_methods.lpr[]
+----
+
+This example will print
+
+----
+We have a fruit with class TApple
+We eat it:
+Eating a fruit
+----
+
+In effect, the call `Fruit.Eat` called the `TFruit.Eat` implementation, and nothing calls the `TApple.Eat` implementation.
+
+If you think about how the compiler works, this is natural: when you wrote the `Fruit.Eat`, the `Fruit` variable was declared to hold a class `TFruit`. So the compiler was searching for the method called `Eat` within the `TFruit` class. If the `TFruit` class would not contain such method, the compiler would search within an ancestor (`TObject` in this case). But the compiler _cannot search within descendants (like `TApple`)_, as it doesn't know whether the _actual class_ of `Fruit` is `TApple`, `TFruit`, or some other `TFruit` descendant (like a `TOrange`, not shown in the example above).
+
+In other words, the _method to be called_ is determined _at compile-time_.
+
+Using the _virtual methods_ changes this behavior. *If the `Eat` method would be virtual* (an example of it is shown below), then the actual implementation to be called is determined _at runtime_. If the `Fruit` variable will hold an instance of the class `TApple` (even if it's declared as `TFruit`), then the `Eat` method will be sarched within the `TApple` class first.
+
+In Object Pascal, to define a method as _virtual_, you need to
+
+* Mark it's first definition (in the top-most ancestor) with the `virtual` keyword.
+* Mark all the other definitions (in the descendants) with the `override` keyword. All the overridden versions must have exactly the same parameters (and return the same types, in case of functions).
+
+[source,pascal]
+----
+include::code-samples/with_virtual_methods.lpr[]
+----
+
+This example will print
+
+----
+We have a fruit with class TApple
+We eat it:
+Eating an apple
+----
+
+Internally, virtual methods work by having so-called _virtual method table_ associated with each class. This table is a list of pointers to the implementations of virtual methods for this class. When calling the `Eat` method, the compiler looks into a virtual method table associated with the actual class of `Fruit`, and uses a pointer to the `Eat` method defined there.
+
+If you don't use the `override` keyword, the compiler will warn you that you're _hiding_ (obscuring) the virtual method of an ancestor with a non-virtual definition. If you're sure that this is what you want, you can add a `reintroduce` keyword. But in most cases, you will rather want to keep the method virtual, and add the `override` keyword, thus making sure that it's always invoked correctly.
 
 ## Freeing classes
 

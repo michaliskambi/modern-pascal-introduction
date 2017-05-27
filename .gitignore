@@ -31,6 +31,8 @@ code-samples/operator_overloading_classes
 code-samples/operator_overloading_records_lists
 code-samples/method_calls_inheritance_1
 code-samples/method_calls_inherited
+code-samples/with_virtual_methods
+code-samples/without_virtual_methods
 code-samples/lazarus/showcolor
 code-samples/lazarus/*.bak
 code-samples/lazarus/*.lps

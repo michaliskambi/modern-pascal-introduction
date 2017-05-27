@@ -6,7 +6,7 @@ all: $(ALL_OUTPUT)
 
 $(NAME).html: $(NAME).adoc
 	asciidoctor $< -o $@
-	$(TEST_BROWSER) $@ &
+#	$(TEST_BROWSER) $@ &
 
 $(NAME).xml: $(NAME).adoc
 	asciidoctor -b docbook5 $< -o $@
