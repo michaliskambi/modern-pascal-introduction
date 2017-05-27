@@ -1587,33 +1587,6 @@ However, if you create larger units, with many classes (that are not tightly int
 
 In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
 
-### Class methods
-
-These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
-
-[source,pascal]
-----
-type
-  TEnemy = class
-    procedure Kill;
-    class procedure KillAll;
-  end;
-
-var
-  E: TEnemy;
-begin
-  E := TEnemy.Create;
-  try
-    E.Kill;
-  finally FreeAndNil(E) end;
-  TEnemy.KillAll;
-end;
-----
-
-Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
-
-Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
-
 ### More stuff inside classes and nested classes
 
 You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, in particular the nested class can be private (not visible to the outside world), which is often useful.
@@ -1661,6 +1634,37 @@ procedure TMyClass.TInternalClass.DoSomething;
 begin
 end;
 ----
+
+### Class methods
+
+These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
+
+[source,pascal]
+----
+type
+  TEnemy = class
+    procedure Kill;
+    class procedure KillAll;
+  end;
+
+var
+  E: TEnemy;
+begin
+  E := TEnemy.Create;
+  try
+    E.Kill;
+  finally FreeAndNil(E) end;
+  TEnemy.KillAll;
+end;
+----
+
+Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
+
+// The class methods namespace is limited to that of the containing class, just like regular methods.
+
+The class methods can also be limited by the <<Visibility specifiers>>, like `private` or `protected`. Just like regular methods.
+
+Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
 
 ### Class references
 
@@ -1771,6 +1775,54 @@ end;
 //
 // Poor example actually, since compiler could prevent "ClassRef := TMyClass"
 // in this case?
+
+### Static class methods
+
+To understand the _static class methods_, you have to understand how the _normal class methods_ (described in the previous sections) work. Internally, _normal class methods_ receive a _class reference_ of their class (it is passed through a hidden, implicitly added 1st parameter of the method). This class reference can be even accessed explicitly using the `Self` keyword inside the class method. Usually, it's a good thing: this class reference allows you to call _virtual class methods_ (through the _virtual method table_ of the class).
+
+// Just like _instance virtual methods_, the _virtual class methods_ use some
+
+While this is nice, it makes the _normal class methods_ incompatible when assigning to a _global procedure pointer_. That is, *this will not compile*:
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+type
+  TMyCallback = procedure (A: Integer);
+
+  TMyClass = class
+    class procedure Foo(A: Integer);
+  end;
+
+class procedure TMyClass.Foo(A: Integer);
+begin
+end;
+
+var
+  Callback: TMyCallback;
+begin
+  // Error: TMyClass.Foo not compatible with TMyCallback
+  Callback := @TMyClass(nil).Foo;
+end.
+----
+
+[NOTE]
+====
+In the _Delphi mode_ you would be able to write `TMyClass.Foo` instead of an ugly `TMyClass(nil).Foo` in the example above. Admittedly, the `TMyClass.Foo` looks much more elegant, and it is also better checked by the compiler. Using the `TMyClass(nil).Foo` is a hack... unfortunately, necessary (for now) in the _ObjFpc mode_ which is presented throughout this book.
+
+In any case, assigning the `TMyClass.Foo` to the `Callback` above would _still fail_ in the Delphi mode, for exactly the same reasons.
+====
+
+The above example fails to compile, because the `Callback` is incompatible with the class method `Foo`. And it's incompatible because internally the class method has that special hidden _implicit_ parameter to pass a class reference.
+
+One way to fix the above example is to change the definition of `TMyCallback`. It will work if it is a method callback, declared as `TMyCallback = procedure (A: Integer) of object;`. But sometimes, it's not desirable.
+
+Here comes the `static` class method. It is, in essense, just a global procedure / function, but it's namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
+
+[source,pascal]
+----
+include::code-samples/static_class_method.lpr[]
+----
 
 ### Class helpers
 
