@@ -738,6 +738,50 @@ Not every field and property type is allowed in the `published` section (not eve
 
 If you don't declare the ancestor type, every `class` inherits from `TObject`.
 
+### Calling inherited method
+
+Within a method implementation, if you call another method, then by default you call the method of your own class. In the example code below, `TMyClass2.MyOtherMethod` calls `MyMethod`, which ends up calling `TMyClass2.MyMethod`.
+
+[source,pascal]
+----
+include::code-samples/method_calls_inheritance_1.lpr[]
+----
+
+If the method is not defined in a given class, then it calls the method of an ancestor class. In effect, when you call `MyMethod` on an instance of `TMyClass2`, then
+
+* The compiler looks for `TMyClass2.MyMethod`.
+* If not found, it looks for `TMyClass1.MyMethod`.
+* If not found, it looks for `TObject.MyMethod`.
+* if not found, then the compilation fails.
+
+You can test it by commenting out the `TMyClass2.MyMethod` definition in the example above. In effect, `TMyClass1.MyMethod` will be called by `TMyClass2.MyOtherMethod`.
+
+You can also _force_ the compiler to start searching from an ancestor class by using:
+
+[source,pascal]
+----
+inherited MyMethod;
+----
+
+TIP: Go ahead, change the implementation of `TMyClass2.MyOtherMethod` above to use `inherited MyMethod`, and see what happens.
+
+The `inherited` call is often used to call the ancestor method of the same name. This way the descendants can enhance the ancestors (keeping the ancestor functionality, instead of replacing the ancestor functionality). Like in the example below.
+
+[source,pascal]
+----
+include::code-samples/method_calls_inherited.lpr[]
+----
+
+Since using `inherited` to call a method with the same name, with the same arguments, is a very often case, there is a special shortcut for it: you can just write `inherited;` (`inherited` keyword followed immediately by a semicolon). This means "_call an inherited method with the same name, passing it the same arguments as the current method_".
+
+TIP: In the above example, all the `inherited Xxx;` calls could be replaced by a simple `inherited;`.
+
+Note that you usually want to make the `MyMethod` _virtual_ in such case. More about the virtual methods in section below. But the `inherited` keyword works regardless if the method is virtual or not. It merely means that the compiler starts searching the method in an ancestor.
+
+### Virtual methods, override and reintroduce
+
+By default, the methods are _not virtual_. This is similar to C++, and unlike Java. It means that TODO
+
 ## Freeing classes
 
 ### Remember to free the class instances
