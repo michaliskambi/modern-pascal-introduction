@@ -26,8 +26,16 @@ clean:
 test:
 	$(MAKE) -C code-samples/ clean all
 
+#SSH_TARGET:=michalis@michalis.ii.uni.wroc.pl
+SSH_TARGET:=michalis@castle-engine.io
+#SCP_TARGET:=$(SSH_TARGET):/home/michalis/public_html/modern_pascal_introduction/
+SCP_TARGET:=$(SSH_TARGET):/home/michalis/cge-html/
+#HTML_BASE:=http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/
+HTML_BASE:=http://castle-engine.io/
+
 .PHONY: upload
 upload: test clean all
-	scp modern_pascal_introduction.html modern_pascal_introduction.pdf michalis@michalis.ii.uni.wroc.pl:/home/michalis/public_html/modern_pascal_introduction/
-	$(TEST_BROWSER) http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.html &
-	$(TEST_BROWSER) http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.pdf &
+	scp modern_pascal_introduction.html modern_pascal_introduction.pdf $(SCP_TARGET)
+	$(TEST_BROWSER) $(HTML_BASE)modern_pascal_introduction.html &
+	$(TEST_BROWSER) $(HTML_BASE)modern_pascal_introduction.pdf &
+	ssh $(SSH_TARGET) www_permissions.sh
