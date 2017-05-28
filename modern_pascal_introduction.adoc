@@ -309,7 +309,7 @@ begin
 ----
 var
   Animals: TAnimals;
-  AK: AnimalKind;
+  AK: TAnimalKind;
 begin
   Animals := [akDog, akCat];
   for AK in Animals do ...
