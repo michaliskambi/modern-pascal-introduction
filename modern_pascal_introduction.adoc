@@ -1910,7 +1910,7 @@ X := TMyClass.Create;
 
 does not execute to the end in this case, `X` cannot be assigned, so who will cleanup after a partially-constructed class?
 
-The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
+The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on a half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
 
 We also have to depend in such cases that _the memory of the class is guaranteed to be zeroed right before the constructor code is executed_. So we know that at the beginning, all class references are `nil`, all integers are `0` and so on.
 
@@ -2099,7 +2099,7 @@ This is also a typecast that must be valid at compile-time. Note that this synta
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com . My homepage is https://michalis.ii.uni.wroc.pl/~michalis/ . This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.sourceforge.io/ .
+The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com. My homepage is https://michalis.ii.uni.wroc.pl/~michalis/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.sourceforge.io/.
 
 You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
