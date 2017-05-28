@@ -827,7 +827,7 @@ If you think about how the compiler works, this is natural: when you wrote the `
 
 In other words, the _method to be called_ is determined _at compile-time_.
 
-Using the _virtual methods_ changes this behavior. *If the `Eat` method would be virtual* (an example of it is shown below), then the actual implementation to be called is determined _at runtime_. If the `Fruit` variable will hold an instance of the class `TApple` (even if it's declared as `TFruit`), then the `Eat` method will be sarched within the `TApple` class first.
+Using the _virtual methods_ changes this behavior. *If the `Eat` method would be virtual* (an example of it is shown below), then the actual implementation to be called is determined _at runtime_. If the `Fruit` variable will hold an instance of the class `TApple` (even if it's declared as `TFruit`), then the `Eat` method will be searched within the `TApple` class first.
 
 In Object Pascal, to define a method as _virtual_, you need to
 
@@ -1011,7 +1011,7 @@ As you saw in the examples above, when the class is destroyed, it's `destructor`
 
 In theory, you could have multiple destructors, but in practice it's almost never a good idea. It's much easier to have only one destructor called `Destroy`, which is in turn called by the `Free` method, which is in turn called by the `FreeAndNil` procedure.
 
-The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in all your classes (since all classes descend from `TObject`). This makes the `Free` method work correcrtly. Recall how the virtual methods work from the <<virtual-methods-section>>.
+The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in all your classes (since all classes descend from `TObject`). This makes the `Free` method work correctly. Recall how the virtual methods work from the <<virtual-methods-section>>.
 
 [NOTE]
 ====
@@ -1023,7 +1023,7 @@ Also, the `Create` constructor in the `TObject` is _not virtual_, so you do not 
 
 This all gives you a bit of extra flexibility when defining constructors. It is often not necessary to make them virtual, so by default you're not forced to do it.
 
-Note, however, that this changes for `TComponent` descendants. The `TComponent` defines a virtual constructor `Create(AOwner: TComponent)`. It needs a virtual constructor in order for the streaming system to work. When defining descendants of the `TComponent`, you should override this constructor (and mark it with the `override` keyword), and perform all your initialization inside it. It is stil OK to define additional constructors, but they should only act as _"helpers"_. The instance should always work when created using the `Create(AOwner: TComponent)` constructor, otherwise it will not be correctly constructed when streaming. The _streaming_ is used e.g. when saving and loading this component on a Lazarus form.
+Note, however, that this changes for `TComponent` descendants. The `TComponent` defines a virtual constructor `Create(AOwner: TComponent)`. It needs a virtual constructor in order for the streaming system to work. When defining descendants of the `TComponent`, you should override this constructor (and mark it with the `override` keyword), and perform all your initialization inside it. It is still OK to define additional constructors, but they should only act as _"helpers"_. The instance should always work when created using the `Create(AOwner: TComponent)` constructor, otherwise it will not be correctly constructed when streaming. The _streaming_ is used e.g. when saving and loading this component on a Lazarus form.
 ====
 
 ### Free notification
@@ -1817,7 +1817,7 @@ The above example fails to compile, because the `Callback` is incompatible with 
 
 One way to fix the above example is to change the definition of `TMyCallback`. It will work if it is a method callback, declared as `TMyCallback = procedure (A: Integer) of object;`. But sometimes, it's not desirable.
 
-Here comes the `static` class method. It is, in essense, just a global procedure / function, but it's namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
+Here comes the `static` class method. It is, in essence, just a global procedure / function, but it's namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
 
 [source,pascal]
 ----
