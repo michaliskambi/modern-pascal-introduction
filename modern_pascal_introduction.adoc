@@ -282,19 +282,24 @@ end;
 include::code-samples/loops.lpr[]
 ----
 
-Various notes:
+*About the `repeat` and `while` loops*:
 
-* It may seem that the difference between the `while` and `repeat` loops is "cosmetic" (you specify a negated condition, because in `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_). Actually there's another important difference: in case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
+It may seem that the difference between the `while` and `repeat` loops is "cosmetic" (you specify a negated condition, because in `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_). Actually there's another important difference: in case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
 
-* The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
-+
+*About the `for I := ...` loops*:
+
+The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
+
 In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
-+
+
 Note that the value of the loop counter variable (`I` in this example) should be considered _undefined_ after the loop has finished, due to possible optimizations. Accessing the value of `I` after the loop may cause a compiler warning. _Unless_ you exit the loop prematurely by `Break` or `Exit`: in such case, the counter variable is guaranteed to retain the last value.
 
-* The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
-** It can iterate over all values in the array (example above).
-** It can iterate over all possible values of an enumerated type:
+*About the `for I in ...` loops*:
+
+The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
+
+* It can iterate over all values in the array (example above).
+* It can iterate over all possible values of an enumerated type:
 +
 [source,pascal]
 ----
@@ -303,7 +308,7 @@ var
 begin
   for AK in TAnimalKind do...
 ----
-** It can iterate over all items included in the set:
+* It can iterate over all items included in the set:
 +
 [source,pascal]
 ----
@@ -314,7 +319,7 @@ begin
   Animals := [akDog, akCat];
   for AK in Animals do ...
 ----
-** And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
+* And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
 +
 [source,pascal]
 ----
