@@ -290,7 +290,7 @@ Various notes:
 +
 In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
 +
-Note that the value of the loop counter variable (`I` in this example) should be considered undefined after the loop has finished due to possible optimizations. It may cause a compiler warning. Unless you exit the loop prematurely by `Break` or `Exit`, in which case the counter variable is guaranteed to retain the last value.
+Note that the value of the loop counter variable (`I` in this example) should be considered _undefined_ after the loop has finished, due to possible optimizations. Accessing the value of `I` after the loop may cause a compiler warning. _Unless_ you exit the loop prematurely by `Break` or `Exit`: in such case, the counter variable is guaranteed to retain the last value.
 
 * The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
 ** It can iterate over all values in the array (example above).
