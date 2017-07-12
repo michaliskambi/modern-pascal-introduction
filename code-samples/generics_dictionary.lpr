@@ -21,14 +21,16 @@ begin
     Apples.AddOrSetValue('apple key 1', A);
 
     if Apples.TryGetValue('apple key 1', FoundA) then
-      Writeln('Found apple under key "apple key 1" with name: ' + FoundA.Name);
+      Writeln('Found apple under key "apple key 1" with name: ' +
+        FoundA.Name);
 
     for AppleKey in Apples.Keys do
       Writeln('Found apple key: ' + AppleKey);
     for A in Apples.Values do
       Writeln('Found apple value: ' + A.Name);
     for ApplePair in Apples do
-      Writeln('Found apple key->value: ' + ApplePair.Key + '->' + ApplePair.Value.Name);
+      Writeln('Found apple key->value: ' +
+        ApplePair.Key + '->' + ApplePair.Value.Name);
 
     { Line below works too, but it can only be used to set
       an *existing* dictionary key.

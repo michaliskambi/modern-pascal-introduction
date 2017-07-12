@@ -20,7 +20,8 @@ begin
     Apples.AddOrSetValue('apple key 1', A);
 
     for ApplePair in Apples do
-      Writeln('Found apple key->value: ' + ApplePair.Key + '->' + ApplePair.Value.Name);
+      Writeln('Found apple key->value: ' +
+        ApplePair.Key + '->' + ApplePair.Value.Name);
 
     Apples.Remove('apple key 1');
   finally FreeAndNil(Apples) end;
