@@ -1,6 +1,7 @@
 NAME:=modern_pascal_introduction
 ALL_OUTPUT:=$(NAME).html $(NAME).pdf $(NAME).xml
-TEST_BROWSER:=firefox
+#TEST_BROWSER:=firefox
+TEST_BROWSER:=x-www-browser
 
 all: $(ALL_OUTPUT)
 
