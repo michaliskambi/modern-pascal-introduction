@@ -3,7 +3,7 @@ PROGRAM_BINARIES:=$(PROGRAM_SOURCES:.lpr=)
 
 .PHONY: all
 all:
-	fpc *.pas
+	fpc -gl -gh *.pas
 	$(foreach PROGRAM_NAME,$(PROGRAM_SOURCES),fpc $(PROGRAM_NAME) && ) true
 
 .PHONY: clean

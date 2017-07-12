@@ -1167,11 +1167,77 @@ while not Text.Eof do
   WritelnLog('NextLine', Text.ReadLine);
 ----
 
-### Lists
+[[generic-containers-section]]
+### Containers (lists, dictionaries) using generics
 
-For dynamic-length lists of stuff, I advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
+The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advice using *generic containers* for most of your needs. See also the section about <<Generics>> for an explanation of this language feature.
 
-Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+The generic containers give you a lot of helpful methods to add, remove, iterate, search, sort... The compiler also knows (and checks) that the container holds only items of the appropriate type.
+
+// Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+
+There are three libraries providing generics containers in FPC now:
+
+* `FGL` unit
+* `Generics.Collections` unit and friends
+* `GVector` unit and friends (together in `fcl-stl`)
+
+We advice using the `FGL` unit (if you need to work with the latest stable FPC 3.0.0 and 3.0.2 or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+
+*In the Castle Game Engine*: We include a local copy of `Generics.Collections` even for FPC 3.0.0 and 3.0.2. We use the `Generics.Collections` throughout the engine, and advice you to use `Generics.Collections` too!
+
+Most important classes from the `Generics.Collections` unit are:
+
+TList:: A generic list of types.
+TObjectList:: A generic list of object instances. It can "own" children, which means that it will free them automatically.
+TDictionary:: A generic dictionary.
+TObjectDictionary:: A generic dictionary, that can "own" the keys and/or values.
+// So (which means that they should be object instances, and will be automatically freed).
+
+Here's how to you use a simple generic `TObjectList`:
+
+[source,pascal]
+----
+include::code-samples/generics_lists.lpr[]
+----
+
+Note that some operations require comparing two items, like sorting and searching (e.g. by `Sort` and `IndexOf` methods). The `Generics.Collections` containers use for this a _comparer_. The _default comparer_ is reasonable for all types, even for records (in which case it compares memory contents, which is a reasonable default at least for searching using `IndexOf`).
+// It can be customized if needed.
+
+When sorting the list you can provide a _custom comparer_ as a parameter. The _comparer_ is a class implementing the `IComparer` interface. In practice, you usually define the appropriate callback, and use `TComparer<T>.Construct` method to wrap this callback into an `IComparer` instance. An example of doing this is below:
+
+[source,pascal]
+----
+include::code-samples/generics_sorting.lpr[]
+----
+
+The `TDictionary` class implements a *dictionary*, also known as a *map (key -> value)*, also known as an *associative array*. It's API is a bit similar to the C# `TDictionary` class. It has useful iterators for keys, values, and pairs of key->value.
+
+An example code using a dictionary:
+
+[source,pascal]
+----
+include::code-samples/generics_dictionary.lpr[]
+----
+
+The `TObjectDictionary` can additionally _own_ the keys and/or values, which means that they will be automatically freed. An example code using the `TObjectDictionary` is below. Compile this example with _memory leak detection_, like `fpc -gl -gh generics_object_dictionary.lpr`, to see that everything is freed when program exits.
+
+[source,pascal]
+----
+include::code-samples/generics_object_dictionary.lpr[]
+----
+
+If you prefer using the `FGL` unit instead of `Generics.Collections`, here is a short overview of the most important classes from the `FGL` unit:
+
+TFPGGList:: A generic list of types.
+TFPGGObjectList:: A generic list of object instances. It can "own" children.
+TFPGMap:: A generic dictionary.
+
+//Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
+
+In `FGL` unit, the `TFPGGList` and `TFPGMap` can be only used for types for which the equality operator (=) is defined. For `TFPGMap`, also the "greater than" (<) operator must be defined. If you want to use them with records, you have to overload their operators as shown in the <<Operator overloading>> section.
+
+*In the Castle Game Engine* we include a unit `CastleGenericLists` that adds `TGenericStructList` and `TGenericStructMap` classes. They are similar to `TFPGGList` and `TFPGMap`, but they do not require a definition of the comparison operators for the appropriate type (instead, they compare memory contents, which is often appropriate for records or method pointers). But the `CastleGenericLists` unit is deprecated since the engine version 6.4, as we advice using `Generics.Collections` instead.
 
 ### Cloning: TPersistent.Assign
 
@@ -1378,6 +1444,8 @@ Generics are not limited to classes, you can have generic functions and procedur
 ----
 include::code-samples/generic_functions.lpr[]
 ----
+
+See also the section <<generic-containers-section>> about important standard classes using generics.
 
 ### Overloading
 
