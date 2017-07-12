@@ -1220,7 +1220,9 @@ An example code using a dictionary:
 include::code-samples/generics_dictionary.lpr[]
 ----
 
-The `TObjectDictionary` can additionally _own_ the keys and/or values, which means that they will be automatically freed. An example code using the `TObjectDictionary` is below. Compile this example with _memory leak detection_, like `fpc -gl -gh generics_object_dictionary.lpr`, to see that everything is freed when program exits.
+The `TObjectDictionary` can additionally _own_ the dictionary keys and/or values, which means that they will be automatically freed. Be careful to _only own keys and/or values if they are object instances_. If you set to _"owned"_ some other type, like an `Integer` (for example, if your keys are `Integer`, and you include `doOwnsKeys`), you will get a nasty crash when the code executes.
+
+An example code using the `TObjectDictionary` is below. Compile this example with _memory leak detection_, like `fpc -gl -gh generics_object_dictionary.lpr`, to see that everything is freed when program exits.
 
 [source,pascal]
 ----
