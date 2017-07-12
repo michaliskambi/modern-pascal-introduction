@@ -586,7 +586,7 @@ We have classes. At the basic level, a class is just a container for
 * _fields_ (which is fancy name for _"a variable inside a class"_),
 * _methods_ (which is fancy name for _"a procedure or function inside a class"_),
 * and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something; more in <<Properties>>).
-* Actually, you can put <<More stuff inside classes and nested classes>>, more about this in later section.
+* Actually, there are more possibilities, described in <<More stuff inside classes and nested classes>>.
 
 [source,pascal]
 ----
@@ -733,7 +733,7 @@ The basic visibility levels are:
 `private`:: only accessible in this class.
 `protected`:: only accessible in this class and descendants.
 
-The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See <<private and strict private>> section.
+The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See the <<private and strict private>>.
 
 By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
 
@@ -1170,7 +1170,7 @@ while not Text.Eof do
 [[generic-containers-section]]
 ### Containers (lists, dictionaries) using generics
 
-The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advice using *generic containers* for most of your needs. See also the section about <<Generics>> for an explanation of this language feature.
+The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advice using *generic containers* for most of your needs. See the <<Generics>> for an explanation of this language feature.
 
 The generic containers give you a lot of helpful methods to add, remove, iterate, search, sort... The compiler also knows (and checks) that the container holds only items of the appropriate type.
 
@@ -1235,7 +1235,7 @@ TFPGMap:: A generic dictionary.
 
 //Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
 
-In `FGL` unit, the `TFPGGList` and `TFPGMap` can be only used for types for which the equality operator (=) is defined. For `TFPGMap`, also the "greater than" (<) operator must be defined. If you want to use them with records, you have to overload their operators as shown in the <<Operator overloading>> section.
+In `FGL` unit, the `TFPGGList` and `TFPGMap` can be only used for types for which the equality operator (=) is defined. For `TFPGMap`, also the "greater than" (<) operator must be defined. If you want to use them with records, you have to overload their operators as shown in the <<Operator overloading>>.
 
 *In the Castle Game Engine* we include a unit `CastleGenericLists` that adds `TGenericStructList` and `TGenericStructMap` classes. They are similar to `TFPGGList` and `TFPGMap`, but they do not require a definition of the comparison operators for the appropriate type (instead, they compare memory contents, which is often appropriate for records or method pointers). But the `CastleGenericLists` unit is deprecated since the engine version 6.4, as we advice using `Generics.Collections` instead.
 
@@ -1326,7 +1326,7 @@ Assuming that you implemented `TFruit.Assign` and `TApple.Assign` following the 
 * If you pass `TOrange` instance to `TApple.Assign`, it will work and only copy the common fields shared by both `TOrange` and `TApple`. In other words, the fields defined at `TFruit`.
 * If you pass `TWerewolf` instance to `TApple.Assign`, it will raise an exception (because `TApple.Assign` will call `TFruit.Assign` which will call `TPersistent.Assign` which raises an exception).
 
-NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
+NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>>.
 
 ## Various language features
 
@@ -1445,7 +1445,7 @@ Generics are not limited to classes, you can have generic functions and procedur
 include::code-samples/generic_functions.lpr[]
 ----
 
-See also the section <<generic-containers-section>> about important standard classes using generics.
+See also the <<generic-containers-section>> about important standard classes using generics.
 
 ### Overloading
 
