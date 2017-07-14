@@ -1170,9 +1170,9 @@ while not Text.Eof do
 [[generic-containers-section]]
 ### Containers (lists, dictionaries) using generics
 
-The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advice using *generic containers* for most of your needs. See the <<Generics>> for an explanation of this language feature.
+The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advice using *generic containers* for most of your needs.
 
-The generic containers give you a lot of helpful methods to add, remove, iterate, search, sort... The compiler also knows (and checks) that the container holds only items of the appropriate type.
+The _generic containers_ give you a lot of helpful methods to add, remove, iterate, search, sort... The compiler also knows (and checks) that the container holds only items of the appropriate type.
 
 // Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
@@ -1240,6 +1240,8 @@ TFPGMap:: A generic dictionary.
 In `FGL` unit, the `TFPGGList` and `TFPGMap` can be only used for types for which the equality operator (=) is defined. For `TFPGMap`, also the "greater than" (<) operator must be defined. If you want to use them with records, you have to overload their operators as shown in the <<Operator overloading>>.
 
 *In the Castle Game Engine* we include a unit `CastleGenericLists` that adds `TGenericStructList` and `TGenericStructMap` classes. They are similar to `TFPGGList` and `TFPGMap`, but they do not require a definition of the comparison operators for the appropriate type (instead, they compare memory contents, which is often appropriate for records or method pointers). But the `CastleGenericLists` unit is deprecated since the engine version 6.4, as we advice using `Generics.Collections` instead.
+
+If you want to know more about the generics, see <<Generics>>.
 
 ### Cloning: TPersistent.Assign
 
@@ -1432,7 +1434,7 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
-The generics in Pascal are realized much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+The generics in Pascal are realized much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
