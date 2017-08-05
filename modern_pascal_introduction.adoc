@@ -1158,7 +1158,7 @@ S := Download('file:///home/michalis/my_binary_file.data');
 S := Download(ApplicationData('gui/my_image.png'));
 ----
 
-To read text files, I advice using `TTextReader` class from `CastleClassUtils`. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
+To read text files, we advice using the `TTextReader` class. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
 
 [source,pascal]
 ----
