@@ -1182,7 +1182,7 @@ There are three libraries providing generics containers in FPC now:
 * `Generics.Collections` unit and friends
 * `GVector` unit and friends (together in `fcl-stl`)
 
-We advice using the `FGL` unit (if you need to work with the latest stable FPC 3.0.0 and 3.0.2 or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+We advice using the `FGL` unit (if you need to work with the latest stable FPC 3.0.0 and 3.0.2 or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on the other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
 
 *In the Castle Game Engine*: We include a local copy of `Generics.Collections` even for FPC 3.0.0 and 3.0.2. We use the `Generics.Collections` throughout the engine, and advice you to use `Generics.Collections` too!
 
