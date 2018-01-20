@@ -2000,7 +2000,7 @@ include::code-samples/exception_in_constructor_test.lpr[]
 
 ## Interfaces
 
-### Good (CORBA) interfaces
+### Bare (CORBA) interfaces
 
 _An interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have one ancestor class.
 
@@ -2031,7 +2031,7 @@ Is the `{$interfaces corba}` declaration needed?::
 //(if we would omit the `{$interfaces corba}` directive)
   you create _COM interfaces_. This can be stated explicitly by saying `{$interfaces com}`, but usually it's not needed since it's the default state.
 +
-And I don't advice using _COM interfaces_. Especially if you know interfaces from other programming languages. The _CORBA interfaces_ in Pascal are exactly what you expect, equal to the interfaces in C# and Java. While the _COM interfaces_ bring additional "features" that you probably don't want.
+And I don't advice using _COM interfaces_, especially if you're looking for something equivalent to interfaces from other programming languages. The _CORBA interfaces_ in Pascal are exactly what you expect if you're looking for something equivalent to the interfaces in C# and Java. While the _COM interfaces_ bring additional features that you possibly don't want.
 +
 Note that the `{$interfaces xxx}` declaration only affects the interfaces that do not have any explicit ancestor (just the keyword `interface`, not `interface(ISomeAncestor)`). When an interface has an ancestor, it has the same type as the ancestor, regardless of the `{$interfaces xxx}` declaration.
 
@@ -2045,7 +2045,9 @@ What are COM interfaces?::
 
 Why do you advice to not use the COM interfaces?::
 
-  The additional features brought by the COM interfaces are rather problematic in my view. To be clear -- _reference-counting_, that provides an automatic memory management (in simple situations, i.e. without cycles), _is a very useful concept_. But _entangling this feature with interfaces (instead of making them orthogonal features) is very unclean in my eyes_. It definitely doesn't match my use cases.
+  Because _COM interfaces_ "entangle" two features that should be unrelated (orthogonal) in my view: _multiple inheritance_ and _reference counting_. Other programming languages rightly use separate concepts for these two features.
++
+To be clear: *reference-counting*, that provides an automatic memory management (in simple situations, i.e. without cycles), *is a very useful concept*. But *entangling this feature with interfaces (instead of making them orthogonal features) is unclean in my eyes*. It definitely doesn't match my use cases.
 +
 --
 * Sometimes I want to cast my (otherwise unrelated) classes to a common interface.
@@ -2060,9 +2062,9 @@ But these are all separate, unrelated needs. Entangling them in a single languag
 * If I want the feature of _reference counting_, but I have no need for an interface hierarchy to represent something different than the class hierarchy, then I have to duplicate my classes API in interfaces. Thus creating a single interface for each class. This is counter-productive. I would much rather have _smart pointers_ as a separate language feature, not entangled with interfaces (and luckily, it's coming:).
 --
 +
-That is why I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces. The _COM_ interfaces are somewhat an _embarrassment to the language_, in my eyes.
+That is why I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces.
 +
-To be fair, the _COM interfaces_ are presented in more details in the next section anyway.
+_Only if you need both "reference counting" and "multiple inheritance" at the same time, then use COM interfaces_. Also, Delphi has only COM interfaces for now, so you need to use COM interfaces if your code must be compatible with Delphi.
 
 Can we have reference-counting with CORBA interfaces?::
 
@@ -2076,7 +2078,7 @@ GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see plac
 
 //Yes, they look ugly.
 //, and I wish they would not be necessary.
-They have no meaning (if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_). But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
+The GUIDs have no meaning if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_. But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
 
 Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID. This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
 
@@ -2089,14 +2091,15 @@ Or you can write your own tool for this, using the `CreateGUID` and `GUIDToStrin
 include::code-samples/gen_guid.lpr[]
 ----
 
-### Ugly (COM) interfaces
+### Reference-counted (COM) interfaces
 
 The _COM interfaces_ bring two additional features:
 
 . integration with COM (a technology from Windows, also available on Unix through _XPCOM_, used by Mozilla),
 . reference counting (which gives you automatic destruction when all the interface references go out of scope).
 
-In my eyes, it was rather ugly to entangle _interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class. When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology.
+// In my eyes, it was rather ugly to entangle _interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class.
+When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology.
 
 In practice, this means that:
 
