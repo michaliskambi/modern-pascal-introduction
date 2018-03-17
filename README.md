@@ -10,4 +10,4 @@ The output is on:
 * http://castle-engine.io/modern_pascal_introduction.html
 * PDF: http://castle-engine.io/modern_pascal_introduction.pdf
 
-By Michalis Kamburelis (author of Castle Game Engine http://castle-engine.sourceforge.net/ ).
+By Michalis Kamburelis (author of Castle Game Engine https://castle-engine.io/ ).

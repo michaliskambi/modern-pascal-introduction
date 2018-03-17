@@ -18,7 +18,7 @@ So I wrote this quick introduction to what I call *modern Object Pascal*. Most o
 * It's very type safe,
 * High-level but can also be low-level if you need it to be.
 
-It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, https://castle-engine.sourceforge.io/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
+It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, https://castle-engine.io/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
 
 This introduction is mostly directed at programmers who already have experience in other languages. We will not cover here the meanings of some universal concepts, like _"what is a class"_, we'll only show how to do them in Pascal.
 
@@ -860,7 +860,7 @@ If you don't use the `override` keyword, the compiler will warn you that you're 
 
 ### Remember to free the class instances
 
-The class instances have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see https://castle-engine.sourceforge.io/manual_optimization.php#section_memory ).
+The class instances have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see https://castle-engine.io/manual_optimization.php#section_memory ).
 
 Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
 
@@ -1144,7 +1144,7 @@ include::code-samples/file_stream.lpr[]
 [source,pascal]
 ----
 EnableNetwork := true;
-S := Download('https://castle-engine.sourceforge.io/latest.zip');
+S := Download('https://castle-engine.io/latest.zip');
 ----
 
 [source,pascal]
@@ -2179,7 +2179,7 @@ This is also a typecast that must be valid at compile-time. Note that this synta
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com. My homepage is https://michalis.ii.uni.wroc.pl/~michalis/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.sourceforge.io/.
+The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com. My homepage is https://michalis.ii.uni.wroc.pl/~michalis/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
 
 You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
