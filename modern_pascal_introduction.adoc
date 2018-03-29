@@ -284,7 +284,10 @@ include::code-samples/loops.lpr[]
 
 *About the `repeat` and `while` loops*:
 
-It may seem that the difference between the `while` and `repeat` loops is "cosmetic" (you specify a negated condition, because in `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_). Actually there's another important difference: in case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
+There are two differences between these loop types:
+
+1. The loop condition has an opposite meaning. In `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_.
+2. In case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
 
 *About the `for I := ...` loops*:
 
@@ -1182,9 +1185,9 @@ There are three libraries providing generics containers in FPC now:
 * `Generics.Collections` unit and friends
 * `GVector` unit and friends (together in `fcl-stl`)
 
-We advice using the `FGL` unit (if you need to work with the latest stable FPC 3.0.0 and 3.0.2 or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on the other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+We advice using the `FGL` unit (if you need to work with the stable FPC 3.0.x or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on the other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
 
-*In the Castle Game Engine*: We include a local copy of `Generics.Collections` even for FPC 3.0.0 and 3.0.2. We use the `Generics.Collections` throughout the engine, and advice you to use `Generics.Collections` too!
+*In the Castle Game Engine*: We include a local copy of `Generics.Collections` even for FPC 3.0.x. We use the `Generics.Collections` throughout the engine, and advice you to use `Generics.Collections` too!
 
 Most important classes from the `Generics.Collections` unit are:
 
@@ -1660,7 +1663,7 @@ include::code-samples/operator_overloading_records_lists.lpr[]
 
 The `private` visibility specifier means that the field (or method) is not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
 
-However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. As you can guess, it means that the field (or method) in not accessible outside of this class -- period. No exceptions.
+However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. It means that the field (or method) is not accessible outside of this class -- period. No exceptions.
 
 In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
 
