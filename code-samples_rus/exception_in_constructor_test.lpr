@@ -37,6 +37,6 @@ begin
     TPlayer.Create;
   except
     on E: Exception do
-      Writeln('Ошибка ' + E.ClassName + ': ' + E.Message);
+      WriteLn('Ошибка ' + E.ClassName + ': ' + E.Message);
   end;
 end.

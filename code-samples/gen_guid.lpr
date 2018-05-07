@@ -6,5 +6,5 @@ var
 begin
   Randomize;
   CreateGUID(MyGuid);
-  Writeln('[''' + GUIDToString(MyGuid) + ''']');
+  WriteLn('[''' + GUIDToString(MyGuid) + ''']');
 end.

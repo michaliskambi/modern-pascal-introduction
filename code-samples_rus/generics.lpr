@@ -25,7 +25,7 @@ begin
   try
     FloatCalc.Add(3.14);
     FloatCalc.Add(1);
-    Writeln('Сложение величин типа Float: ', FloatCalc.Value:1:2);
+    WriteLn('Сложение величин типа Float: ', FloatCalc.Value:1:2);
   finally
     FreeAndNil(FloatCalc);
   end;

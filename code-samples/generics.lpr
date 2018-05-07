@@ -25,7 +25,7 @@ begin
   try
     FloatCalc.Add(3.14);
     FloatCalc.Add(1);
-    Writeln('FloatCalc: ', FloatCalc.Value:1:2);
+    WriteLn('FloatCalc: ', FloatCalc.Value:1:2);
   finally
     FreeAndNil(FloatCalc);
   end;
@@ -34,7 +34,7 @@ begin
   try
     StringCalc.Add('something');
     StringCalc.Add(' more');
-    Writeln('StringCalc: ', StringCalc.Value);
+    WriteLn('StringCalc: ', StringCalc.Value);
   finally
     FreeAndNil(StringCalc);
   end;
