@@ -1,4 +1,4 @@
-﻿# Quick Modern Object Pascal for Programmers
+# Modern Object Pascal Introduction for Programmers
 Michalis Kamburelis
 :toc: left
 :toclevels: 4
@@ -18,7 +18,7 @@ So I wrote this quick introduction to what I call *modern Object Pascal*. Most o
 * It's very type safe,
 * High-level but can also be low-level if you need it to be.
 
-It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, http://castle-engine.sourceforge.net/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
+It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, https://castle-engine.io/ , which is a cool portable 3D and 2D game engine using this language to create games on many platforms (Windows, Linux, MacOSX, Android, iOS, web plugin).
 
 This introduction is mostly directed at programmers who already have experience in other languages. We will not cover here the meanings of some universal concepts, like _"what is a class"_, we'll only show how to do them in Pascal.
 
@@ -303,19 +303,27 @@ end;
 include::code-samples/loops.lpr[]
 ----
 
-Various notes:
+*About the `repeat` and `while` loops*:
 
-* It may seem that the difference between the `while` and `repeat` loops is "cosmetic" (you specify a negated condition, because in `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_). Actually there's another important difference: in case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
+There are two differences between these loop types:
 
-* The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
-+
+1. The loop condition has an opposite meaning. In `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_.
+2. In case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
+
+*About the `for I := ...` loops*:
+
+The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
+
 In exchange, it looks clean, and is very optimized in execution. In particular, _the expressions for the lower and higher bound are only calculated once_, before the loop starts.
-+
-Note that the value of the loop counter variable (`I` in this example) should be considered undefined after the loop has finished due to possible optimizations. It may cause a compiler warning. Unless you exit the loop prematurely by `Break` or `Exit`, in which case the counter variable is guaranteed to retain the last value.
 
-* The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
-** It can iterate over all values in the array (example above).
-** It can iterate over all possible values of an enumerated type:
+Note that the value of the loop counter variable (`I` in this example) should be considered _undefined_ after the loop has finished, due to possible optimizations. Accessing the value of `I` after the loop may cause a compiler warning. _Unless_ you exit the loop prematurely by `Break` or `Exit`: in such case, the counter variable is guaranteed to retain the last value.
+
+*About the `for I in ...` loops*:
+
+The `for I in .. do ..` is similar to `foreach` construct in many modern languages. It works intelligently on many built-in types:
+
+* It can iterate over all values in the array (example above).
+* It can iterate over all possible values of an enumerated type:
 +
 [source,pascal]
 ----
@@ -324,7 +332,7 @@ var
 begin
   for AK in TAnimalKind do...
 ----
-** It can iterate over all items included in the set:
+* It can iterate over all items included in the set:
 +
 [source,pascal]
 ----
@@ -335,7 +343,7 @@ begin
   Animals := [akDog, akCat];
   for AK in Animals do ...
 ----
-** And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
+* And it works on custom list types, generic or not, like `TObjectList` or `TFPGObjectList`.
 +
 [source,pascal]
 ----
@@ -609,7 +617,7 @@ We have classes. At the basic level, a class is just a container for
 * _fields_ (which is fancy name for _"a variable inside a class"_),
 * _methods_ (which is fancy name for _"a procedure or function inside a class"_),
 * and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something; more in <<Properties>>).
-* Actually, you can put <<More stuff inside classes and nested classes>>, more about this in later section.
+* Actually, there are more possibilities, described in <<More stuff inside classes and nested classes>>.
 
 [source,pascal]
 ----
@@ -758,7 +766,7 @@ The basic visibility levels are:
 `private`:: only accessible in this class.
 `protected`:: only accessible in this class and descendants.
 
-The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See <<private and strict private>> section.
+The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See the <<private and strict private>>.
 
 By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
 
@@ -768,11 +776,124 @@ Not every field and property type is allowed in the `published` section (not eve
 
 If you don't declare the ancestor type, every `class` inherits from `TObject`.
 
+### Self
+
+The special keyword `Self` can be used within the class implementation to explicitly refer to your own instance. It is equivalent to `this` from C++, Java and similar languages.
+
+### Calling inherited method
+
+Within a method implementation, if you call another method, then by default you call the method of your own class. In the example code below, `TMyClass2.MyOtherMethod` calls `MyMethod`, which ends up calling `TMyClass2.MyMethod`.
+
+[source,pascal]
+----
+include::code-samples/method_calls_inheritance_1.lpr[]
+----
+
+If the method is not defined in a given class, then it calls the method of an ancestor class. In effect, when you call `MyMethod` on an instance of `TMyClass2`, then
+
+* The compiler looks for `TMyClass2.MyMethod`.
+* If not found, it looks for `TMyClass1.MyMethod`.
+* If not found, it looks for `TObject.MyMethod`.
+* if not found, then the compilation fails.
+
+You can test it by commenting out the `TMyClass2.MyMethod` definition in the example above. In effect, `TMyClass1.MyMethod` will be called by `TMyClass2.MyOtherMethod`.
+
+Sometimes, you don't want to call the method of your own class. You want to call the method of an ancestor (or ancestor's ancestor, and so on). To do this, add the keyword `inherited` before the call to `MyMethod`, like this:
+
+[source,pascal]
+----
+inherited MyMethod;
+----
+
+This way you _force_ the compiler to start searching from an ancestor class. In our example, it means that compiler is searching for `MyMethod` inside `TMyClass1.MyMethod`, then `TObject.MyMethod`, and then gives up. It does not even consider using the implementation of `TMyClass2.MyMethod`.
+
+TIP: Go ahead, change the implementation of `TMyClass2.MyOtherMethod` above to use `inherited MyMethod`, and see the difference in the output.
+
+The `inherited` call is often used to call the ancestor method of the same name. This way the descendants can enhance the ancestors (keeping the ancestor functionality, instead of replacing the ancestor functionality). Like in the example below.
+
+[source,pascal]
+----
+include::code-samples/method_calls_inherited.lpr[]
+----
+
+Since using `inherited` to call a method with the same name, with the same arguments, is a very often case, there is a special shortcut for it: you can just write `inherited;` (`inherited` keyword followed immediately by a semicolon, instead of a method name). This means "_call an inherited method with the same name, passing it the same arguments as the current method_".
+
+TIP: In the above example, all the `inherited ...;` calls could be replaced by a simple `inherited;`.
+
+Note 1: The `inherited;` is really just a shortcut for calling the ancestor's method with the _same variables passed in_. If you have modified your own parameter (which is possible, if the parameter is not `const`), then the ancestor's method can receive different input values from your descendant. Consider this:
+
+[source,pascal]
+----
+procedure TMyClass2.MyMethod(A: Integer);
+begin
+  Writeln('TMyClass2.MyMethod beginning ', A);
+  A := 456;
+  { This calls TMyClass1.MyMethod with A = 456,
+    regardless of the A value passed to this method (TMyClass2.MyMethod). }
+  inherited;
+  Writeln('TMyClass2.MyMethod ending ', A);
+end;
+----
+
+Note 2: You usually want to make the `MyMethod` _virtual_ when many classes (along the "_inheritance chain_") define it. More about the virtual methods in the section below. But the `inherited` keyword works regardless if the method is virtual or not. The `inherited` always means that the compiler starts searching for the method in an ancestor, and it makes sense for both _virtual_ and _not virtual_ methods.
+
+[[virtual-methods-section]]
+### Virtual methods, override and reintroduce
+
+By default, the methods are _not virtual_. This is similar to C++, and unlike Java.
+
+When a method is _not virtual_, the compiler determines which method to call based on the currently _declared_ class type, not based on the _actually created_ class type. The difference seems subtle, but it's important when your variable is declared to have a class like `TFruit`, but it may be in fact a descendant class like `TApple`.
+
+The idea of the object-oriented programming is that _the descendant class is always as good as the ancestor_, so the compiler allows to use a descendant class always when the ancestor is expected. When your method is not virtual, this can have undesired consequences. Consider the example below:
+
+[source,pascal]
+----
+include::code-samples/without_virtual_methods.lpr[]
+----
+
+This example will print
+
+----
+We have a fruit with class TApple
+We eat it:
+Eating a fruit
+----
+
+In effect, the call `Fruit.Eat` called the `TFruit.Eat` implementation, and nothing calls the `TApple.Eat` implementation.
+
+If you think about how the compiler works, this is natural: when you wrote the `Fruit.Eat`, the `Fruit` variable was declared to hold a class `TFruit`. So the compiler was searching for the method called `Eat` within the `TFruit` class. If the `TFruit` class would not contain such method, the compiler would search within an ancestor (`TObject` in this case). But the compiler _cannot search within descendants (like `TApple`)_, as it doesn't know whether the _actual class_ of `Fruit` is `TApple`, `TFruit`, or some other `TFruit` descendant (like a `TOrange`, not shown in the example above).
+
+In other words, the _method to be called_ is determined _at compile-time_.
+
+Using the _virtual methods_ changes this behavior. *If the `Eat` method would be virtual* (an example of it is shown below), then the actual implementation to be called is determined _at runtime_. If the `Fruit` variable will hold an instance of the class `TApple` (even if it's declared as `TFruit`), then the `Eat` method will be searched within the `TApple` class first.
+
+In Object Pascal, to define a method as _virtual_, you need to
+
+* Mark it's first definition (in the top-most ancestor) with the `virtual` keyword.
+* Mark all the other definitions (in the descendants) with the `override` keyword. All the overridden versions must have exactly the same parameters (and return the same types, in case of functions).
+
+[source,pascal]
+----
+include::code-samples/with_virtual_methods.lpr[]
+----
+
+This example will print
+
+----
+We have a fruit with class TApple
+We eat it:
+Eating an apple
+----
+
+Internally, virtual methods work by having so-called _virtual method table_ associated with each class. This table is a list of pointers to the implementations of virtual methods for this class. When calling the `Eat` method, the compiler looks into a virtual method table associated with the actual class of `Fruit`, and uses a pointer to the `Eat` implementation stored there.
+
+If you don't use the `override` keyword, the compiler will warn you that you're _hiding_ (obscuring) the virtual method of an ancestor with a non-virtual definition. If you're sure that this is what you want, you can add a `reintroduce` keyword. But in most cases, you will rather want to keep the method virtual, and add the `override` keyword, thus making sure that it's always invoked correctly.
+
 ## Freeing classes
 
 ### Remember to free the class instances
 
-The class instances have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see http://castle-engine.sourceforge.net/tutorial_optimization.php#section_memory ).
+The class instances have to be manually freed, otherwise you get memory leaks. I advice using FPC `-gl -gh` options to detect memory leaks (see https://castle-engine.io/manual_optimization.php#section_memory ).
 
 Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
 
@@ -922,6 +1043,27 @@ Beware that the list classes "ownership" mechanism is simple, and you will get a
 
 *In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
 
+### The virtual destructor called Destroy
+
+As you saw in the examples above, when the class is destroyed, it's `destructor` called `Destroy` is called.
+
+In theory, you could have multiple destructors, but in practice it's almost never a good idea. It's much easier to have only one destructor called `Destroy`, which is in turn called by the `Free` method, which is in turn called by the `FreeAndNil` procedure.
+
+The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in all your classes (since all classes descend from `TObject`). This makes the `Free` method work correctly. Recall how the virtual methods work from the <<virtual-methods-section>>.
+
+[NOTE]
+====
+This information about _destructors_ is, indeed, inconsistent with the _constructors_.
+
+It's normal that a class has multiple constructors. Usually they are all called `Create`, and only have different parameters, but it's also OK to invent other names for constructors.
+
+Also, the `Create` constructor in the `TObject` is _not virtual_, so you do not mark it with `override` in the descendants.
+
+This all gives you a bit of extra flexibility when defining constructors. It is often not necessary to make them virtual, so by default you're not forced to do it.
+
+Note, however, that this changes for `TComponent` descendants. The `TComponent` defines a virtual constructor `Create(AOwner: TComponent)`. It needs a virtual constructor in order for the streaming system to work. When defining descendants of the `TComponent`, you should override this constructor (and mark it with the `override` keyword), and perform all your initialization inside it. It is still OK to define additional constructors, but they should only act as _"helpers"_. The instance should always work when created using the `Create(AOwner: TComponent)` constructor, otherwise it will not be correctly constructed when streaming. The _streaming_ is used e.g. when saving and loading this component on a Lazarus form.
+====
+
 ### Free notification
 
 If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
@@ -951,7 +1093,7 @@ if Obj1 <> nil then
 +
 Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `Obj1 <> nil`, and will blindly access `Obj1` field, you will get a clear exception at runtime.
 +
-Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a nil instance.
+Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a `nil` instance.
 
 2. With `Obj2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
 //(or call a method that accessed a field of such instance)
@@ -1035,7 +1177,7 @@ include::code-samples/file_stream.lpr[]
 [source,pascal]
 ----
 EnableNetwork := true;
-S := Download('http://castle-engine.sourceforge.net');
+S := Download('https://castle-engine.io/latest.zip');
 ----
 
 [source,pascal]
@@ -1048,7 +1190,7 @@ S := Download('file:///home/michalis/my_binary_file.data');
 S := Download(ApplicationData('gui/my_image.png'));
 ----
 
-To read text files, I advice using `TTextReader` class from `CastleClassUtils`. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
+To read text files, we advice using the `TTextReader` class. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
 
 [source,pascal]
 ----
@@ -1057,28 +1199,170 @@ while not Text.Eof do
   WriteLnLog('NextLine', Text.ReadLine);
 ----
 
-### Lists
+[[generic-containers-section]]
+### Containers (lists, dictionaries) using generics
 
-For dynamic-length lists of stuff, I advice using generic classes from the `FGL` unit. Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
+The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advice using *generic containers* for most of your needs.
 
-Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+The _generic containers_ give you a lot of helpful methods to add, remove, iterate, search, sort... The compiler also knows (and checks) that the container holds only items of the appropriate type.
+
+// Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
+
+There are three libraries providing generics containers in FPC now:
+
+* `FGL` unit
+* `Generics.Collections` unit and friends
+* `GVector` unit and friends (together in `fcl-stl`)
+
+We advice using the `FGL` unit (if you need to work with the stable FPC 3.0.x or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on the other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+
+*In the Castle Game Engine*: We include a local copy of `Generics.Collections` even for FPC 3.0.x. We use the `Generics.Collections` throughout the engine, and advice you to use `Generics.Collections` too!
+
+Most important classes from the `Generics.Collections` unit are:
+
+TList:: A generic list of types.
+TObjectList:: A generic list of object instances. It can "own" children, which means that it will free them automatically.
+TDictionary:: A generic dictionary.
+TObjectDictionary:: A generic dictionary, that can "own" the keys and/or values.
+// So (which means that they should be object instances, and will be automatically freed).
+
+Here's how to you use a simple generic `TObjectList`:
+
+[source,pascal]
+----
+include::code-samples/generics_lists.lpr[]
+----
+
+Note that some operations require comparing two items, like sorting and searching (e.g. by `Sort` and `IndexOf` methods). The `Generics.Collections` containers use for this a _comparer_. The _default comparer_ is reasonable for all types, even for records (in which case it compares memory contents, which is a reasonable default at least for searching using `IndexOf`).
+// It can be customized if needed.
+
+When sorting the list you can provide a _custom comparer_ as a parameter. The _comparer_ is a class implementing the `IComparer` interface. In practice, you usually define the appropriate callback, and use `TComparer<T>.Construct` method to wrap this callback into an `IComparer` instance. An example of doing this is below:
+
+[source,pascal]
+----
+include::code-samples/generics_sorting.lpr[]
+----
+
+The `TDictionary` class implements a *dictionary*, also known as a *map (key -> value)*, also known as an *associative array*. It's API is a bit similar to the C# `TDictionary` class. It has useful iterators for keys, values, and pairs of key->value.
+
+An example code using a dictionary:
+
+[source,pascal]
+----
+include::code-samples/generics_dictionary.lpr[]
+----
+
+The `TObjectDictionary` can additionally _own_ the dictionary keys and/or values, which means that they will be automatically freed. Be careful to _only own keys and/or values if they are object instances_. If you set to _"owned"_ some other type, like an `Integer` (for example, if your keys are `Integer`, and you include `doOwnsKeys`), you will get a nasty crash when the code executes.
+
+An example code using the `TObjectDictionary` is below. Compile this example with _memory leak detection_, like `fpc -gl -gh generics_object_dictionary.lpr`, to see that everything is freed when program exits.
+
+[source,pascal]
+----
+include::code-samples/generics_object_dictionary.lpr[]
+----
+
+If you prefer using the `FGL` unit instead of `Generics.Collections`, here is a short overview of the most important classes from the `FGL` unit:
+
+TFPGList:: A generic list of types.
+TFPGObjectList:: A generic list of object instances. It can "own" children.
+TFPGMap:: A generic dictionary.
+
+//Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
+
+In `FGL` unit, the `TFPGList` can be only used for types for which the equality operator (=) is defined. For `TFPGMap` the _"greater than"_ (>) and _"less than"_ (<) operators must be defined for the key type. If you want to use these lists with types that don't have built-in comparison operators (e.g. with records), you have to overload their operators as shown in the <<Operator overloading>>.
+
+*In the Castle Game Engine* we include a unit `CastleGenericLists` that adds `TGenericStructList` and `TGenericStructMap` classes. They are similar to `TFPGList` and `TFPGMap`, but they do not require a definition of the comparison operators for the appropriate type (instead, they compare memory contents, which is often appropriate for records or method pointers). But the `CastleGenericLists` unit is deprecated since the engine version 6.3, as we advice using `Generics.Collections` instead.
+
+If you want to know more about the generics, see <<Generics>>.
 
 ### Cloning: TPersistent.Assign
 
-To allow copying a class instance, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. There is no magic copying here, you need to implement the `Assign` to actually copy the fields you want.
+Copying the class instances by a simple assignment operator copies the *reference*.
 
-You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
+[source,pascal]
+----
+var
+  X, Y: TMyObject;
+begin
+  X := TMyObject.Create;
+  Y := X;
+  // X and Y are now two pointers to the same data
+  Y.MyField := 123; // this also changes X.MyField
+  FreeAndNil(X);
+end;
+----
+
+To copy the *class instance contents*, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. Once it's implemented properly in `TMyObject`, you use it like this:
+
+[source,pascal]
+----
+var
+  X, Y: TMyObject;
+begin
+  X := TMyObject.Create;
+  Y := TMyObject.Create;
+  Y.Assign(X);
+  Y.MyField := 123; // this does not change X.MyField
+  FreeAndNil(X);
+  FreeAndNil(Y);
+end;
+----
+
+To make it work, you need to implement the `Assign` method to actually copy the fields you want. You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
 
 [source,pascal]
 ----
 include::code-samples/persistent.lpr[]
 ----
 
-Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the target class.
+Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the destination class.
 
-Be careful when calling `inherited` in the `Assign` implementation. You should _call inherited `TPersistent.Assign` only if you cannot handle the assignment in your code_ (this allows the `AssignTo` method to work, or otherwise raise an exception when assignment cannot be done). On the other hand, if your class descends from another class that already implements the `Assign` method, then _always call the inherited ``TMyClass.Assign``_. See the example above.
+Be careful when you call `inherited` in the overridden `Assign` implementation. There are two situations:
 
-NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>> section.
+Your class is a direct descendant of the `TPersistent` class. (Or, it's not a direct descendant of `TPersistent`, but no ancestor has overridden the `Assign` method.)::
+
+  In this case, your class should use the `inherited` keyword (to call the `TPersistent.Assign`) _only if you cannot handle the assignment in your code_.
+
+Your class descends from some class that has already overridden the `Assign` method.::
+
+  In this case, your class should _always_ use the `inherited` keyword (to call the ancestor `Assign`). In general, calling `inherited` in overridden methods is _usually_ a good idea.
+
+To understand the need when to call (or not to call) `inherited` from the `Assign` implementation, and how it relates to the `AssignTo` method, it's best to look at the `TPersistent.Assign` and `TPersistent.AssignTo` implementations:
+
+[source,pascal]
+----
+procedure TPersistent.Assign(Source: TPersistent);
+begin
+  if Source <> nil then
+    Source.AssignTo(Self)
+  else
+    raise EConvertError...
+end;
+
+procedure TPersistent.AssignTo(Destination: TPersistent);
+begin
+  raise EConvertError...
+end;
+----
+
+NOTE: This is not the *exact* implementation of `TPersistent`, I simplified it to hide the boring details about how the exception message is build.
+//The exact source code, in the FPC standard library, can be found in the `rtl/objpas/classes/persist.inc` source file. It's behavior is 100% compatible with the Delphi standard library, as far as I know.
+
+The conclusions you can get from the above are:
+
+* _If neither `Assign` nor `AssignTo` are overridden_, then calling them will result in an exception.
+
+* Also, note that there is _no_ code in `TPersistent` implementation that automatically copies all the fields (or all the published fields) of the classes. That's why you need to do that yourself, by overriding `Assign` in all the classes. You can use RTTI (runtime type information) for that, but for simple cases you will probably just list the fields to be copied manually.
+
+When you have a class like `TApple`, your `TApple.Assign` implementation usually deals with copying fields that are specific to the `TApple` class (not to the `TApple` ancestor, like `TFruit`). So, the `TApple.Assign` implementation usually checks whether `Source is TApple` at the beginning, before copying apple-related fields. Then, it calls `inherited` to allow `TFruit` to handle the rest of the fields.
+
+Assuming that you implemented `TFruit.Assign` and `TApple.Assign` following the standard pattern (as shown in the example above), the effect is like this:
+
+* If you pass `TApple` instance to `TApple.Assign`, it will work and copy all the fields.
+* If you pass `TOrange` instance to `TApple.Assign`, it will work and only copy the common fields shared by both `TOrange` and `TApple`. In other words, the fields defined at `TFruit`.
+* If you pass `TWerewolf` instance to `TApple.Assign`, it will raise an exception (because `TApple.Assign` will call `TFruit.Assign` which will call `TPersistent.Assign` which raises an exception).
+
+NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>>.
 
 ## Various language features
 
@@ -1182,7 +1466,8 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
-The generics in Pascal are implemented much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+The generics in Pascal are implemented much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record, as well as a class when specializing a generic.
+
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
@@ -1196,6 +1481,8 @@ Generics are not limited to classes, you can have generic functions and procedur
 ----
 include::code-samples/generic_functions.lpr[]
 ----
+
+See also the <<generic-containers-section>> about important standard classes using generics.
 
 ### Overloading
 
@@ -1406,7 +1693,7 @@ include::code-samples/operator_overloading_records_lists.lpr[]
 
 The `private` visibility specifier means that the field (or method) is not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
 
-However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. As you can guess, it means that the field (or method) in not accessible outside of this class -- period. No exceptions.
+However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. It means that the field (or method) is not accessible outside of this class -- period. No exceptions.
 
 In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
 
@@ -1486,6 +1773,37 @@ procedure TMyClass.TInternalClass.DoSomething;
 begin
 end;
 ----
+
+### Class methods
+
+These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
+
+[source,pascal]
+----
+type
+  TEnemy = class
+    procedure Kill;
+    class procedure KillAll;
+  end;
+
+var
+  E: TEnemy;
+begin
+  E := TEnemy.Create;
+  try
+    E.Kill;
+  finally FreeAndNil(E) end;
+  TEnemy.KillAll;
+end;
+----
+
+Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
+
+// The class methods namespace is limited to that of the containing class, just like regular methods.
+
+The class methods can also be limited by the <<Visibility specifiers>>, like `private` or `protected`. Just like regular methods.
+
+Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
 
 ### Class references
 
@@ -1597,6 +1915,74 @@ end;
 // Poor example actually, since compiler could prevent "ClassRef := TMyClass"
 // in this case?
 
+### Static class methods
+
+To understand the _static class methods_, you have to understand how the _normal class methods_ (described in the previous sections) work. Internally, _normal class methods_ receive a _class reference_ of their class (it is passed through a hidden, implicitly added 1st parameter of the method). This class reference can be even accessed explicitly using the `Self` keyword inside the class method. Usually, it's a good thing: this class reference allows you to call _virtual class methods_ (through the _virtual method table_ of the class).
+
+// Just like _instance virtual methods_, the _virtual class methods_ use some
+
+While this is nice, it makes the _normal class methods_ incompatible when assigning to a _global procedure pointer_. That is, *this will not compile*:
+
+[source,pascal]
+----
+{$mode objfpc}{$H+}{$J-}
+type
+  TMyCallback = procedure (A: Integer);
+
+  TMyClass = class
+    class procedure Foo(A: Integer);
+  end;
+
+class procedure TMyClass.Foo(A: Integer);
+begin
+end;
+
+var
+  Callback: TMyCallback;
+begin
+  // Error: TMyClass.Foo not compatible with TMyCallback
+  Callback := @TMyClass(nil).Foo;
+end.
+----
+
+[NOTE]
+====
+In the _Delphi mode_ you would be able to write `TMyClass.Foo` instead of an ugly `TMyClass(nil).Foo` in the example above. Admittedly, the `TMyClass.Foo` looks much more elegant, and it is also better checked by the compiler. Using the `TMyClass(nil).Foo` is a hack... unfortunately, necessary (for now) in the _ObjFpc mode_ which is presented throughout this book.
+
+In any case, assigning the `TMyClass.Foo` to the `Callback` above would _still fail_ in the Delphi mode, for exactly the same reasons.
+====
+
+The above example fails to compile, because the `Callback` is incompatible with the class method `Foo`. And it's incompatible because internally the class method has that special hidden _implicit_ parameter to pass a class reference.
+
+One way to fix the above example is to change the definition of `TMyCallback`. It will work if it is a method callback, declared as `TMyCallback = procedure (A: Integer) of object;`. But sometimes, it's not desirable.
+
+Here comes the `static` class method. It is, in essence, just a global procedure / function, but it's namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
+
+[source,pascal]
+----
+include::code-samples/static_class_method.lpr[]
+----
+
+### Class properties and variables
+
+A _class property_ is a property that can be accessed through a class reference (it does not need a class instance).
+
+It is quite straightforward analogy of a regular property (see <<Properties>>). For a _class property_, you define a _getter_ and / or a _setter_. They may refer to a _class variable_ or a _static class method_.
+
+A _class variable_ is, you guessed it, like a regular field but you don't need a class instance to access it. In effect, it's just like a global variable, but with the namespace limited to the containing class. It can be declared within the `class var` section of the class. Alternatively
+//(in FPC) ??
+// See https://freepascal.org/docs-html/ref/refse30.html
+it can be declared by following the normal field definition with the keyword `static`.
+
+And a _static class method_ is just like a global procedure / function, but with the namespace limited to the containing class. More about static class methods in the section above, see <<Static class methods>>.
+
+[source,pascal]
+----
+include::code-samples/class_properties.lpr[]
+----
+
+// NOTE: Why the _class properties_ have to be backed by _static class methods_, not _normal class methods_? Noone really knows (see http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050131.html , http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050135.html , https://www.mail-archive.com/fpc-devel@lists.freepascal.org/msg30511.html ), the initial implementation (Delphi) made it like that. Presumably for speed, or ease of implementation of the compiler.
+
 ### Class helpers
 
 The _method_ is just a procedure or function inside a class. From the outside of the class, you call it with a special syntax `MyInstance.MyMethod(...)`. After a while you grow accustomed to thinking that _if I want to make action Action on instance X, I write `X.Action(...)`_.
@@ -1663,7 +2049,7 @@ X := TMyClass.Create;
 
 does not execute to the end in this case, `X` cannot be assigned, so who will cleanup after a partially-constructed class?
 
-The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
+The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on a half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
 
 We also have to depend in such cases that _the memory of the class is guaranteed to be zeroed right before the constructor code is executed_. So we know that at the beginning, all class references are `nil`, all integers are `0` and so on.
 
@@ -1676,7 +2062,7 @@ include::code-samples/exception_in_constructor_test.lpr[]
 
 ## Interfaces
 
-### Good (CORBA) interfaces
+### Bare (CORBA) interfaces
 
 _An interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have one ancestor class.
 
@@ -1707,7 +2093,7 @@ Is the `{$interfaces corba}` declaration needed?::
 //(if we would omit the `{$interfaces corba}` directive)
   you create _COM interfaces_. This can be stated explicitly by saying `{$interfaces com}`, but usually it's not needed since it's the default state.
 +
-And I don't advice using _COM interfaces_. Especially if you know interfaces from other programming languages. The _CORBA interfaces_ in Pascal are exactly what you expect, equal to the interfaces in C# and Java. While the _COM interfaces_ bring additional "features" that you probably don't want.
+And I don't advice using _COM interfaces_, especially if you're looking for something equivalent to interfaces from other programming languages. The _CORBA interfaces_ in Pascal are exactly what you expect if you're looking for something equivalent to the interfaces in C# and Java. While the _COM interfaces_ bring additional features that you possibly don't want.
 +
 Note that the `{$interfaces xxx}` declaration only affects the interfaces that do not have any explicit ancestor (just the keyword `interface`, not `interface(ISomeAncestor)`). When an interface has an ancestor, it has the same type as the ancestor, regardless of the `{$interfaces xxx}` declaration.
 
@@ -1719,9 +2105,11 @@ What are COM interfaces?::
 * Adds the `QueryInterface` method.
 * Allows to interact with the _COM (Component Object Model) technology_.
 
-What do you advice to not use the COM interfaces?::
+Why do you advice to not use the COM interfaces?::
 
-  The additional features brought by the COM interfaces are rather problematic in my view. Don't get me wrong -- the idea of reference-counting is very nice. But entangling these features with interfaces (instead of making them orthogonal features) is very unclean in my eyes. It definitely doesn't match my use cases.
+  Because _COM interfaces_ "entangle" two features that should be unrelated (orthogonal) in my view: _multiple inheritance_ and _reference counting_. Other programming languages rightly use separate concepts for these two features.
++
+To be clear: *reference-counting*, that provides an automatic memory management (in simple situations, i.e. without cycles), *is a very useful concept*. But *entangling this feature with interfaces (instead of making them orthogonal features) is unclean in my eyes*. It definitely doesn't match my use cases.
 +
 --
 * Sometimes I want to cast my (otherwise unrelated) classes to a common interface.
@@ -1729,16 +2117,21 @@ What do you advice to not use the COM interfaces?::
 * _Maybe_ some day I will want to interact with the _COM technology_.
 --
 +
-But these are all separate, unrelated needs. Entangling them in a single language feature is counter-useful in my experience. And it does cause actual problems: the reference-counting mechanism of COM, even when disabled by a special `_AddRef` and `_ReleaseRef` implementation, is still troublesome. You still need to be careful to never have a temporary interface reference hanging, after you have freed the class instance. More details about it in the next section.
+But these are all separate, unrelated needs. Entangling them in a single language feature is counter-useful in my experience. It does cause actual problems:
 +
-That is why I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces. The _COM_ interfaces are somewhat an _embarrassment to the language_, in my eyes.
+--
+* If I want the feature of _casting classes to a common interface API_, but I don't want the reference-counting mechanism (I want to manually free objects), then the COM interfaces are problematic. Even when reference-counting is disabled by a special `_AddRef` and `_ReleaseRef` implementation, you still need to be careful to never have a temporary interface reference hanging, after you have freed the class instance. More details about it in the next section.
+* If I want the feature of _reference counting_, but I have no need for an interface hierarchy to represent something different than the class hierarchy, then I have to duplicate my classes API in interfaces. Thus creating a single interface for each class. This is counter-productive. I would much rather have _smart pointers_ as a separate language feature, not entangled with interfaces (and luckily, it's coming:).
+--
 +
-To be fair, the _COM interfaces_ are presented in more details in the next section anyway.
+That is why I advice to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces.
++
+_Only if you need both "reference counting" and "multiple inheritance" at the same time, then use COM interfaces_. Also, Delphi has only COM interfaces for now, so you need to use COM interfaces if your code must be compatible with Delphi.
 
 Can we have reference-counting with CORBA interfaces?::
 
   Yeah. Just add `_AddRef` / `_ReleaseRef` methods. There's no need to descend from the `IUnknown` interface. Although in most cases, if you want reference-counting with your interfaces, you may as well just use COM interfaces.
-//    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that iunknown doesn't just do refcounting though, it also plays a part in identity (queryinterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
+//    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that IUnknown doesn't just do ref-counting though, it also plays a part in identity (QueryInterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
 ### Interfaces GUIDs
@@ -1747,7 +2140,7 @@ GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see plac
 
 //Yes, they look ugly.
 //, and I wish they would not be necessary.
-They have no meaning (if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_). But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
+The GUIDs have no meaning if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_. But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
 
 Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID. This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
 
@@ -1760,14 +2153,15 @@ Or you can write your own tool for this, using the `CreateGUID` and `GUIDToStrin
 include::code-samples/gen_guid.lpr[]
 ----
 
-### Ugly (COM) interfaces
+### Reference-counted (COM) interfaces
 
 The _COM interfaces_ bring two additional features:
 
 . integration with COM (a technology from Windows, also available on Unix through _XPCOM_, used by Mozilla),
 . reference counting (which gives you automatic destruction when all the interface references go out of scope).
 
-In my eyes, it was rather ugly to entangle _interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class. When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology.
+// In my eyes, it was rather ugly to entangle _interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class.
+When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology.
 
 In practice, this means that:
 
@@ -1847,7 +2241,7 @@ This is also a typecast that must be valid at compile-time. Note that this synta
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction . Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com . My homepage is https://michalis.ii.uni.wroc.pl/~michalis/ .
+The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis.kambi@gmail.com. My homepage is https://michalis.ii.uni.wroc.pl/~michalis/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
 
 You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 

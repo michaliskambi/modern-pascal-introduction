@@ -1,0 +1,19 @@
+.patreon-link {
+  display: block;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #777;
+  font-size: 14px;
+  line-height: 35px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  text-decoration: none;
+  text-align: left;
+  float: right;
+}
+a.patreon-link:hover,
+a.patreon-link:focus {
+  color: black;
+  background: #EEE;
+}
