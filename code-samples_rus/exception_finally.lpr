@@ -2,7 +2,8 @@
 
 program MyProgram;
 
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TMyClass = class
@@ -18,9 +19,11 @@ end;
 var
   C: TMyClass;
 begin
-  randomize;
+  Randomize;
   C := TMyClass.Create;
   try
     C.MyMethod;
-  finally FreeAndNil(C) end;
+  finally
+    FreeAndNil(C)
+  end;
 end.

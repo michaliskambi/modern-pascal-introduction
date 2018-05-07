@@ -1,6 +1,7 @@
 {$mode objfpc}{$H+}{$J-}
 {$modeswitch advancedrecords}
-uses SysUtils, FGL;
+uses
+  SysUtils, FGL;
 
 type
   TMyRecord = record
@@ -36,7 +37,7 @@ begin
     for ListItem in L do
       R := ListItem + R;
 
-    Writeln('1 + 10 + 100 = ', R.MyInt);
+    WriteLn('1 + 10 + 100 = ', R.MyInt);
   finally
     FreeAndNil(L);
   end;

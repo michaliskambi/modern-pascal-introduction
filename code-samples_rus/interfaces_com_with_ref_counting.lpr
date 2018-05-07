@@ -1,7 +1,8 @@
 {$mode objfpc}{$H+}{$J-}
 {$interfaces com}
 
-uses SysUtils, Classes;
+uses
+  SysUtils, Classes;
 
 type
   IMyInterface = interface
@@ -23,17 +24,17 @@ type
 
 procedure TMyClass1.Shoot;
 begin
-  Writeln('TMyClass1.Shoot');
+  WriteLn('TMyClass1.Shoot');
 end;
 
 procedure TMyClass2.Shoot;
 begin
-  Writeln('TMyClass2.Shoot');
+  WriteLn('TMyClass2.Shoot');
 end;
 
 procedure TMyClass3.Shoot;
 begin
-  Writeln('TMyClass3.Shoot');
+  WriteLn('TMyClass3.Shoot');
 end;
 
 procedure UseThroughInterface(I: IMyInterface);

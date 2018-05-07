@@ -2,5 +2,5 @@
 
 program MyProgram; // Save this file as myprogram.lpr
 begin
-  Writeln('Hello world!');
+  WriteLn('Hello world!');
 end.

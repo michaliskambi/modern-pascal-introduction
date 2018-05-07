@@ -4,12 +4,12 @@ type
   TMyRecord = record
   public
     I, Square: Integer;
-    procedure WritelnDescription;
+    procedure WriteLnDescription;
   end;
 
-procedure TMyRecord.WritelnDescription;
+procedure TMyRecord.WriteLnDescription;
 begin
-  Writeln('Квадрат числа ', I, ' равен ', Square);
+  WriteLn('Квадрат числа ', I, ' равен ', Square);
 end;
 
 var
@@ -24,5 +24,5 @@ begin
   end;
 
   for R in A do
-    R.WritelnDescription;
+    R.WriteLnDescription;
 end.

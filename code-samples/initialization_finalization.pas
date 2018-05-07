@@ -6,10 +6,10 @@ implementation
 
 initialization
 
-writeln('Hello world!');
+  WriteLn('Hello world!');
 
 finalization
 
-writeln('Goodbye world!');
+  WriteLn('Goodbye world!');
 
 end.

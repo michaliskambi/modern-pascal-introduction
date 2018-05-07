@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TMyMethod = procedure (const A: Integer) of object;
@@ -36,9 +37,11 @@ begin
   C := TMyClass.Create;
   try
     C.ProcessTheList(@C.Add);
-    Writeln('1 + 2 + 3 ... + 10 = ', C.CurrentValue);
+    WriteLn('1 + 2 + 3 ... + 10 = ', C.CurrentValue);
 
     C.ProcessTheList(@C.Multiply);
-    Writeln('1 * 2 * 3 ... * 10 = ', C.CurrentValue);
-  finally FreeAndNil(C) end;
+    WriteLn('1 * 2 * 3 ... * 10 = ', C.CurrentValue);
+  finally
+    FreeAndNil(C);
+  end;
 end.

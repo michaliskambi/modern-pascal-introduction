@@ -2,7 +2,8 @@
 program showcolor;
 
 // и Graphics и GoogleMapsEngine определяют тип TColor.
-uses Graphics, GoogleMapsEngine;
+uses
+  Graphics, GoogleMapsEngine;
 
 var
   { Это не сработает, как мы ожидаем, поскольку TColor последний раз
@@ -12,6 +13,6 @@ var
   Color: Graphics.TColor;
 begin
   Color := clYellow;
-  Writeln(Red(Color), ' ', Green(Color), ' ', Blue(Color));
+  WriteLn(Red(Color), ' ', Green(Color), ' ', Blue(Color));
 end.
 

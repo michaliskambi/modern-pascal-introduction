@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TGun = class
@@ -21,7 +22,7 @@ end;
 
 destructor TPlayer.Destroy;
 begin
-  { в данном случае в результате ошибки в constructor-е, у нас
+  { В данном случае в результате ошибки в constructor-е, у нас
     может оказаться Gun1 <> nil и Gun2 = nil. Смиритесь.
     В таком случае, FreeAndNil справится с задачей без каких-либо
     дополнительных действий с нашей стороны, поскольку FreeAndNil проверяет

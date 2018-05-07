@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses StrUtils;
+uses
+  StrUtils;
 
 operator* (const S: string; const A: Integer): string;
 begin
@@ -7,5 +8,5 @@ begin
 end;
 
 begin
-  Writeln('bla' * 10);
+  WriteLn('bla' * 10);
 end.

@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TMyRecord = record
@@ -16,5 +17,5 @@ var
 begin
   R1.MyInt := 12;
   R2 := R1 * R1;
-  Writeln('12 * 12 = ', R2.MyInt);
+  WriteLn('12 * 12 = ', R2.MyInt);
 end.

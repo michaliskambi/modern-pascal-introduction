@@ -2,7 +2,8 @@
 unit AnotherUnit;
 interface
 
-uses Classes;
+uses
+  Classes;
 
 { Тип класса "TComponent" определён в unit-е Classes.
   По этому необходимо использовать uses Classes, как видно выше. }
@@ -10,7 +11,8 @@ procedure DoSomethingWithComponent(var C: TComponent);
 
 implementation
 
-uses SysUtils;
+uses
+  SysUtils;
 
 procedure DoSomethingWithComponent(var C: TComponent);
 begin

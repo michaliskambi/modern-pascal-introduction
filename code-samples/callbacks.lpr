@@ -26,8 +26,8 @@ var
   SomeFunction: TMyFunction;
 begin
   SomeFunction := @Add;
-  Writeln('1 + 2 + 3 ... + 10 = ', ProcessTheList(SomeFunction));
+  WriteLn('1 + 2 + 3 ... + 10 = ', ProcessTheList(SomeFunction));
 
   SomeFunction := @Multiply;
-  Writeln('1 * 2 * 3 ... * 10 = ', ProcessTheList(SomeFunction));
+  WriteLn('1 * 2 * 3 ... * 10 = ', ProcessTheList(SomeFunction));
 end.

@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
 { Note: this example requires FPC 3.1.1 (will not compile with FPC 3.0.0 or older). }
 
@@ -11,7 +12,7 @@ begin
 end;
 
 begin
-  Writeln('Min (1, 0): ', specialize Min<Integer>(1, 0));
-  Writeln('Min (3.14, 5): ', specialize Min<Single>(3.14, 5):1:2);
-  Writeln('Min (''a'', ''b''): ', specialize Min<string>('a', 'b'));
+  WriteLn('Min (1, 0): ', specialize Min<Integer>(1, 0));
+  WriteLn('Min (3.14, 5): ', specialize Min<Single>(3.14, 5):1:2);
+  WriteLn('Min (''a'', ''b''): ', specialize Min<string>('a', 'b'));
 end.

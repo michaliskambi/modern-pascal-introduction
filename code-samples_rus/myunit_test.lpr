@@ -5,6 +5,6 @@ program MyProgram;
 uses MyUnit;
 
 begin
-  Writeln(MyFunction('Примечание: '));
+  WriteLn(MyFunction('Примечание: '));
   MyProcedure(5);
 end.

@@ -1,7 +1,8 @@
 {$mode objfpc}{$H+}{$J-}
 program MyProgram;
 
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TMyClass = class
@@ -15,12 +16,12 @@ type
 
 procedure TMyClass.MyVirtualMethod;
 begin
-  Writeln('TMyClass отображает MyInt + 10: ', MyInt + 10);
+  WriteLn('TMyClass отображает MyInt + 10: ', MyInt + 10);
 end;
 
 procedure TMyClassDescendant.MyVirtualMethod;
 begin
-  Writeln('TMyClassDescendant отображает MyInt + 20: ', MyInt + 20);
+  WriteLn('TMyClassDescendant отображает MyInt + 20: ', MyInt + 20);
 end;
 
 var
@@ -29,10 +30,14 @@ begin
   C := TMyClass.Create;
   try
     C.MyVirtualMethod;
-  finally FreeAndNil(C) end;
+  finally
+    FreeAndNil(C);
+  end;
 
   C := TMyClassDescendant.Create;
   try
     C.MyVirtualMethod;
-  finally FreeAndNil(C) end;
+  finally
+    FreeAndNil(C);
+  end;
 end.

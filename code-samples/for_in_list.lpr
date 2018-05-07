@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils, FGL;
+uses
+  SysUtils, FGL;
 
 type
   TMyClass = class
@@ -23,6 +24,8 @@ begin
     end;
 
     for C in List do
-      Writeln('Square of ', C.I, ' is ', C.Square);
-  finally FreeAndNil(List) end;
+      WriteLn('Square of ', C.I, ' is ', C.Square);
+  finally
+    FreeAndNil(List);
+  end;
 end.

@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils, Classes;
+uses
+  SysUtils, Classes;
 
 type
   TMyClass = class(TPersistent)
@@ -54,7 +55,7 @@ begin
   try
     C1.MyInt := 666;
     C2.Assign(C1);
-    Writeln('C2 state: ', C2.MyInt);
+    WriteLn('C2 state: ', C2.MyInt);
   finally
     FreeAndNil(C1);
     FreeAndNil(C2);
@@ -67,7 +68,7 @@ begin
     CD1.MyInt := 44;
     CD1.MyString := 'blah';
     CD2.Assign(CD1);
-    Writeln('CD2 state: ', CD2.MyInt, ' ', CD2.MyString);
+    WriteLn('CD2 state: ', CD2.MyInt, ' ', CD2.MyString);
   finally
     FreeAndNil(CD1);
     FreeAndNil(CD2);

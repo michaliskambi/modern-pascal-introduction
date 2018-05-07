@@ -4,12 +4,12 @@ type
   TMyRecord = record
   public
     I, Square: Integer;
-    procedure WritelnDescription;
+    procedure WriteLnDescription;
   end;
 
 procedure TMyRecord.WritelnDescription;
 begin
-  Writeln('Square of ', I, ' is ', Square);
+  WriteLn('Square of ', I, ' is ', Square);
 end;
 
 var
@@ -24,5 +24,5 @@ begin
   end;
 
   for R in A do
-    R.WritelnDescription;
+    R.WriteLnDescription;
 end.

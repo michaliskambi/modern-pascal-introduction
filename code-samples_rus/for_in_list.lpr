@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils, FGL;
+uses
+  SysUtils, FGL;
 
 type
   TMyClass = class
@@ -23,6 +24,8 @@ begin
     end;
 
     for C in List do
-      Writeln('Квадрат ', C.I, ' составляет ', C.Square);
-  finally FreeAndNil(List) end;
+      WriteLn('Квадрат ', C.I, ' составляет ', C.Square);
+  finally
+    FreeAndNil(List);
+  end;
 end.

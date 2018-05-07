@@ -7,5 +7,5 @@ begin
 end;
 
 begin
-  Writeln('повтор' * 10);
+  WriteLn('повтор' * 10);
 end.

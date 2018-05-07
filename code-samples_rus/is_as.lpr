@@ -1,7 +1,8 @@
 {$mode objfpc}{$H+}{$J-}
 program is_as;
 
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TMyClass = class
@@ -13,10 +14,14 @@ type
   end;
 
 procedure TMyClass.MyMethod;
-begin Writeln('Это MyMethod') end;
+begin
+  WriteLn('Это MyMethod')
+end;
 
 procedure TMyClassDescendant.MyMethodInDescendant;
-begin Writeln('Это MyMethodInDescendant') end;
+begin
+  WriteLn('Это MyMethodInDescendant')
+end;
 
 var
   Descendant: TMyClassDescendant;
@@ -38,5 +43,7 @@ begin
     if C is TMyClassDescendant then
       (C as TMyClassDescendant).MyMethodInDescendant;
 
-  finally FreeAndNil(Descendant) end;
+  finally
+    FreeAndNil(Descendant);
+  end;
 end.

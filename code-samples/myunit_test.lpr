@@ -2,11 +2,12 @@
 
 program MyProgram;
 
-uses MyUnit;
+uses
+  MyUnit;
 
 var
   X: Single;
 begin
-  Writeln(MyFunction('Note: '));
+  WriteLn(MyFunction('Note: '));
   MyProcedure(5);
 end.

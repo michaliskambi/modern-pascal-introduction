@@ -4,7 +4,7 @@ program MyProgram;
 
 procedure MyProcedure(const A: Integer);
 begin
-  Writeln('A + 10 is: ', A + 10);
+  WriteLn('A + 10 is: ', A + 10);
 end;
 
 function MyFunction(const S: string): string;
