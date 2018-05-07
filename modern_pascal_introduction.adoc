@@ -34,7 +34,7 @@ include::code-samples/hello_world.lpr[]
 This is a complete program that you can _compile_ and _run_.
 
 * If you use the command-line FPC, just create a new file `myprogram.lpr` and execute `fpc myprogram.lpr`.
-* If you use _Lazarus_, create a new project (menu _Project_ -> _New Project_ -> _Simple Program_). Save it as `myprogram` and paste this source code as the main file. Compile using the menu item _Run -> Compile_ (F9 hotkey).
+* If you use _Lazarus_, create a new project (menu _Project_ -> _New Project_ -> _Simple Program_). Save it as `myprogram` and paste this source code as the main file. Compile using the menu item _Run -> Compile_.
 * This is a command-line program, so in either case -- just run the compiled executable from the command-line.
 
 The rest of this article talks about the Object Pascal language, so don't expect to see anything more fancy than the command-line stuff. If you want to see something cool, just create a new GUI project in _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
