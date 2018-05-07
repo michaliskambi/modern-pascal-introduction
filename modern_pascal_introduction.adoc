@@ -94,8 +94,9 @@ Another useful feature of Pascal is that function result can be discarded and th
 
 [source,pascal]
 ----
-var Count: Integer;
-    MyCount: Integer;
+var
+  Count: Integer;
+  MyCount: Integer;
 
 function CountMe: Integer;
 begin
