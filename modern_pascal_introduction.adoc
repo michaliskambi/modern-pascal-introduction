@@ -11,7 +11,7 @@ Michalis Kamburelis
 There are many books and resources about Pascal out there, but too many of them talk about the old Pascal, without classes, units or generics.
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
-So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it  _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java or C#.
+So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java or C#.
 
 * It has all the modern features you expect -- classes, units, interfaces, generics...
 * It's compiled to a fast, native code,
@@ -94,19 +94,19 @@ Another useful feature of Pascal is that function result can be discarded and th
 
 [source,pascal]
 ----
-var count: Integer;
-    myCount: Integer;
+var Count: Integer;
+    MyCount: Integer;
 
 function CountMe: Integer;
 begin
-  inc(count);
-  result := count;
+  Inc(count);
+  Result := Count;
 end;
 
 begin
-  count := 10;
+  Count := 10;
   CountMe; //function result is discarded, but the function is executed
-  myCount := CountMe; //normal usage of the function
+  MyCount := CountMe; //normal usage of the function
 end.
 ----
 
@@ -345,43 +345,43 @@ We didn't yet explain the concept of classes, so the last example may not be obv
 
 ### Output, logging
 
-To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
+To simply output strings in Pascal, use the `Write` or `WriteLn` routine. The latter automatically adds a newline at the end.
 
 This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with a special syntax to specify padding and number precision.
 
 [source,pascal]
 ----
-Writeln('Hello world!');
-Writeln('You can output an integer: ', 3 * 4);
-Writeln('You can pad an integer: ', 666:10);
-Writeln('You can output a float: ', Pi:1:4);
+WriteLn('Hello world!');
+WriteLn('You can output an integer: ', 3 * 4);
+WriteLn('You can pad an integer: ', 666:10);
+WriteLn('You can output a float: ', Pi:1:4);
 ----
 
 To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
 
 [source,pascal]
 ----
-Writeln('One line.\nSecond line.'); // INCORRECT example
+WriteLn('One line.\nSecond line.'); // INCORRECT example
 ----
 
 doesn't work like some of you would think. This will work:
 
 [source,pascal]
 ----
-Writeln('One line.' + LineEnding + 'Second line.');
+WriteLn('One line.' + LineEnding + 'Second line.');
 ----
 
 or just this:
 
 [source,pascal]
 ----
-Writeln('One line.');
-Writeln('Second line.');
+WriteLn('One line.');
+WriteLn('Second line.');
 ----
 
 Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
 
-*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `Writeln` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
+*In the Castle Game Engine:* use `WriteLnLog` or `WriteLnWarning`, never `WriteLn`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `WriteLn` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
 
 ### Converting to a string
 
@@ -473,7 +473,7 @@ var
   Color: Graphics.TColor;
 begin
   Color := clYellow;
-  Writeln(Red(Color), ' ', Green(Color), ' ', Blue(Color));
+  WriteLn(Red(Color), ' ', Green(Color), ' ', Blue(Color));
 end.
 ----
 
@@ -498,7 +498,7 @@ uses GoogleMapsEngine;
 
 procedure ShowColor(const Color: TColor);
 begin
-  // Writeln(ColorToString(Color));
+  // WriteLn(ColorToString(Color));
 end;
 
 end.
@@ -526,7 +526,7 @@ uses GoogleMapsEngine;
 
 procedure ShowColor(const Color: GoogleMapsEngine.TColor);
 begin
-  // Writeln(ColorToString(Color));
+  // WriteLn(ColorToString(Color));
 end;
 
 end.
@@ -551,7 +551,7 @@ uses GoogleMapsEngine;
 
 procedure ShowColor(const Color: Graphics.TColor);
 begin
-  // Writeln(ColorToString(Color));
+  // WriteLn(ColorToString(Color));
 end;
 
 end.
@@ -621,7 +621,7 @@ type
 
 procedure TMyClass.MyMethod;
 begin
-  Writeln(MyInt + 10);
+  WriteLn(MyInt + 10);
 end;
 ----
 
@@ -711,7 +711,7 @@ Note that instead of specifying a method, you can also specify a field (typicall
 When declaring a property you specify:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
-. And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
+. And, in a similar manner, whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
 . Moreover, the property may have a default value (provided after `default` keyword).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
@@ -777,7 +777,7 @@ Note that this doesn't concern raised exceptions. Although you do create a class
 
 ### How to free
 
-To free the class instance, it's best to call `FreeAndNil(A)` from  `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
+To free the class instance, it's best to call `FreeAndNil(A)` from `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
 
 It is more-or-less a shortcut for
 
@@ -945,7 +945,7 @@ end;
 [source,pascal]
 ----
 if Obj1 <> nil then
-  Writeln(Obj1.ClassName);
+  WriteLn(Obj1.ClassName);
 ----
 +
 Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `Obj1 <> nil`, and will blindly access `Obj1` field, you will get a clear exception at runtime.
@@ -1053,7 +1053,7 @@ To read text files, I advice using `TTextReader` class from `CastleClassUtils`. 
 ----
 Text := TTextReader.Create(ApplicationData('my_data.txt'));
 while not Text.Eof do
-  WritelnLog('NextLine', Text.ReadLine);
+  WriteLnLog('NextLine', Text.ReadLine);
 ----
 
 ### Lists
@@ -1181,7 +1181,7 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
-The generics in Pascal are implemented much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+The generics in Pascal are implemented much like generics in C++. Which means that they are "expanded" at the specialization time, a _little_ like macros (but when expanding, the identifiers from the generic definition are used, so you cannot "inject" any unexpected behavior into a generic when specializing it). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
@@ -1427,7 +1427,9 @@ begin
   E := TEnemy.Create;
   try
     E.Kill;
-  finally FreeAndNil(E) end;
+  finally
+    FreeAndNil(E);
+  end;
   TEnemy.KillAll;
 end;
 ----
@@ -1455,7 +1457,7 @@ type
         procedure DoSomething;
       end;
     var
-    FInternalClass: TInternalClass;
+      FInternalClass: TInternalClass;
   public
     const
       DefaultVelocity = 100.0;
