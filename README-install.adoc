@@ -1,4 +1,5 @@
-To generate the outputs, install
-* asciidoctor, coderay (available in package in most Linux distros)
-* asciidoctor-fopub
-* follow the README-pdf.adoc to setup proper syntax highlighting for Pascal sources in asciidoctor-fopub
+To generate the output, install:
+
+* asciidoctor, coderay (available as ready package in most Linux distros, just run `apt-get install ...`)
+* asciidoctor-fopub (from https://github.com/asciidoctor/asciidoctor-fopub)
+* follow the `README-pdf.adoc` to setup proper syntax highlighting for Pascal sources in asciidoctor-fopub.
