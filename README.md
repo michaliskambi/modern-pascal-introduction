@@ -1,4 +1,4 @@
-# Quick Modern Object Pascal for Programmers
+# Modern Object Pascal Introduction for Programmers
 
 An introduction to modern Object Pascal. May be useful for programmers that already know the concepts (like "class"), but don't know how these concepts look in Object Pascal.
 
