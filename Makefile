@@ -7,8 +7,8 @@ all: $(ALL_OUTPUT)
 
 $(NAME).html: $(NAME).adoc
 	asciidoctor $< -o $@
-	LINE="`cat patreon-link.css | tr '\n' ' ' `" && sed -e "s|</head>|<style>$$LINE</style></head>|" --in-place $@
-	LINE="`cat patreon-link.html | tr '\n' ' ' `" && sed -e "s|<div id=\"toc\" class=\"toc2\">|$$LINE<div id=\"toc\" class=\"toc2\">|" --in-place $@
+	fpc -gl -gh patreon-link-insert.lpr
+	./patreon-link-insert $@
 	$(TEST_BROWSER) $@ &
 
 $(NAME).xml: $(NAME).adoc
