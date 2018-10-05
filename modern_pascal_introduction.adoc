@@ -1350,7 +1350,7 @@ These two examples are equivalent:
 
 [source,pascal]
 ----
-procedure SumOfSquares(const N: Integer): Integer;
+function SumOfSquares(const N: Integer): Integer;
 
   function Square(const Value: Integer): Integer;
   begin
