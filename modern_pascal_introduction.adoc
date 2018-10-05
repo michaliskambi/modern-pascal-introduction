@@ -1370,7 +1370,7 @@ Another version, where we let the local routine `Square` to access `I` directly:
 
 [source,pascal]
 ----
-procedure SumOfSquares(const N: Integer): Integer;
+function SumOfSquares(const N: Integer): Integer;
 var
   I: Integer;
 
