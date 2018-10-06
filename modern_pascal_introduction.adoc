@@ -976,7 +976,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier or they weren't assigned). We can change the previous example to this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
 
 [source,pascal]
 ----
@@ -1000,6 +1000,8 @@ end;
 ----
 
 Note that we need to override a virtual `TComponent` constructor here. So we cannot change the constructor parameters. (Actually, you can -- declare a new constructor with `reintroduce`. But be careful, as some functionality, e.g. streaming, will still use the virtual constructor, so make sure it works right in either case.)
+
+Note that you can always use `nil` value for the owner. This way the _"ownership"_ mechanism will not be used for this component. It makes sense if you need to use the `TComponent` descendant, but you want to always manually free it. To do this, you would create a component descendant like this: `ManualGun := TGun.Create(nil);`.
 
 Another mechanism for automatic freeing is the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we can also write:
 
