@@ -12,8 +12,8 @@
 * ....html
 * ....pdf
 а также исходный текст на английском языке:
-* http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.html
-* PDF: http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/modern_pascal_introduction.pdf
+* https://castle-engine.io/modern_pascal_introduction.html
+* PDF: https://castle-engine.io/modern_pascal_introduction.pdf
 
-Michalis Kamburelis (создатель Castle Game Engine http://castle-engine.sourceforge.net/ ).
+Michalis Kamburelis (создатель Castle Game Engine https://castle-engine.io/ ).
 Перевод на русский: Александр Скворцов и Евгений Лоза
