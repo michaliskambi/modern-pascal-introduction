@@ -721,7 +721,6 @@ When declaring a property you specify:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
 . And, in a similar manner, whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
-. Moreover, the property may have a default value (provided after `default` keyword).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
 
@@ -744,6 +743,20 @@ Note that it's OK for _getter_ to have some _invisible_ side-effect, for example
 * It's technically possible to make _set-only properties_, but I have not yet seen a good example of such thing:)
 
 NOTE: Properties can also be defined outside of class, at a unit level. They serve an analogous purpose then: look like a global variable, but are backed by a _getter_ and _setter_ routines.
+
+#### Serialization of properties
+
+_Published properties_ are the basis of a _serialization_ (also known as _streaming components_) in Pascal.
+
+Serialization is what happens when Lazarus reads (or writes) the component state from an `xxx.lfm` file. (In Delphi, the equivalent file has `.dfm` extension.) You can also use this mechanism explicitly, using routines like `ReadComponentFromTextStream` from the `LResources` unit. You can also use other serialization algorithms, e.g. `FpJsonRtti` unit (serializing to JSON).
+
+*In the Castle Game Engine:* Use the `CastleComponentSerialize` unit (based on `FpJsonRtti`) to serialize our user-interface and transformation component hierarchies.
+
+At each property, you can declare some additional things that will be helpful for any serialization algorithm:
+
+* You can specify the property default value (using the `default` keyword). Note that you are still required to initialize the property in the constructor to this exact default value (it is not done automatically). The `default` declaration is merely an information to the serialization algorithm: _"when the constructor finishes, the given property has the given value"_.
+
+* Whether the property should be stored at all (using the `stored` keyword).
 
 ### Exceptions
 
