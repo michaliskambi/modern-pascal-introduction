@@ -1918,7 +1918,7 @@ begin
   // This would always create an instance of exactly TMyClass:
   //Result := TMyClass.Create(AOwner);
   // This can potentially create an instance of TMyClass descendant:
-  Result := TMyClassRef(self.ClassType).Create(AOwner);
+  Result := TMyClassRef(ClassType).Create(AOwner);
   Result.Assign(Self);
 end;
 ----
