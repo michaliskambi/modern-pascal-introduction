@@ -7,7 +7,7 @@ type
     procedure WriteLnDescription;
   end;
 
-procedure TMyRecord.WritelnDescription;
+procedure TMyRecord.WriteLnDescription;
 begin
   WriteLn('Square of ', I, ' is ', Square);
 end;
