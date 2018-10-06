@@ -1655,7 +1655,7 @@ type
 
 Note that the definition is recursive (type `PMyRecord` is defined using type `TMyRecord`, while `TMyRecord` is defined using `PMyRecord`). It is allowed to define a pointer type to a _not-yet-defined type_, as long as it will be resolved within the same `type` block.
 
-You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not type-safe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator (e.g. `PMyRecord^.Value`). To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator (e.g. `@myRecordVariable`).
+You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not type-safe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator (e.g. `MyInteger := MyPointerToInteger^`). To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator (e.g. `MyPointerToInteger := @MyInteger`).
 
 There is also an untyped `Pointer` type, similar to `void*` in C-like languages. It is completely unsafe, and can be typecasted to any other pointer type.
 
