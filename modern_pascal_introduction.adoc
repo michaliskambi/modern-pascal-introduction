@@ -1712,35 +1712,6 @@ However, if you create larger units, with many classes (that are not tightly int
 
 In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
 
-### Class methods
-
-These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
-
-[source,pascal]
-----
-type
-  TEnemy = class
-    procedure Kill;
-    class procedure KillAll;
-  end;
-
-var
-  E: TEnemy;
-begin
-  E := TEnemy.Create;
-  try
-    E.Kill;
-  finally
-    FreeAndNil(E);
-  end;
-  TEnemy.KillAll;
-end;
-----
-
-Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
-
-Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
-
 ### More stuff inside classes and nested classes
 
 You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, in particular the nested class can be private (not visible to the outside world), which is often useful.
