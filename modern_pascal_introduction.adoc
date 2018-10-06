@@ -90,7 +90,7 @@ begin
 end;
 ----
 
-Another useful feature of Pascal is that function result can be discarded and the function may be used identically to a procedure. For example:
+Note that the function result can be discarded. Any function may be used just like a procedure. This makes sense if the function has some _side effect_ (e.g. it modifies a global variable) besides calculating the result. For example:
 
 [source,pascal]
 ----
@@ -100,14 +100,14 @@ var
 
 function CountMe: Integer;
 begin
-  Inc(count);
+  Inc(Count);
   Result := Count;
 end;
 
 begin
   Count := 10;
-  CountMe; //function result is discarded, but the function is executed
-  MyCount := CountMe; //normal usage of the function
+  CountMe; // the function result is discarded, but the function is executed
+  MyCount := CountMe; // use the result of the function
 end.
 ----
 
@@ -174,7 +174,7 @@ The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is p
 
 The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
 
-The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions to specify the correct order of their processing.
+The _logical (or bit-wise) operators have a higher precedence than relational operators_. You may need to use parenthesis around some expressions to have the desired order of the calculations.
 
 For example this is a compilation error:
 
@@ -186,7 +186,7 @@ begin
   if A = 0 and B <> 0 then ... // INCORRECT example
 ----
 
-The above fails to compile, because the compiler first tries to preform a higher-priority bit-wise `and` in the middle of the expression which turns out to be: `(0 and B)` - a bit-wise operation which returns an integer value. Then the compiler goes on and applies `=` operator which yields a boolean value `A = (0 and B)`. And finally the "type mismatch" error is risen after trying to compare the boolean value `A = (0 and B)` and integer value `0`.
+The above fails to compile, because the compiler first wants to perform a bit-wise `and` in the middle of the expression: `(0 and B)`. This is a bit-wise operation which returns an integer value. Then the compiler applies `=` operator which yields a boolean value `A = (0 and B)`. And finally the _"type mismatch"_ error is risen after trying to compare the boolean value `A = (0 and B)` and integer value `0`.
 
 This is correct:
 
@@ -215,7 +215,7 @@ if MyFunction(X) and MyOtherFunction(Y) then...
 if (A <> nil) and A.IsValid then...
 ----
 +
-This will work OK, even when `A` is `nil` (i.e. null pointer).
+This will work OK, even when `A` is `nil`. The keyword `nil` is a pointer equal to zero (when represented as a number). It is called a _null pointer_ in many other programming languages.
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 
@@ -432,7 +432,7 @@ A program can use a unit by a `uses` keyword:
 include::code-samples/myunit_test.lpr[]
 ----
 
-Another very useful feature of units is `initialization` and `finalization` sub-sections inside `implementation` that contain actions preformed at program start and end.
+A unit may also contain `initialization` and `finalization` sections. This is the code executed when the program starts and ends.
 
 [source,pascal]
 ----
@@ -625,7 +625,7 @@ type
   TMyClass = class
     MyInt: Integer; // this is a field
     property MyIntProperty: Integer read MyInt write MyInt; // this is a property
-    procedure MyMethod; //this is a method
+    procedure MyMethod; // this is a method
   end;
 
 procedure TMyClass.MyMethod;
@@ -1466,7 +1466,7 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
-The generics in Pascal are implemented much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record, as well as a class when specializing a generic.
+The generics in Pascal work much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record, as well as a class when specializing a generic.
 
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
