@@ -34,7 +34,7 @@ SSH_TARGET:=michalis@castle-engine.io
 #SCP_TARGET:=$(SSH_TARGET):/home/michalis/public_html/modern_pascal_introduction/
 SCP_TARGET:=$(SSH_TARGET):/home/michalis/cge-html/
 #HTML_BASE:=http://michalis.ii.uni.wroc.pl/~michalis/modern_pascal_introduction/
-HTML_BASE:=http://castle-engine.io/
+HTML_BASE:=https://castle-engine.io/
 
 .PHONY: upload
 upload: test clean all
