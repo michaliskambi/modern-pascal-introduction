@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TMyClass = class
@@ -20,7 +21,11 @@ begin
     C1.MyInt := 12;
     C2 := C1 * C1;
     try
-      Writeln('12 * 12 = ', C2.MyInt);
-    finally FreeAndNil(C2) end;
-  finally FreeAndNil(C1) end;
+      WriteLn('12 * 12 = ', C2.MyInt);
+    finally
+      FreeAndNil(C2);
+    end;
+  finally
+    FreeAndNil(C1);
+  end;
 end.

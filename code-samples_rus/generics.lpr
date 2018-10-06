@@ -25,16 +25,16 @@ begin
   try
     FloatCalc.Add(3.14);
     FloatCalc.Add(1);
-    WriteLn('FloatCalc: ', FloatCalc.Value:1:2);
+    WriteLn('Сложение величин типа Float: ', FloatCalc.Value:1:2);
   finally
     FreeAndNil(FloatCalc);
   end;
 
   StringCalc := TMyStringCalculator.Create;
   try
-    StringCalc.Add('something');
-    StringCalc.Add(' more');
-    WriteLn('StringCalc: ', StringCalc.Value);
+    StringCalc.Add('что-нибудь');
+    StringCalc.Add(' ещё');
+    WriteLn('Сложение величин типа String: ', StringCalc.Value);
   finally
     FreeAndNil(StringCalc);
   end;

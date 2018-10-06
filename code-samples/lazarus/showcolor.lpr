@@ -2,7 +2,8 @@
 program showcolor;
 
 // Both Graphics and GoogleMapsEngine units define TColor type.
-uses Graphics, GoogleMapsEngine;
+uses
+  Graphics, GoogleMapsEngine;
 
 var
   { This doesn't work like we want, as TColor ends up
@@ -12,6 +13,6 @@ var
   Color: Graphics.TColor;
 begin
   Color := clYellow;
-  Writeln(Red(Color), ' ', Green(Color), ' ', Blue(Color));
+  WriteLn(Red(Color), ' ', Green(Color), ' ', Blue(Color));
 end.
 

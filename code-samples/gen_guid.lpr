@@ -1,9 +1,10 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 var
   MyGuid: TGUID;
 begin
   Randomize;
   CreateGUID(MyGuid);
-  Writeln('[''' + GUIDToString(MyGuid) + ''']');
+  WriteLn('[''' + GUIDToString(MyGuid) + ''']');
 end.

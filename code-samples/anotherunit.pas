@@ -2,7 +2,8 @@
 unit AnotherUnit;
 interface
 
-uses Classes;
+uses
+  Classes;
 
 { The "TComponent" type (class) is defined in the Classes unit.
   That's why we had to use the Classes unit above. }

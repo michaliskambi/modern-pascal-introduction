@@ -11,7 +11,7 @@ Michalis Kamburelis
 There are many books and resources about Pascal out there, but too many of them talk about the old Pascal, without classes, units or generics.
 // Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
-So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it  _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java or C#.
+So I wrote this quick introduction to what I call *modern Object Pascal*. Most of the programmers using it don't really call it _"modern Object Pascal"_, we just call it _"our Pascal"_. But when introducing the language, I feel it's important to emphasize that it's a modern, object-oriented language. It evolved a *lot* since the old (Turbo) Pascal that many people learned in schools long time ago. Feature-wise, it's quite similar to C++ or Java or C#.
 
 * It has all the modern features you expect -- classes, units, interfaces, generics...
 * It's compiled to a fast, native code,
@@ -63,7 +63,7 @@ end;
 
 You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result.
 
-If you want to call the function itself recursively, you can of course do it. If you're calling a parameter-less function recursively, be sure to specify the parenthesis (even though in Pascal you can usually omit the parentheses for a parameter-less function), this makes a recursive call to a parameter-less function different from accessing this function's current result. Like this:
+If you want to call the function itself recursively, you can of course do it. If you're calling a parameter-less function recursively, be sure to specify the parenthesis `()` (even though in Pascal you can usually omit the parentheses for a parameter-less function), this makes a recursive call to a parameter-less function different from accessing this function's current result. Like this:
 
 [source,pascal]
 ----
@@ -88,6 +88,27 @@ begin
     Exit(NewName);
   Result := ExistingNames + ', ' + NewName;
 end;
+----
+
+Another useful feature of Pascal is that function result can be discarded and the function may be used identically to a procedure. For example:
+
+[source,pascal]
+----
+var
+  Count: Integer;
+  MyCount: Integer;
+
+function CountMe: Integer;
+begin
+  Inc(count);
+  Result := Count;
+end;
+
+begin
+  Count := 10;
+  CountMe; //function result is discarded, but the function is executed
+  MyCount := CountMe; //normal usage of the function
+end.
 ----
 
 ### Testing (if)
@@ -149,11 +170,11 @@ end;
 
 ### Logical, relational and bit-wise operators
 
-The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
+The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:)). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
 
 The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
 
-The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions.
+The _logical (or bit-wise) operators have a higher precedence than relational operators_. So you may need to use parenthesis around some expressions to specify the correct order of their processing.
 
 For example this is a compilation error:
 
@@ -165,7 +186,7 @@ begin
   if A = 0 and B <> 0 then ... // INCORRECT example
 ----
 
-The above fails to compile, because the compiler sees the bit-wise `and` inside: `(0 and B)`.
+The above fails to compile, because the compiler first tries to preform a higher-priority bit-wise `and` in the middle of the expression which turns out to be: `(0 and B)` - a bit-wise operation which returns an integer value. Then the compiler goes on and applies `=` operator which yields a boolean value `A = (0 and B)`. And finally the "type mismatch" error is risen after trying to compare the boolean value `A = (0 and B)` and integer value `0`.
 
 This is correct:
 
@@ -194,7 +215,7 @@ if MyFunction(X) and MyOtherFunction(Y) then...
 if (A <> nil) and A.IsValid then...
 ----
 +
-This will work OK, even when `A` is `nil`.
+This will work OK, even when `A` is `nil` (i.e. null pointer).
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 
@@ -219,7 +240,7 @@ case SomeValue of
 end;
 ----
 
-The `else` clause is optional. When no condition matches, and there's no `else`, then nothing happens.
+The `else` clause is optional (and corresponds to `default` in C-like languages). When no condition matches, and there's no `else`, then nothing happens.
 
 In you come from C-like languages, and compare this with `switch` statement in these languages, you will notice that there is no automatic _fall-through_. This is a deliberate blessing in Pascal. You don't have to remember to place `break` instructions. In every execution, _at most one_ branch of the `case` is executed, that's it.
 
@@ -237,7 +258,7 @@ The convention is to prefix the enum names with a two-letter shortcut of type na
 
 NOTE: The collisions in names are not a show-stopper. It's Ok for different units to define the same identifier. But it's a good idea to try to avoid the collisions anyway, to keep code simple to understand and grep.
 
-NOTE: You can avoid placing enum names in the global namespace by directive `{$scopedenums on}`. This means you will have to access them qualified by a type name, like `TAnimalKind.akDuck`. The need for `ak` prefix disappears in this situation, and you will probably just call the enums `Duck, Cat, Dog`. This is similar to C# enums.
+NOTE: You can avoid placing enum names in the global namespace by compiler directive `{$scopedenums on}`. This means you will have to access them qualified by a type name, like `TAnimalKind.akDuck`. The need for `ak` prefix disappears in this situation, and you will probably just call the enums `Duck, Cat, Dog`. This is similar to C# enums.
 
 The fact that enumerated type is _opaque_ means that it cannot be just assigned to and from an integer. However, for special use, you can use `Ord(MyAnimalKind)` to forcefully convert enum to int, or typecast `TAnimalKind(MyInteger)` to forcefully convert int to enum. In the latter case, make sure to check first whether `MyInteger` is in good range (0 to `Ord(High(TAnimalKind))`).
 
@@ -333,43 +354,43 @@ We didn't yet explain the concept of classes, so the last example may not be obv
 
 ### Output, logging
 
-To simply output strings in Pascal, use the `Write` or `Writeln` routine. The latter automatically adds a newline at the end.
+To simply output strings in Pascal, use the `Write` or `WriteLn` routine. The latter automatically adds a newline at the end.
 
 This is a "magic" routine in Pascal. It takes a variable number of arguments and they can have any type. They are all converted to strings when displaying, with a special syntax to specify padding and number precision.
 
 [source,pascal]
 ----
-Writeln('Hello world!');
-Writeln('You can output an integer: ', 3 * 4);
-Writeln('You can pad an integer: ', 666:10);
-Writeln('You can output a float: ', Pi:1:4);
+WriteLn('Hello world!');
+WriteLn('You can output an integer: ', 3 * 4);
+WriteLn('You can pad an integer: ', 666:10);
+WriteLn('You can output a float: ', Pi:1:4);
 ----
 
 To explicitly use newline in the string, use the `LineEnding` constant (from FPC RTL). (The _Castle Game Engine_ defines also a shorter `NL` constant.) Pascal strings do not interpret any special backslash sequences, so writing
 
 [source,pascal]
 ----
-Writeln('One line.\nSecond line.'); // INCORRECT example
+WriteLn('One line.\nSecond line.'); // INCORRECT example
 ----
 
 doesn't work like some of you would think. This will work:
 
 [source,pascal]
 ----
-Writeln('One line.' + LineEnding + 'Second line.');
+WriteLn('One line.' + LineEnding + 'Second line.');
 ----
 
 or just this:
 
 [source,pascal]
 ----
-Writeln('One line.');
-Writeln('Second line.');
+WriteLn('One line.');
+WriteLn('Second line.');
 ----
 
 Note that this will only work in _console_ applications. Make sure you have `{$apptype CONSOLE}` (and *not* `{$apptype GUI}`) defined in your main program file. On some operating systems it actually doesn't matter and will work always (Unix), but on some operating systems trying to write something from a GUI application is an error (Windows).
 
-*In the Castle Game Engine:* use `WritelnLog` or `WritelnWarning`, never `Writeln`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `Writeln` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
+*In the Castle Game Engine:* use `WriteLnLog` or `WriteLnWarning`, never `WriteLn`, to print debug information. They will be always directed to some useful output. On Unix, standard output. On Windows GUI application, log file. On Android, the _Android logging facility_ (visible when you use `adb logcat`). The use of `WriteLn` should be limited to the cases when you write a command-line application (like a 3D model converter / generator) and you know that the _standard output_ is available.
 
 ### Converting to a string
 
@@ -409,6 +430,13 @@ A program can use a unit by a `uses` keyword:
 [source,pascal]
 ----
 include::code-samples/myunit_test.lpr[]
+----
+
+Another very useful feature of units is `initialization` and `finalization` sub-sections inside `implementation` that contain actions preformed at program start and end.
+
+[source,pascal]
+----
+include::code-samples/initialization_finalization.pas[]
 ----
 
 ### Units using each other
@@ -454,7 +482,7 @@ var
   Color: Graphics.TColor;
 begin
   Color := clYellow;
-  Writeln(Red(Color), ' ', Green(Color), ' ', Blue(Color));
+  WriteLn(Red(Color), ' ', Green(Color), ' ', Blue(Color));
 end.
 ----
 
@@ -479,7 +507,7 @@ uses GoogleMapsEngine;
 
 procedure ShowColor(const Color: TColor);
 begin
-  // Writeln(ColorToString(Color));
+  // WriteLn(ColorToString(Color));
 end;
 
 end.
@@ -507,7 +535,7 @@ uses GoogleMapsEngine;
 
 procedure ShowColor(const Color: GoogleMapsEngine.TColor);
 begin
-  // Writeln(ColorToString(Color));
+  // WriteLn(ColorToString(Color));
 end;
 
 end.
@@ -532,7 +560,7 @@ uses GoogleMapsEngine;
 
 procedure ShowColor(const Color: Graphics.TColor);
 begin
-  // Writeln(ColorToString(Color));
+  // WriteLn(ColorToString(Color));
 end;
 
 end.
@@ -595,13 +623,14 @@ We have classes. At the basic level, a class is just a container for
 ----
 type
   TMyClass = class
-    MyInt: Integer;
-    procedure MyMethod;
+    MyInt: Integer; // this is a field
+    property MyIntProperty: Integer read MyInt write MyInt; // this is a property
+    procedure MyMethod; //this is a method
   end;
 
 procedure TMyClass.MyMethod;
 begin
-  Writeln(MyInt + 10);
+  WriteLn(MyInt + 10);
 end;
 ----
 
@@ -691,7 +720,8 @@ Note that instead of specifying a method, you can also specify a field (typicall
 When declaring a property you specify:
 
 . Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
-. And, in a similar manner,  whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
+. And, in a similar manner, whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
+. Moreover, the property may have a default value (provided after `default` keyword).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
 
@@ -869,7 +899,7 @@ Note that this doesn't concern raised exceptions. Although you do create a class
 
 ### How to free
 
-To free the class instance, it's best to call `FreeAndNil(A)` on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
+To free the class instance, it's best to call `FreeAndNil(A)` from `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
 
 It is more-or-less a shortcut for
 
@@ -933,7 +963,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier or they weren't assigned). We can change the previous example to this:
 
 [source,pascal]
 ----
@@ -982,9 +1012,9 @@ begin
   inherited;
   // Actually, the parameter true (OwnsObjects) is already the default
   Guns := TGunList.Create(true);
-  Gun1 := TGun.Create(Self);
+  Gun1 := TGun.Create;
   Guns.Add(Gun1);
-  Gun2 := TGun.Create(Self);
+  Gun2 := TGun.Create;
   Guns.Add(Gun2);
 end;
 
@@ -1038,34 +1068,34 @@ Note, however, that this changes for `TComponent` descendants. The `TComponent` 
 
 If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
 
-Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references. Consider this code:
+Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references automatically. Consider this code:
 
 [source,pascal]
 ----
 var
-  O1, O2: TObject;
+  Obj1, Obj2: TObject;
 begin
-  O1 := TObject.Create;
-  O2 := O1;
-  FreeAndNil(O1);
+  Obj1 := TObject.Create;
+  Obj2 := Obj1;
+  FreeAndNil(Obj1);
 
-  // what happens if we access O1 or O2 here?
+  // what happens if we access Obj1 or Obj2 here?
 end;
 ----
 
-1. At the end of this block, the `O1` is `nil`. If some code has to access it, it can reliably use `if O1 <> nil ...` to avoid calling methods on a freed instance, like
+1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil then ...` to avoid calling methods on a freed instance, like
 +
 [source,pascal]
 ----
-if O1 <> nil then
-  Writeln(O1.ClassName);
+if Obj1 <> nil then
+  WriteLn(Obj1.ClassName);
 ----
 +
-Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `O1 <> nil`, and will blindly access `O1` field, you will get a clear exception at runtime.
+Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `Obj1 <> nil`, and will blindly access `Obj1` field, you will get a clear exception at runtime.
 +
 Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a `nil` instance.
 
-2. With `O2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
+2. With `Obj2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
 //(or call a method that accessed a field of such instance)
 results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
 
@@ -1073,7 +1103,7 @@ There are various solutions to it:
 
 * One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 
-* In the above example, right after freeing the `O1` instance, you can simply set the `O2` variable explicitly to `nil`. That's trivial in this simple case.
+* In the above example, right after freeing the `Obj1` instance, you can simply set the `Obj2` variable explicitly to `nil`. That's trivial in this simple case.
 
 * The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
 +
@@ -1157,7 +1187,6 @@ S := Download('file:///home/michalis/my_binary_file.data');
 
 [source,pascal]
 ----
-
 S := Download(ApplicationData('gui/my_image.png'));
 ----
 
@@ -1167,7 +1196,7 @@ To read text files, we advice using the `TTextReader` class. It provides a line-
 ----
 Text := TTextReader.Create(ApplicationData('my_data.txt'));
 while not Text.Eof do
-  WritelnLog('NextLine', Text.ReadLine);
+  WriteLnLog('NextLine', Text.ReadLine);
 ----
 
 [[generic-containers-section]]
@@ -1437,7 +1466,8 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
 
-The generics in Pascal are realized much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type)  and work with types of any size. You can use a primitive type (integer, float) as well as a record as well as a class when specializing a generic.
+The generics in Pascal are implemented much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record, as well as a class when specializing a generic.
+
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
@@ -1610,7 +1640,7 @@ type
 
 Note that the definition is recursive (type `PMyRecord` is defined using type `TMyRecord`, while `TMyRecord` is defined using `PMyRecord`). It is allowed to define a pointer type to a _not-yet-defined type_, as long as it will be resolved within the same `type` block.
 
-You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not type-safe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator. To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator.
+You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not type-safe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator (e.g. `PMyRecord^.Value`). To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator (e.g. `@myRecordVariable`).
 
 There is also an untyped `Pointer` type, similar to `void*` in C-like languages. It is completely unsafe, and can be typecasted to any other pointer type.
 
@@ -1659,13 +1689,42 @@ include::code-samples/operator_overloading_records_lists.lpr[]
 
 ## Advanced classes features
 
-### private and strict private
+### Private and strict private
 
 The `private` visibility specifier means that the field (or method) is not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
 
 However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. It means that the field (or method) is not accessible outside of this class -- period. No exceptions.
 
 In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
+
+### Class methods
+
+These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
+
+[source,pascal]
+----
+type
+  TEnemy = class
+    procedure Kill;
+    class procedure KillAll;
+  end;
+
+var
+  E: TEnemy;
+begin
+  E := TEnemy.Create;
+  try
+    E.Kill;
+  finally
+    FreeAndNil(E);
+  end;
+  TEnemy.KillAll;
+end;
+----
+
+Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
+
+Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
 
 ### More stuff inside classes and nested classes
 
@@ -1686,7 +1745,7 @@ type
         procedure DoSomething;
       end;
     var
-    FInternalClass: TInternalClass;
+      FInternalClass: TInternalClass;
   public
     const
       DefaultVelocity = 100.0;
@@ -1844,7 +1903,7 @@ begin
   // This would always create an instance of exactly TMyClass:
   //Result := TMyClass.Create(AOwner);
   // This can potentially create an instance of TMyClass descendant:
-  Result := TMyClassRef(ClassType).Create(AOwner);
+  Result := TMyClassRef(self.ClassType).Create(AOwner);
   Result.Assign(Self);
 end;
 ----
@@ -1934,12 +1993,12 @@ Simple way to do it is then to create a global procedure that takes an instance 
 
 [source,pascal]
 ----
-procedure Render(const O: TMy3DObject; const Color: TColor);
+procedure Render(const Obj1: TMy3DObject; const Color: TColor);
 var
   I: Integer;
 begin
-  for I := 0 to O.ShapesCount - 1 do
-    RenderMesh(O.Shape[I].Mesh, Color);
+  for I := 0 to Obj1.ShapesCount - 1 do
+    RenderMesh(Obj1.Shape[I].Mesh, Color);
 end;
 ----
 
@@ -1958,7 +2017,7 @@ procedure TMy3DObjectHelper.Render(const Color: TColor);
 var
   I: Integer;
 begin
-  // note that we access ShapesCount, Shape without any qualifiers here
+  { note that we access ShapesCount, Shape without any qualifiers here }
   for I := 0 to ShapesCount - 1 do
     RenderMesh(Shape[I].Mesh, Color);
 end;
@@ -1977,7 +2036,7 @@ You can change this name, although be careful with this -- if you define `Create
 
 In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
 
-In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see "class references" below).
+In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see <<Class references>> above).
 
 ### An exception in constructor
 

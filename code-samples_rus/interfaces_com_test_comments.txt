@@ -1,0 +1,13 @@
+    if C1 is IMyInterface then
+    //if Supports(C1, IMyInterface) then // Идентично проверке "is" выше
+      //UseThroughInterface(C1 as IMyInterface);
+      UseThroughInterface(C1); // Можно просто typecast без синтаксиса, поскольку верность этого выражения может быть доказана при компиляции
+      //UseThroughInterface(IMyInterface(C1)); // Эквивалентно прямому typecast-у, также проверяется при компиляции
+
+    if C2 is IMyInterface then
+      //UseThroughInterface(C2 as IMyInterface);
+      UseThroughInterface(C2); // И эти тоже можно typecast без синтасиса, поскольку проверка выполняется при компиляции
+
+    if C3 is IMyInterface then
+      UseThroughInterface(C3 as IMyInterface); // Это очевидно неправильно при компиляции, по этому скомпилируется лишь, если указать typecast через "as"
+      //UseThroughInterface(IMyInterface(C3)); // Эквивалентно прямому typecast-у, однако такой вариант не проверяется при компиляции

@@ -39,28 +39,30 @@ end;
 
 procedure UseThroughInterface(I: IMyInterface);
 begin
-  Write('Shooting... ');
+  Write('Стреляем... ');
   I.Shoot;
 end;
 
 var
-  C1: IMyInterface;  // COM takes care of destruction
-  C2: IMyInterface;  // COM takes care of destruction
-  C3: TMyClass3;     // YOU have to take care of destruction
+  C1: IMyInterface;  // COM управляет освобождением памяти
+  C2: IMyInterface;  // COM управляет освобождением памяти
+  C3: TMyClass3;     // Здесь управлять освобождением памяти придётся ВАМ
 begin
   C1 := TMyClass1.Create as IMyInterface;
   C2 := TMyClass2.Create as IMyInterface;
   C3 := TMyClass3.Create;
   try
-    UseThroughInterface(C1); // no need to use "as" operator
+    UseThroughInterface(C1); // Нет необходимости в операторе "as"
     UseThroughInterface(C2);
     if C3 is IMyInterface then
-      UseThroughInterface(C3 as IMyInterface); // this will not execute
+      UseThroughInterface(C3 as IMyInterface); // Так не сработает
   finally
-    { C1 and C2 variables go out of scope and will be auto-destroyed now.
+    { Переменные C1 и C2 выходят из поля зрения
+      и будут автоматически уничтожены сейчас.
 
-      In contrast, C3 is a class instance, not managed by an interface,
-      and it has to be destroyed manually. }
+      а переменная C3 является экземпляром класса
+      и не управляется интерфейсом,
+      и по этому её необходимо совободить вручную. }
     FreeAndNil(C3);
   end;
 end.

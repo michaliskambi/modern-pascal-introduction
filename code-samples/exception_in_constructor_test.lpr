@@ -1,5 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
 type
   TGun = class
@@ -36,6 +37,6 @@ begin
     TPlayer.Create;
   except
     on E: Exception do
-      Writeln('Caught ' + E.ClassName + ': ' + E.Message);
+      WriteLn('Caught ' + E.ClassName + ': ' + E.Message);
   end;
 end.
