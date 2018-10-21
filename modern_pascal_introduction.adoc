@@ -2214,14 +2214,17 @@ In this case, the typecast must be valid at compile-time. So this will compile f
 
 In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
 
-An equivalent is also
+// Commented out, as I'm unsure about it.
+// Later tests sugges that casting like "IMyInterface(Cx)" makes unsafe typecast, just like with classes.
 
-[source,pascal]
-----
-UseThroughInterface(IMyInterface(Cx));
-----
+// An equivalent is also
 
-This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
+// [source,pascal]
+// ----
+// UseThroughInterface(IMyInterface(Cx));
+// ----
+
+// This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
 
 ## About this document
 
