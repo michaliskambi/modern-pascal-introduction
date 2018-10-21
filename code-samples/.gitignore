@@ -18,6 +18,7 @@ generics_object_dictionary
 generics_sorting
 hello_world
 inheritance
+interface_casting
 interfaces_com_test
 interfaces_com_with_ref_counting
 interfaces_corba_test

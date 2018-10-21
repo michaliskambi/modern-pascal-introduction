@@ -2190,41 +2190,51 @@ To avoid this mess, it's usually better to use CORBA interfaces, if you don't wa
 include::code-samples/interfaces_com_test.lpr[]
 ----
 
-### Typecasting interfaces without "as" operator
+### Typecasting interfaces
 
-This section applies to both _CORBA_ and _COM_ interfaces.
+This section applies to both _CORBA_ and _COM_ interfaces (however, it has some explicit exceptions for CORBA).
 
-Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
-
+1. Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
++
 [source,pascal]
 ----
 UseThroughInterface(Cx as IMyInterface);
 ----
++
+It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface`.
++
+Using `as` operator works consistently regardless if `Cx` is declared as a class instance (like `TMyClass2`) or interface (like `IMyInterface2`).
++
+However, it is not allowed for CORBA interfaces.
 
-It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface` (but we avoid the error by checking `Cx is IMyInterface` before doing the cast).
-
-You can instead cast the instance as an interface implicitly:
-
+2. You can instead cast the instance as an interface implicitly:
++
 [source,pascal]
 ----
 UseThroughInterface(Cx);
 ----
-
++
 In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
-
++
 In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
 
-// Commented out, as I'm unsure about it.
-// Later tests sugges that casting like "IMyInterface(Cx)" makes unsafe typecast, just like with classes.
+3. You can also typecast using `IMyInterface(Cx)`. Like this:
++
+[source,pascal]
+----
+UseThroughInterface(IMyInterface(Cx));
+----
++
+If `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass(Cx)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface(Cx)` is a safe, fast (checked at compile-time) typecast.
++
+However, if `Cx` is declared as an interface (like `IMyInterface2`) then this is (consistenlty with typecasting on classes) an _unsafe_ typecast. This typecast is not checked (not even at runtime), and bad things will happen if you cast to an incorrect interface.
 
-// An equivalent is also
+To test it all, play around with this example code:
 
-// [source,pascal]
-// ----
-// UseThroughInterface(IMyInterface(Cx));
-// ----
-
-// This is also a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass\(C)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface\(C)` is a safe, fast (checked at compile-time) typecast.
+[source,pascal]
+----
+include::code-samples/interface_casting.lpr[]
+----
 
 ## About this document
 
