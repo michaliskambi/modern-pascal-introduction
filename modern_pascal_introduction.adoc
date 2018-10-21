@@ -2225,9 +2225,9 @@ In essence, this typecast looks and works just like for regular classes. Whereve
 UseThroughInterface(IMyInterface(Cx));
 ----
 +
-If `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. Note that this syntax is inconsistent with classes typecasts. In case of classes, writing `TMyClass(Cx)` is an _unsafe, unchecked_ typecast. In case of interfaces, writing `IMyInterface(Cx)` is a safe, fast (checked at compile-time) typecast.
+Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad things will happen if you cast to an incorrect interface. And that's true, if you cast _a class to a class_, or _an interface to an interface_, using this syntax.
 +
-However, if `Cx` is declared as an interface (like `IMyInterface2`) then this is (consistenlty with typecasting on classes) an _unsafe_ typecast. This typecast is not checked (not even at runtime), and bad things will happen if you cast to an incorrect interface.
+There is a small exception here: if `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
 
 To test it all, play around with this example code:
 
