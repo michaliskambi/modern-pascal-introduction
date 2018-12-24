@@ -441,7 +441,7 @@ include::code-samples/initialization_finalization.pas[]
 
 ### Units using each other
 
-One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use it's identifiers only in your implementation).
+One unit can also use another unit. Another unit can be used in the interface section, or only in the implementation section. The former allows to define new public stuff (procedures, types...) on top of another unit's stuff. The latter is more limited (if you use a unit only in the implementation section, you can use its identifiers only in your implementation).
 
 [source,pascal]
 ----
@@ -882,7 +882,7 @@ Using the _virtual methods_ changes this behavior. *If the `Eat` method would be
 
 In Object Pascal, to define a method as _virtual_, you need to
 
-* Mark it's first definition (in the top-most ancestor) with the `virtual` keyword.
+* Mark its first definition (in the top-most ancestor) with the `virtual` keyword.
 * Mark all the other definitions (in the descendants) with the `override` keyword. All the overridden versions must have exactly the same parameters (and return the same types, in case of functions).
 
 [source,pascal]
@@ -912,7 +912,7 @@ Note that this doesn't concern raised exceptions. Although you do create a class
 
 ### How to free
 
-To free the class instance, it's best to call `FreeAndNil(A)` from `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls it's destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
+To free the class instance, it's best to call `FreeAndNil(A)` from `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls its destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
 
 It is more-or-less a shortcut for
 
@@ -1036,7 +1036,7 @@ end;
 destructor TPlayer.Destroy;
 begin
   { We have to take care to free the list.
-    It will automatically free it's contents. }
+    It will automatically free its contents. }
   FreeAndNil(Guns);
 
   { No need to free the Gun1, Gun2 anymore. It's a nice habit to set to "nil"
@@ -1060,7 +1060,7 @@ Beware that the list classes "ownership" mechanism is simple, and you will get a
 
 ### The virtual destructor called Destroy
 
-As you saw in the examples above, when the class is destroyed, it's `destructor` called `Destroy` is called.
+As you saw in the examples above, when the class is destroyed, its `destructor` called `Destroy` is called.
 
 In theory, you could have multiple destructors, but in practice it's almost never a good idea. It's much easier to have only one destructor called `Destroy`, which is in turn called by the `Free` method, which is in turn called by the `FreeAndNil` procedure.
 
@@ -1116,11 +1116,11 @@ results in an unpredictable behavior -- maybe an access violation exception, may
 
 There are various solutions to it:
 
-* One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free it's _wheels_ inside it's destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
+* One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free its _wheels_ inside its destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
 
 * In the above example, right after freeing the `Obj1` instance, you can simply set the `Obj2` variable explicitly to `nil`. That's trivial in this simple case.
 
-* The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set it's reference to `nil`.
+* The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set its reference to `nil`.
 +
 Thus you get something like a _weak reference_. It can cope with various usage scenarios, for example you can let the code from outside of the class to set your reference, and the outside code can also free the instance at anytime.
 +
@@ -1180,7 +1180,7 @@ end;
 
 ### Input/output using streams
 
-Modern programs should use `TStream` class and it's many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
+Modern programs should use `TStream` class and its many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
 
 [source,pascal]
 ----
@@ -1258,7 +1258,7 @@ When sorting the list you can provide a _custom comparer_ as a parameter. The _c
 include::code-samples/generics_sorting.lpr[]
 ----
 
-The `TDictionary` class implements a *dictionary*, also known as a *map (key -> value)*, also known as an *associative array*. It's API is a bit similar to the C# `TDictionary` class. It has useful iterators for keys, values, and pairs of key->value.
+The `TDictionary` class implements a *dictionary*, also known as a *map (key -> value)*, also known as an *associative array*. Its API is a bit similar to the C# `TDictionary` class. It has useful iterators for keys, values, and pairs of key->value.
 
 An example code using a dictionary:
 
@@ -1307,7 +1307,7 @@ begin
 end;
 ----
 
-To copy the *class instance contents*, the standard approach is to derive your class from `TPersistent`, and override it's `Assign` method. Once it's implemented properly in `TMyObject`, you use it like this:
+To copy the *class instance contents*, the standard approach is to derive your class from `TPersistent`, and override its `Assign` method. Once it's implemented properly in `TMyObject`, you use it like this:
 
 [source,pascal]
 ----
@@ -1361,7 +1361,7 @@ end;
 ----
 
 NOTE: This is not the *exact* implementation of `TPersistent`, I simplified it to hide the boring details about how the exception message is build.
-//The exact source code, in the FPC standard library, can be found in the `rtl/objpas/classes/persist.inc` source file. It's behavior is 100% compatible with the Delphi standard library, as far as I know.
+//The exact source code, in the FPC standard library, can be found in the `rtl/objpas/classes/persist.inc` source file. Its behavior is 100% compatible with the Delphi standard library, as far as I know.
 
 The conclusions you can get from the above are:
 
@@ -1503,7 +1503,7 @@ See also the <<generic-containers-section>> about important standard classes usi
 
 Methods (and global functions and procedures) with the same name are allowed, as long as they have different parameters. At compile time, the compiler detects which one you want to use, knowing the parameters you pass.
 
-By default, the overloading uses the FPC approach, which means that all the methods in given namespace (a class or a unit) are equal, and hide the other methods in namespaces with less priority. For example, if you define a class with methods `Foo(Integer)` and `Foo(string)`, and it descends from a class with method `Foo(Float)`, then the users of your new class will not be able to access the method `Foo(Float)` easily (they still can --- if they typecast the class to it's ancestor type). To overcome this, use the `overload` keyword.
+By default, the overloading uses the FPC approach, which means that all the methods in given namespace (a class or a unit) are equal, and hide the other methods in namespaces with less priority. For example, if you define a class with methods `Foo(Integer)` and `Foo(string)`, and it descends from a class with method `Foo(Float)`, then the users of your new class will not be able to access the method `Foo(Float)` easily (they still can --- if they typecast the class to its ancestor type). To overcome this, use the `overload` keyword.
 
 ### Preprocessor
 
@@ -1635,7 +1635,7 @@ In the old days, Turbo Pascal introduced another syntax for class-like functiona
 * The old-style objects can be allocated / freed, and during that operation you can call their constructor / destructor.
 * But they can also be simply declared and used, like records. A simple `record` or `object` type is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome.
 //It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
-* Old-style objects offer inheritance and virtual methods, although with small differences from the modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling it's constructor, and the object has virtual methods.
+* Old-style objects offer inheritance and virtual methods, although with small differences from the modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling its constructor, and the object has virtual methods.
 
 It's discouraged to use the old-style objects in most cases. Modern _classes_ provide much more functionality. And when needed, records (including _advanced records_) can be used for performance. These concepts are usually a better idea than old-style objects.
 
@@ -1868,7 +1868,7 @@ begin
 end;
 ----
 
-If you have an instance, and you would like to get a reference to it's class (not the declared class, but the final descendant class used at its construction), you can use the `ClassType` property. The declared type of `ClassType` is `TClass`, which stands for `class of TObject`. Often you can safely typecast it to something more specific, when you know that the instance is something more specific than `TObject`.
+If you have an instance, and you would like to get a reference to its class (not the declared class, but the final descendant class used at its construction), you can use the `ClassType` property. The declared type of `ClassType` is `TClass`, which stands for `class of TObject`. Often you can safely typecast it to something more specific, when you know that the instance is something more specific than `TObject`.
 
 In particular, you can use the `ClassType` reference to call virtual methods, including virtual constructors. This allows you to create a method like `Clone` that constructs an instance of _the exact run-time class of the current object_. You can combine it with <<Cloning: TPersistent.Assign>> to have a method that returns a newly-constructed clone of the current instance.
 
@@ -1942,7 +1942,7 @@ The above example fails to compile, because the `Callback` is incompatible with 
 
 One way to fix the above example is to change the definition of `TMyCallback`. It will work if it is a method callback, declared as `TMyCallback = procedure (A: Integer) of object;`. But sometimes, it's not desirable.
 
-Here comes the `static` class method. It is, in essence, just a global procedure / function, but it's namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
+Here comes the `static` class method. It is, in essence, just a global procedure / function, but its namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
 
 [source,pascal]
 ----
@@ -1973,9 +1973,9 @@ include::code-samples/class_properties.lpr[]
 
 The _method_ is just a procedure or function inside a class. From the outside of the class, you call it with a special syntax `MyInstance.MyMethod(...)`. After a while you grow accustomed to thinking that _if I want to make action Action on instance X, I write `X.Action(...)`_.
 
-But sometimes, you need to implement something that conceptually is _an action on class TMyClass_ without modifying the _TMyClass_ source code. Sometimes it's because it's not your source code, and you don't want to change it. Sometimes it's because of the dependencies -- adding a method like `Render` to a class like `TMy3DObject` seems like a straightforward idea, but maybe the base implementation of class `TMy3DObject` should be kept independent from the rendering code? It would be better to "enhance" an existing class, to add functionality to it without changing it's source code.
+But sometimes, you need to implement something that conceptually is _an action on class TMyClass_ without modifying the _TMyClass_ source code. Sometimes it's because it's not your source code, and you don't want to change it. Sometimes it's because of the dependencies -- adding a method like `Render` to a class like `TMy3DObject` seems like a straightforward idea, but maybe the base implementation of class `TMy3DObject` should be kept independent from the rendering code? It would be better to "enhance" an existing class, to add functionality to it without changing its source code.
 
-Simple way to do it is then to create a global procedure that takes an instance of `TMy3DObject` as it's 1st parameter.
+Simple way to do it is then to create a global procedure that takes an instance of `TMy3DObject` as its 1st parameter.
 
 [source,pascal]
 ----
@@ -2022,7 +2022,7 @@ You can change this name, although be careful with this -- if you define `Create
 
 In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
 
-In the `TComponent` descendants, you should override it's `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing it's type at compile time, having virtual constructors is very useful (see <<Class references>> above).
+In the `TComponent` descendants, you should override its `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing its type at compile time, having virtual constructors is very useful (see <<Class references>> above).
 
 ### An exception in constructor
 
