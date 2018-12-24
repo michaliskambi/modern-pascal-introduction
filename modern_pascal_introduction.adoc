@@ -779,7 +779,7 @@ The basic visibility levels are:
 `private`:: only accessible in this class.
 `protected`:: only accessible in this class and descendants.
 
-The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See the <<private and strict private>>.
+The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See the <<Private and strict private>>.
 
 By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
 
