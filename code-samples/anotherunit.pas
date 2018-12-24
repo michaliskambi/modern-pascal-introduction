@@ -16,7 +16,7 @@ uses SysUtils;
 procedure DoSomethingWithComponent(var C: TComponent);
 begin
   { The FreeAndNil procedure is defined in the SysUtils unit.
-    Since we only refer to it's name in the implementation,
+    Since we only refer to its name in the implementation,
     it was OK to use the SysUtils unit in the "implementation" section. }
   FreeAndNil(C);
 end;
