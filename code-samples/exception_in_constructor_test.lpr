@@ -26,7 +26,7 @@ begin
     have Gun1 <> nil and Gun2 = nil now. Deal with it.
     ...Actually, in this case, FreeAndNil deals with it without
     any additional effort on our side, because FreeAndNil checks
-    whether the instance is nil before calling it's destructor. }
+    whether the instance is nil before calling its destructor. }
   FreeAndNil(Gun1);
   FreeAndNil(Gun2);
   inherited;
