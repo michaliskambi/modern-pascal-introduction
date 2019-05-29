@@ -1826,8 +1826,7 @@ include::code-samples_rus/interfaces_com_test.lpr[]
 
 ### Приведение типов интерфейсов
 
-Этот раздел касается как _CORBA_, так и _COM_ интерфейсов.
-(however, it has some explicit exceptions for CORBA).
+Этот раздел касается как _CORBA_, так и _COM_ интерфейсов. Впрочем, также отмечены некоторые особенности CORBA интерфейсов.
 
 1. Приведение типа интерфейса через оператор `as` выполняет проверку в режиме исполнения. Рассмотрим пример:
 +
@@ -1838,7 +1837,7 @@ UseThroughInterface(Cx as IMyInterface);
 +
 Этот вариант скомпилируется для всех экземпляров `C1`, `C2`, `C3` из примера в предыдущем подразделе. При выполнении программы возникнет ошибка для `C3`, у которого не описан `IMyInterface`.
 +
-Using `as` operator works consistently regardless if `Cx` is declared as a class instance (like `TMyClass2`) or interface (like `IMyInterface2`).
+Использование оператора `as` работает правильно независимо от того, объявлен ли `Cx` как экземпляр класса (например, `TMyClass2`) или как интерфейс (например, `IMyInterface2`).
 +
 However, it is not allowed for CORBA interfaces. 
 
@@ -1853,18 +1852,18 @@ UseThroughInterface(Cx);
 +
 По большому счёту, такое приведение типа работает как для обычных классов. В случае, если требуется экземпляр класса `TMyClass`, всегда можно использовать переменную, объявленную как `TMyClass`, *которой подойдёт любой наследник `TMyClass`*. Точно такая же ситуация и для интерфейсов. Не требуется выполнять явные приведения типов в такой ситуации.
 
-3. You can also typecast using `IMyInterface(Cx)`. Like this: 
+3. Можно также выполнить приведение типа `IMyInterface(Cx)` следующим образом: 
 +
 [source,pascal]
 ----
 UseThroughInterface(IMyInterface(Cx));
 ----
 +
-Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad things will happen if you cast to an incorrect interface. And that's true, if you cast _a class to a class_, or _an interface to an interface_, using this syntax.
+Обычно, такой синтаксис приведения типа является _небезопасным, не проверяемым_. Если привести ошибочный тип интерфейса подобным образом, могут возникнуть ошибки, как в случае приведения типа _класса к классу_, или _интерфейса к интерфейсу_с помощью данного синтаксиса.
 +
-There is a small exception here: if `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
+Можно сделать небольшую оговорку: если `Cx` объявлен как class (например `TMyClass2`), то такая операция приведения типа должна быть верной при компиляции. Иными словами, приведение типа _класса к интерфейсу_ таким образом - безопасно и быстро (проверка выполняется при компиляции).
 
-To test it all, play around with this example code:
+Можете всё это попробовать, поиграв со следующим примером:
 
 [source,pascal]
 ----
