@@ -219,7 +219,7 @@ if MyFunction(X) and MyOtherFunction(Y) then...
 if (A <> nil) and A.IsValid then...
 ----
 +
-В данном случае не возникнет ошибки даже в случае если `A` имеет значение `nil` (т.е. нулевой указатель).
+В данном случае не возникнет ошибки даже в случае если `A` имеет значение `nil`. Ключевое слово `nil` это указатель, который в численном представлении указывает на "нулевой" адрес. Во многих языках программирования он называется _нулевым указателем_ (_null pointer_).
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 
