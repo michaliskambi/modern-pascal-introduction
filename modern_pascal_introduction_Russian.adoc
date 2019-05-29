@@ -111,7 +111,7 @@ end;
 begin
   Count := 10;
   CountMe; // результат функции будет отброшен, однако функция выполняется, Count станет равен 11.
-  MyCount := CountMe; //запоминаем результат выполнения функции будет, Count теперь 12.
+  MyCount := CountMe; // запоминаем результат выполнения функции будет, Count теперь 12.
 end.
 ----
 
@@ -468,7 +468,7 @@ include::code-samples_rus/anotherunit.pas[]
 {$mode objfpc}{$H+}{$J-}
 program showcolor;
 
-// unit-ы Graphics и GoogleMapsEngine определяют свой тип TColor.
+// unit-ы Graphics и GoogleMapsEngine определяют свои типы, которые называются одинаково - TColor.
 uses Graphics, GoogleMapsEngine;
 
 var
@@ -1588,7 +1588,7 @@ type
 function TMyClass.Clone(AOwner: TComponent): TMyClass;
 begin
   // Таким образом будет создан объект конкретного типа TMyClass:
-  //Result := TMyClass.Create(AOwner);
+  // Result := TMyClass.Create(AOwner);
   // А такой подход может создать объект как типа TMyClass, так и его наследников:
   Result := TMyClassRef(Self.ClassType).Create(AOwner);
   Result.Assign(Self);
