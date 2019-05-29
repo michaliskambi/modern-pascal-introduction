@@ -9,7 +9,6 @@ Michalis Kamburelis
 ## Введение: Для чего это нужно?
 
 В мире существует множество книг о Паскале, однако, многие из них говорят об "устаревшем" Паскале, без классов, модулей, generic-ов (дженериков) и многих других современных методов и приёмов программирования.
-// Some of them talk about Pascal before it even had classes. Some of them show classes, as done in Delphi, but fail to mention more modern features, like generics.
 
 С целью заполнения этой бреши и было написано это краткое введение о том, что часто называется *современным объектным Паскалем*. Чаще его называют просто _"Паскаль"_ или _"Наш Паскаль"_.
 Впрочем, представляя язык, важно подчеркнуть, что это современный, объектно-ориентированный язык, который был *существенно* усовершенствован по сравнению со старым (Turbo) Pascal, который когда-то давно изучали в школах и институтах. Сегодня его вполне можно сравнивать с такими известными языками программирования, как C++, Java или C#.
@@ -43,9 +42,7 @@ include::code-samples_russian/hello_world.lpr[]
 * Данная программа является консольной, то есть, в обоих случаях скомпилированный исполняемый файл нужно будет запустить из терминала командной строки, чтобы увидеть результат.
 
 Остальная часть этой книги рассказывает о самом объектном Паскале, поэтому не ожидайте чего-либо большего, чем консольных приложений. Если хочется взглянуть на что-либо более "крутое", можно просто создать новый GUI проект в _Lazarus_ (_Project_ -> _New Project_ -> _Application_).
-//Play around, drop some buttons on the form, handle their events (like `OnClick`).
 Вуаля! -- рабочее кроссплатформенное GUI приложение, с нативным видом, использующее удобные визуальные библиотеки. _Lazarus_ и _Free Pascal Compiler_ имеют множество готовых компонент для сетей, GUI, баз данных, чтения и записи различных форматов файлов (XML, json, изображения...), управления потоками и всем, что только может понадобиться программисту. Ярким тому примером является _Castle Game Engine_, о котором упоминалось ранее :)
-// The libraries created in other languages (dll, so, dylib) can be easily used from FPC too (and for most of them, you'll find ready "header" units, and even units that wrap them in more modern object-oriented API).
 
 ### Функции, процедуры, простейшие типы
 
@@ -221,10 +218,6 @@ if (A <> nil) and A.IsValid then...
 +
 В данном случае не возникнет ошибки даже в случае если `A` имеет значение `nil`. Ключевое слово `nil` это указатель, который в численном представлении указывает на "нулевой" адрес. Во многих языках программирования он называется _нулевым указателем_ (_null pointer_).
 
-// * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
-
-// * Using `and` between two integer values is a bit-wise `and`, and the result is integer. The operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
-
 ### Проверка одного выражения на множественные значения (оператор case)
 
 Если в зависимости от разных значений определённого выражения должны быть выполнены разные действия, тогда может оказаться удобной конструкция `case .. of .. end`.
@@ -394,17 +387,13 @@ WriteLn('Вторая строка.');
 
 * Некоторые конкретные типы можно преобразовать в строку используя специальные функции, такие как `IntToStr` и `FloatToStr`. В дальнейшем суммировать (concatenation) строки в Паскале можно просто используя знак сложения. Таким образом можно создавать составные строки: `'Моё целое число ' + IntToStr(MyInt) + ', а значение числа пи составляет ' + FloatToStr(Pi)`.
 ** _Преимущество_: это очень удобно. Существует множество готовых функций типа `XxxToStr` и им подобных (например, `FormatFloat`), для множества различных типов данных.
-// They give you a lot of flexibility in formatting.
 ** _Второе преимущество_: они почти всегда имеют обратную функцию. Чтобы преобразовать строку (например, введённую пользователем) в целое или дробное число можно использовать `StrToInt`, `StrToFloat` и подобные (например, `StrToIntDef`).
 ** _Недостаток_: длинная сумма множества `XxxToStr` и строк выглядит некрасиво.
-//For classes, they can override the `TObject.ToString` method.
-//It doesn't have that clean _separation of pattern and arguments_ property of `Format` call.
 
 * Функция `Format` используется в виде `Format('%d %f %s', [MyInt, MyFloat, MyString])`. Она подобна функции `sprintf` в C-подобных языках. Она вставляет аргументы в соответствующие placeholder-ы согласно заданному образцу. Эти placeholder-ы могут использовать специальный синтаксис, влияющий на форматирование, например `%.4f` это дробный формат с 4 знаками после запятой.
 ** _Преимущество_: отделение _строки_ от _аргументов_ выглядит чисто и красиво. Легко изменить текст строки, не изменяя аргументов, например, если необходимо выполнить перевод.
 ** _Второе преимущество_: не используются "волшебные" свойства компилятора. Можно использовать идентичный синтаксис для передачи произвольного количества аргументов произвольного типа в пользовательских процедурах (для этого определите принимаемый параметр как `array of const`). Затем можно передать эти аргументы функции `Format`, или разобрать на список параметров и делать с ним всё, что угодно.
 ** _Недостаток_: компилятор не проверяет, соответствует ли строка-образец аргументам. Используя неверный тип placeholder-а приведёт к ошибке `EConvertError`, впрочем, гораздо более понятной, чем segmentation fault (наиболее часто SIGSEGV).
-//Note that, unlike the C `sprintf`, the correctness at runtime can be completely verified (there are no dirty pointer tricks inside
 
 * В Паскале также существует функция `WriteStr(TargetString, ...)` во многом подобна базовой функции `Write(...)`, с одним отличием - результат сохраняется в `TargetString`.
 ** _Преимущество_: эта функция имеет все возможности функции `Write`, в том числе и специальный "волшебный" синтаксис для форматирования, как например `Pi:1:4`.
@@ -446,20 +435,14 @@ include::code-samples_russian/anotherunit.pas[]
 ----
 
 Запрещено применять _кольцевую взаимозависимость (cyclic reference)_ в разделе interface. Т.е. два unit-а не могут использовать друг друга в разделе interface.
-//that everything must be declared before it's used.
-Причина такого ограничения заключается в том, что для того, чтобы "понять"
-//(e.g. determine the memory layout of all the structures)
-секцию interface unit-а, компилятор анализирует и "понимает" все unit-ы, перечисленные в uses в секции interface.
+Причина такого ограничения заключается в том, что для того, чтобы "понять" секцию interface unit-а, компилятор анализирует и "понимает" все unit-ы, перечисленные в uses в секции interface.
 В Паскале это правило придерживается строго, что позволяет достичь высокой скорости компиляции и полностью автоматическое определение компилятором _что именно необходимо перекомпилировать_. В Паскале нет необходимости создания сложных ``Makefile`` для выполнения простой задачи компиляции, а также нет нужды _перекомпилировать всё_ лишь для того, чтобы удостовериться, что все зависимости правильно обновились.
-//, but also makes circular dependencies _between units interfaces_ impossible.
-//(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
 Вполне возможно создавать кольцевые зависимости между unit-ами когда один из них "используется" только в implementation. Поэтому нормально для `A` использовать `B` в interface, и затем unit `B` использует `A` в implementation.
 
 ### Определение идентификаторов с указанием имени unit-а
 
 Различные unit-ы могут определять одинаковые идентификаторы. Чтобы поддерживать код простым для чтения и правки, обычно следует избегать таких совпадений, но не всегда это возможно. В таких случаях, последний unit в списке `uses` "перетягивает одеяло на себя", т.е. идентификаторы определённые в нём скрывают одноимённые идентификаторы введённые другими unit-ами ранее.
-// in some situations (e.g. when you use a third-party library).
 
 Однако, возможно недвусмысленно определить unit предоставляющий идентификатор, с помощью конструкции `MyUnit.MyIdentifier`. Это стандартное решение ситуации, когда используемый идентификатор из `MyUnit` скрыт идентификатором из другого unit-а. Для достижения этой же цели можно просто перестроить порядок unit-ов в списке uses, однако это повлияет на все идентификаторы, что не всегда желательно.
 
@@ -705,13 +688,6 @@ begin
 end;
 ----
 
-// { compare with the old value, to shield from making
-//   useless assignments to RenderingComponent.Color.
-//   This is a common approach to guarantee that setting WebPage.Color
-//   many times to the same value will be fast,
-//   even if setting RenderingComponent.Color many times to the same value
-//   would be slow. }
-
 Стоит обратить внимание, что вместо того, чтобы указать метод для чтения или записи, можно напрямую указать читаемое/записываемое поле (которое обычно является private и весьма часто имеет название идентичное property с дополнительным префиксом f (от field - поле)) чтобы непосредственно получать или устанавливать значение. В примере выше, свойство `Color` использует _setter_-метод `SetColor`. Однако, для получения значения свойство `Color` напрямую ссылается на private поле `FColor`. Прямая ссылка на конкретное поле, очевидно, быстрее, чем написание дополнительных методов getter или setter - как с точки зрения разработки, так и с точки зрения скорости исполнения программы.
 
 При объявлении свойства указывается:
@@ -722,9 +698,6 @@ end;
 Компилятор следит за тем, чтобы типы и параметры соответствующих полей и методов совпадали с типом свойства с которым они работают. Например, чтобы прочитать свойство `Integer` следует или предоставить поле `Integer`, или беспараметрический метод (функцию), который возвращает `Integer`.
 
 С технической точки зрения, методы "getter" и "setter" - обычные методы и они могут делать абсолютно что угодно (включая массу дополнительных функций). Всё же правилом хорошего тона является создание таких свойств, которые ведут себя более-менее подобно обычному полю:
-
-// There are some good conventions to follow when creating properties. These are only conventions, the compiler doesn't prevent you from making something weird using properties -- f. But the good
-// They should be somewhat predictable, like fields:
 
 * Функция _getter_ не должна иметь невидимых побочных эффектов (например, она не должна читать некоторый ввод из файла / с клавиатуры). Её значение должно быть детерминистическим (без рандомизации или псевдо-рандомизации :)) - чтение свойства должно всегда иметь смысл и возвращать одинаковый результат, если между операциями чтения ничего не изменилось.
 +
@@ -972,9 +945,7 @@ if Obj1 <> nil then
 +
 То же самое происходит и при попытке вызова виртуального, или не-виртуального метода который пытается получить доступ к полю освобождённого экземпляра класса.
 
-2. Ситуация с `Obj2` -- куда сложнее. Её значение не `nil`, однако оно уже ошибочно. Попытка доступа к не-`nil` ссылки на несуществующий экземпляр класса
-//(or call a method that accessed a field of such instance)
-приводит к непредсказуемому результату -- это может быть и ошибка access violation, а может и просто какое-то случайное значение.
+2. Ситуация с `Obj2` -- куда сложнее. Её значение не `nil`, однако оно уже ошибочно. Попытка доступа к не-`nil` ссылки на несуществующий экземпляр класса приводит к непредсказуемому результату -- это может быть и ошибка access violation, а может и просто какое-то случайное значение.
 
 К решению такой проблемы есть несколько путей:
 
@@ -1105,9 +1076,6 @@ include::code-samples_russian/persistent.lpr[]
 
 Внутри большой _процедуры_ (это может быть функция, процедура, метод и т.п.) можно определить вложенную (местную) под-процедуру.
 
-//It has all the flexibility of a normal routine, it's just not
-//This is quite powerful feature that allows you to _easily_ split a long routine into many smaller ones.
-
 Таким образом такая локальная под-процедура имеет полный доступ (чтение и запись) всех параметров процедуры, в которой она находится, _если они были объявлены раньше, чем эта процедура_. Это очень удобно, позволяя разделять длинные процедуры на несколько небольших частей без необходимости передавать множество информации в виде параметров. Однако, не следует злоупотреблять этой возможностью. В случае, если местная (вложенная) процедура использует и, тем более, изменяет много переменных процедуры, в которой она находится, такой код становится сложным для понимания.
 
 Данные два примера абсолютно эквивалентны:
@@ -1203,7 +1171,6 @@ end;
 Generic-и - это очень мощная функция современных языков. Определение чего-либо (обычно - класса) может быть конкретизировано другим типом. Наиболее естественным примером является необходимость создать контейнер (список, словарь, дерево, граф...): можно определить _список типа T_, а потом _specialize_ (конкретизировать) его чтобы сразу получить _список из integer_, _список из string_, _список из TMyRecord_ и т.д.
 
 Generic-и в Паскале реализованы весьма подобно generic-ам в C++. Это означает, что они "конкретизируются" когда происходит specialize, что _немного_ похоже на поведение макросов (однако, когда тип "конкретизирован", используются только эти конкретные определения, и таким образом невозможно "добавить" какое-либо неожиданное поведение в generic после его "конкретизации"). Преимуществом их является высокая скорость выполнения (оптимизированная для каждого конкретного типа) и поддержка типов любого размера. Можно использовать примитивные типы (integer, float) а также record, class и т.п. при specialize данного generic-а.
-// Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
 [source,pascal]
 ----
@@ -1313,7 +1280,6 @@ end.
 
 * Второй важный пример использования - разделить unit на несколько файлов, и при этом всё же оставить его одним unit-ом (с учётом всех особенностей Паскаля). Не стоит злоупотреблять таким подходом. В первую очередь стоит думать о том, как разделить программу на несколько unit-ов, а не разделять её на множество include файлов. Однако, в общем, это довольно полезная и удобная техника.
   . Такой подход позволяет избежать огромного количества unit-ов, и при этом исходные файлы не окажутся слишком длинными. Например, куда удобнее иметь один файл с _"часто используемыми GUI элементами"_, чем создавать _отдельные unit-ы для каждого GUI элемента"_, поскольку второй вариант сделает обычную "uses" неоправданно длинной (поскольку в GUI-приложении будут использоваться множество GUI элементов). Однако, размещение всех этих классов в одном файле `myunit.pas` приведёт к его большому размеру, что в свою очередь затруднит навигацию по файлу. Таким образом, разбить этот файл на несколько include файлов будет разумным.
-//For example, *Castle Game Engine* has a unit `CastleControls` with a couple of user-interface controls, like `TCastleButton`, `TCastleLabel`, `TCastleImageControl` and more. We could split it into many units, even to _one unit per class_, as the classes are not really tightly connected. But that would often force you to have a long `uses` clause, since a lot of user-interface code will want to use a couple of control classes. So we made a practical decision to just put all _often used controls_ in a single unit.
   . Такой подход также позволяет легко создавать кросс-платформенный unit с уникальными частями для каждой платформы, что, например, может выглядеть следующим образом:
 +
 [source,pascal]
@@ -1352,7 +1318,6 @@ include::code-samples_russian/records.lpr[]
 
 * Такие object-ы можно создавать / освобождать, и в процессе этого можно вызвать их constructor / destructor.
 * Но их можно просто объявить и использовать как обычную record. Простые типы `record` или `object` не являются указателями (pointer-ами) на что-либо, они, собственно, являются данными. Это делает их весьма удобными в случаях небольших объёмов информации, когда многократное распределение или освобождение памяти не всегда оправдано.
-//It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
 * Устаревшие object-ы имеют наследование и виртуальные методы, впрочем, в несколько отличном виде от современных классов. Следует быть внимательным: если попытаться использовать object, имеющий виртуальные методы, без вызова его constructor-а, могут возникнуть ошибки.
 
 В большинстве случаев крайне не советуется использовать устаревшие objects-ы. Современные _class-ы_ имеют гораздо более широкий функционал. А в случае если необходимо повысить скорость выполнения, можно использовать record-ы (включая _advanced records_). Такие подходы обычно лучше, чем устаревшие object-ы.
@@ -1378,7 +1343,6 @@ type
 Существует также самый общий тип `Pointer`, который не указывает на конкретный тип данных и подобен `void*` в C-подобных языках. Он совершенно не типобезопасен, и его можно привести его тип в любой другой тип pointer-а.
 
 Следует помнить, что _экземпляр класса_ также является pointer-ом, хоть для работы с ним и не нужно использовать дополнительных операторов `^` и `@`.
-//That's why it's called a _reference_.
 Рекурсивные определения также возможны и для классов, и в данном случае всё будет выглядеть ещё проще:
 
 [source,pascal]
@@ -1433,8 +1397,6 @@ include::code-samples/operator_overloading_records_lists.lpr[]
 ### Дополнительные возможности объявления классов и локальные классы
 
 Внутри определения класса можно создавать константы (`const`) или типы (`type`). Таким образом можно даже создать класс внутри класса. Спецификаторы видимости будут работать как обычно, и такие локальные классы могут быть private (не видимые "внешнему миру"), что иногда удобно.
-//The compiler watches that you don't break the visibility rules (for example you cannot declare a _public function_ that returns a type that is _private_).
-// (I wish - it doesn't, unfortunately...)
 
 Следует обратить внимание, чтобы определить поле после константы или типа будет необходимо использовать блок `var`:
 
@@ -1609,13 +1571,6 @@ begin
 end;
 ----
 
-// This is an example why compiler cannot detect *all* uses of an abstract
-// methods at compile time, in this case --- the error can only resurface
-// at runtime.
-//
-// Poor example actually, since compiler could prevent "ClassRef := TMyClass"
-// in this case?
-
 ### Class helper
 
 _Метод_ является лишь процедурой внутри конкретного класса. Извне класса он вызывается с помощью специального синтаксиса `MyInstance.MyMethod(...)`. И через некоторое время приходит привычка, что _если нужно произвести действие над классом X, следует писать_ `X.Action(...)`.
@@ -1657,7 +1612,6 @@ end;
 ----
 
 ПРИМЕЧАНИЕ: Более общая концепция является _"type helper"_, используя которую становится возможным добавлять методы даже к самым примитивным типам, например integer. Можно также создать _"record helper"_ чтобы... ну, Вы поняли. Детальнее см. здесь: http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
-//And of course to records and old-style objects (both of them can also have regular methods, they are much like classes in this regard).
 
 ### Виртуальные constructor-ы, destructor-ы
 
@@ -1701,7 +1655,6 @@ _Интерфейс_, так же как и класс, объявляет API, 
 
 _Интерфейсы CORBA_ в Object Pascal работают в значительной степени так, как и интерфейсы в Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) или в C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
 
-//This is much like Java, where interfaces are used whenever you think of multiple inheritance.
 [source,pascal]
 ----
 include::code-samples_russian/interfaces_corba_test.lpr[]
@@ -1713,15 +1666,11 @@ include::code-samples_russian/interfaces_corba_test.lpr[]
 
   Название *CORBA* крайне неудачное. Куда лучший термин был бы *обычный интерфейс*. Такие интерфейсы являются _"чистой особенностью языка"_. Их можно использовать, если возникает необходимость приведения типов различных классов в виде одинакового интерфейса, поскольку у них одинаковая API.
 +
-//The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
-//+
 Не смотря на то, что эти интерфейсы могут использоваться совместно с _технологией CORBA (Common Object Request Broker Architecture)_ (см. https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), они _не_ имеют к ней никакого отношения.
 
 Требуется ли задавать `{$interfaces corba}` ?::
 
-  Да, поскольку по умолчанию
-//(if we would omit the `{$interfaces corba}` directive)
-  будут созданы _COM интерфейсы_. Последнее можно указать явно с помощью директивы `{$interfaces com}`, но не обязательно, так как это случай по умолчанию.
+  Да, поскольку по умолчанию будут созданы _COM интерфейсы_. Последнее можно указать явно с помощью директивы `{$interfaces com}`, но не обязательно, так как это случай по умолчанию.
 +
 Лично я не советую использовать _COM интерфейсы_. Особенно в случае, если Вам знакомы интерфейсы из других языков программирования. _Интерфейсы CORBA_ в Паскале -- это именно то, что ожидается от интерфейсов, они идентичны интерфейсам в C# и Java. При этом _COM интерфейсы_ привносят дополнительные "особенности", которые, скорее всего, не понадобятся.
 +
@@ -1754,14 +1703,10 @@ include::code-samples_russian/interfaces_corba_test.lpr[]
 Можно ли использовать reference-counting совместно с интерфейсом CORBA?::
 
   Естественно. Необходимо лишь добавить методы `_AddRef` / `_ReleaseRef`. Нет необходимости наследовать интерфейс `IUnknown`. Впрочем, в большинстве случаев, если возникает необходимость использовать reference-counting в интерфейсах, можно просто использовать COM интерфейсы.
-//    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that iunknown doesn't just do refcounting though, it also plays a part in identity (queryinterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
-//  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
 ### GUID-ы интерфейсов
 
 GUID-ы это на первый взгляд случайная последовательность букв и цифр `['{ABCD1234-...}']` которую можно увидеть при каждом объявлении интерфейса. В действительности, они и являются случайными. Но, к сожалению, в них есть необходимость. Никакого особого смысла в них не вкладывается (если не планируется интеграция с технологиями _COM_ или _CORBA_). Однако, для правильного исполнения программы они обязательны. И пусть не сбивает с толку компилятор, который, увы, позволяет создавать интерфейсы без GUID-ов.
-//Yes, they look ugly.
-//, and I wish they would not be necessary.
 
 Без присваивания (уникального) GUID-а, все интерфейсы будут идентичными для оператора `is`. Таким образом, он всегда будет возвращать `true` если данный класс поддерживает _любой_ из используемых интерфейсов. "Волшебная" функция `Supports(ObjectInstance, IMyInterface)` работает несколько лучше в данном случае, поскольку выдаст ошибку компиляции для интерфейсов без GUID. Это касается и CORBA, и COM интерфейсов, для версии FPC 3.0.0.
 
@@ -1785,18 +1730,12 @@ include::code-samples/gen_guid.lpr[]
 
 На практике это означает следующее:
 
-// +
-// The relation to COM technology has . The reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
-
 * В классе необходимо создать "волшебные" методы `_AddRef`, `_Release` и `QueryInterface`. Или наследовать класс, который уже имеет их. Конкретная имплеметация этих методов позволяет включить или отключить такую возможность COM интерфейсов, как __reference-counting__. Впрочем, отключать её достаточно опасно -- см. следующий подраздел.
 
 ** Стандартный класс `TInterfacedObject` имеет эти методы выполненными в таком виде, чтобы _включить_ reference-counting.
 ** Стандартный класс `TComponent` имеет эти методы выполненными в таком виде, чтобы _выключить_ reference-counting. В *Castle Game Engine* предоставлены дополнительные классы, от которых можно выполнять наследование: `TNonRefCountedInterfacedObject` и `TNonRefCountedInterfacedPersistent` для этих целей, см. детальнее: https://github.com/castle-engine/castle-engine/blob/master/src/base/castleinterfaces.pas .
 
-//* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
-
 * Необходимо быть аккуратным при освобождении класса, когда на него могут ссылаться некоторые переменные интерфейса. Поскольку интерфейсы освобождаются с помощью виртуального метода (потому что он _может использовать reference-counting, даже если `_AddRef` написан таким образом, чтобы отключить эту возможность_), то нельзя освобождать низлежащий экземпляр класса из-за того, что какая-либо переменная интерфейса может на него указывать. См. раздел _"7.7 Reference counting"_ в руководстве FPC (http://freepascal.org/docs-html/ref/refse47.html).
-//, http://bugs.freepascal.org/view.php?id=10374 .
 
 Чтобы безопасно использовать _COM интерфейсы_ необходимо
 
