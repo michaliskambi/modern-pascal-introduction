@@ -746,7 +746,7 @@ NOTE: Properties can also be defined outside of class, at a unit level. They ser
 
 #### Serialization of properties
 
-_Published properties_ are the basis of a _serialization_ (also known as _streaming components_) in Pascal.
+_Published properties_ are the basis of a _serialization_ (also known as _streaming components_) in Pascal. Serialization term is derived from "Series" word, which means that some object data is represented as a linear data series, such as a memory or a file record.
 
 Serialization is what happens when Lazarus reads (or writes) the component state from an `xxx.lfm` file. (In Delphi, the equivalent file has `.dfm` extension.) You can also use this mechanism explicitly, using routines like `ReadComponentFromTextStream` from the `LResources` unit. You can also use other serialization algorithms, e.g. `FpJsonRtti` unit (serializing to JSON).
 
