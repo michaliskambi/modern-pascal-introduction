@@ -106,8 +106,8 @@ end;
 
 begin
   Count := 10;
-  CountMe; // the function result is discarded, but the function is executed
-  MyCount := CountMe; // use the result of the function
+  CountMe; // the function result is discarded, but the function is executed, Count is now 11
+  MyCount := CountMe; // use the result of the function, MyCount equals to Count which is now 12
 end.
 ----
 
