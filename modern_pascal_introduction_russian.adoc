@@ -1867,7 +1867,7 @@ UseThroughInterface(IMyInterface(Cx));
 
 [source,pascal]
 ----
-include::code-samples/interface_casting.lpr[]
+include::code-samples_russian/interface_casting.lpr[]
 ----
 
 ## Про этот документ
