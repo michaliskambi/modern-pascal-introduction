@@ -417,7 +417,6 @@ include::code-samples_russian/myunit.pas[]
 include::code-samples_russian/myunit_test.lpr[]
 ----
 
-A unit may also contain `initialization` and `finalization` sections. This is the code executed when the program starts and ends.
 Unit может также содержать секции `initialization` и `finalization`. В них размещается код, который выполняется при запуске и завершении выполнения программы, соответственно.
 
 [source,pascal]
