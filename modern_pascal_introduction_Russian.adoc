@@ -1604,7 +1604,7 @@ begin
   // Таким образом будет создан объект конкретного типа TMyClass:
   // Result := TMyClass.Create(AOwner);
   // А такой подход может создать объект как типа TMyClass, так и его наследников:
-  Result := TMyClassRef(Self.ClassType).Create(AOwner);
+  Result := TMyClassRef(ClassType).Create(AOwner);
   Result.Assign(Self);
 end;
 ----
@@ -1824,38 +1824,52 @@ include::code-samples_rus/interfaces_com_with_ref_counting.lpr[]
 include::code-samples_rus/interfaces_com_test.lpr[]
 ----
 
-### Приведение типов интерфейсов без оператора "as"
+### Приведение типов интерфейсов
 
 Этот раздел касается как _CORBA_, так и _COM_ интерфейсов.
+(however, it has some explicit exceptions for CORBA).
 
-Приведение типа интерфейса через оператор `as` выполняет проверку в режиме исполнения. Рассмотрим пример:
-
+1. Приведение типа интерфейса через оператор `as` выполняет проверку в режиме исполнения. Рассмотрим пример:
++
 [source,pascal]
 ----
 UseThroughInterface(Cx as IMyInterface);
 ----
++
+Этот вариант скомпилируется для всех экземпляров `C1`, `C2`, `C3` из примера в предыдущем подразделе. При выполнении программы возникнет ошибка для `C3`, у которого не описан `IMyInterface`.
++
+Using `as` operator works consistently regardless if `Cx` is declared as a class instance (like `TMyClass2`) or interface (like `IMyInterface2`).
++
+However, it is not allowed for CORBA interfaces. 
 
-Этот вариант скомпилируется для всех экземпляров `C1`, `C2`, `C3` из примера в предыдущем подразделе. При выполнении программы возникнет ошибка для `C3`, у которого не описан `IMyInterface` (впрочем, мы можем избежать такой ошибки, проверив `Cx is IMyInterface` перед выполнением приведения типа), как это сделано в примере.
-
-Однако, возможно привести тип данного экземпляра самым непосредственным образом:
-
+2. Однако, возможно привести тип данного экземпляра самым непосредственным образом:
++
 [source,pascal]
 ----
 UseThroughInterface(Cx);
 ----
-
++
 В таком случае проверка выполняется в момент компиляции. Такой код скомпилируется для `C1` и `C2` (которые определены, как классы, использующие `IMyInterface`), но не скомпилируется для `C3`.
-
++
 По большому счёту, такое приведение типа работает как для обычных классов. В случае, если требуется экземпляр класса `TMyClass`, всегда можно использовать переменную, объявленную как `TMyClass`, *которой подойдёт любой наследник `TMyClass`*. Точно такая же ситуация и для интерфейсов. Не требуется выполнять явные приведения типов в такой ситуации.
 
-Эквивалентно этому:
-
+3. You can also typecast using `IMyInterface(Cx)`. Like this: 
++
 [source,pascal]
 ----
 UseThroughInterface(IMyInterface(Cx));
 ----
++
+Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad things will happen if you cast to an incorrect interface. And that's true, if you cast _a class to a class_, or _an interface to an interface_, using this syntax.
++
+There is a small exception here: if `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
 
-Это тоже приведение типа, которое должно быть верным при компиляции. Обратите внимание, что данный синтаксис работает иначе, чем приведение типов обычных классов. Если написать что-либо вроде `TMyClass\(C)` для классов, то в результате получится _небезопасное, непроверяемое приведение типов_. В случае же интерфейсов, писать `IMyInterface\(C)` безопасно и быстро (проверяется лишь при компиляции).
+To test it all, play around with this example code:
+
+[source,pascal]
+----
+include::code-samples/interface_casting.lpr[]
+----
 
 ## Про этот документ
 
