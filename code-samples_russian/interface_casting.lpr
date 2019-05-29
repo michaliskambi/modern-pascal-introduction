@@ -1,6 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
 
-// {$interfaces corba} // note that "as" typecasts for CORBA will not compile
+// {$interfaces corba} // обратите внимание, что приведение типа с помощью "as" для интерфейсов типа CORBA не скомпилируется
 
 uses Classes;
 
@@ -64,29 +64,29 @@ begin
   My := TMyClass2.Create(nil);
   MyClass := TMyClass2.Create(nil);
 
-  // This doesn't compile, since at compile-time it's unknown if My is IMyInterface2.
+  // Следующий код не скомпилируется, так как в момент компиляции неизвестно является ли My интерфейсом IMyInterface2.
   // UseInterface2(My);
   // UseInterface2(MyClass);
 
-  // This compiles and works OK.
+  // Это скомпилируется и работает правильно.
   UseInterface2(IMyInterface2(My));
-  // This does not compile. Casting InterfaceType(ClassType) is checked at compile-time.
+  // А это не скомпилируется. Приведение типа InterfaceType(ClassType) проверяется в момент компиляции.
   // UseInterface2(IMyInterface2(MyClass));
 
-  // This compiles and works OK.
+  // Это скомпилируется и работает правильно.
   UseInterface2(My as IMyInterface2);
-  // This compiles and works OK.
+  // Это скомпилируется и работает правильно.
   UseInterface2(MyClass as IMyInterface2);
 
-  // This compiles, but will fail at runtime, with ugly "Access violation".
+  // Это скомпилируется, но приведёт к непонятной ошибке "Access violation" при выполнении программы.
   // UseInterface3(IMyInterface3(My));
-  // This does not compile. Casting InterfaceType(ClassType) is checked at compile-time.
+  // Это не скомпилируется. Приведение типа InterfaceType(ClassType) проверяется в момент компиляции.
   // UseInterface3(IMyInterface3(MyClass));
 
-  // This compiles, but will fail at runtime, with nice "EInvalidCast: Invalid type cast".
+  // Это скомпилируется, но приведёт понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
   // UseInterface3(My as IMyInterface3);
-  // This compiles, but will fail at runtime, with nice "EInvalidCast: Invalid type cast".
+  // Это скомпилируется, но приведёт понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
   // UseInterface3(MyClass as IMyInterface3);
 
-  Writeln('Finished');
+  Writeln('Готово');
 end.
