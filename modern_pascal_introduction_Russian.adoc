@@ -1114,7 +1114,7 @@ include::code-samples_rus/persistent.lpr[]
 
 [source,pascal]
 ----
-procedure SumOfSquares(const N: Integer): Integer;
+function SumOfSquares(const N: Integer): Integer;
 
   function Square(const Value: Integer): Integer;
   begin
@@ -1134,7 +1134,7 @@ end;
 
 [source,pascal]
 ----
-procedure SumOfSquares(const N: Integer): Integer;
+function SumOfSquares(const N: Integer): Integer;
 var
   I: Integer;
 
