@@ -106,8 +106,8 @@ end;
 
 begin
   Count := 10;
-  CountMe; // the function result is discarded, but the function is executed
-  MyCount := CountMe; // use the result of the function
+  CountMe; // the function result is discarded, but the function is executed, Count is now 11
+  MyCount := CountMe; // use the result of the function, MyCount equals to Count which is now 12
 end.
 ----
 
@@ -746,7 +746,7 @@ NOTE: Properties can also be defined outside of class, at a unit level. They ser
 
 #### Serialization of properties
 
-_Published properties_ are the basis of a _serialization_ (also known as _streaming components_) in Pascal.
+_Published properties_ are the basis of a _serialization_ (also known as _streaming components_) in Pascal. _Serialization_ means that the instance data is recorded into a stream (like a file), from which it can be later restored.
 
 Serialization is what happens when Lazarus reads (or writes) the component state from an `xxx.lfm` file. (In Delphi, the equivalent file has `.dfm` extension.) You can also use this mechanism explicitly, using routines like `ReadComponentFromTextStream` from the `LResources` unit. You can also use other serialization algorithms, e.g. `FpJsonRtti` unit (serializing to JSON).
 
