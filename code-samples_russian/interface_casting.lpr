@@ -83,9 +83,9 @@ begin
   // Это не скомпилируется. Приведение типа InterfaceType(ClassType) проверяется в момент компиляции.
   // UseInterface3(IMyInterface3(MyClass));
 
-  // Это скомпилируется, но приведёт понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
+  // Это скомпилируется, но приведёт к понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
   // UseInterface3(My as IMyInterface3);
-  // Это скомпилируется, но приведёт понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
+  // Это скомпилируется, но приведёт к понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
   // UseInterface3(MyClass as IMyInterface3);
 
   Writeln('Готово');
