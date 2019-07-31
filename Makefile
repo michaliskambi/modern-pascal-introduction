@@ -1,4 +1,11 @@
+# Customize LANGUAGE_SUFFIX and ASCIIDOCTOR_LANGUAGE for non-English languages.
+# See the "upload-all" below for examples how to use them.
+#
+# Suffix added to input and output filenames.
 LANGUAGE_SUFFIX:=
+# Language parameters to AsciiDoctor, see https://asciidoctor.org/docs/user-manual/#language-support
+ASCIIDOCTOR_LANGUAGE:=
+
 NAME:=modern_pascal_introduction$(LANGUAGE_SUFFIX)
 ALL_OUTPUT:=$(NAME).html $(NAME).pdf $(NAME).xml
 #TEST_BROWSER:=firefox
@@ -13,7 +20,7 @@ $(NAME).html: $(NAME).adoc
 	$(TEST_BROWSER) $@ &
 
 $(NAME).xml: $(NAME).adoc
-	asciidoctor -b docbook5 $< -o $@
+	asciidoctor $(ASCIIDOCTOR_LANGUAGE) -b docbook5 $< -o $@
 #	yelp $@
 
 $(NAME).pdf: $(NAME).xml
@@ -47,4 +54,4 @@ upload: test clean all
 .PHONY: upload-all
 upload-all:
 	$(MAKE) upload
-	$(MAKE) upload LANGUAGE_SUFFIX=_russian
+	$(MAKE) upload LANGUAGE_SUFFIX=_russian ASCIIDOCTOR_LANGUAGE='-a lang=ru'

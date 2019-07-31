@@ -1,0 +1,8 @@
+Localization for AsciiDoctor built-in labels,
+prepared by AsciiDoctor developers.
+See
+https://asciidoctor.org/docs/user-manual/#language-support
+https://github.com/asciidoctor/asciidoctor/tree/master/data/locale
+
+Get it by "svn co https://github.com/asciidoctor/asciidoctor/trunk/data/locale"
+(you can use SVN to easily download a subdirectory of repo from GitHub).
