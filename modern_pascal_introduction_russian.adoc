@@ -1,11 +1,13 @@
-﻿# Краткое введение в современный Object Pascal для программистов
-Michalis Kamburelis
-include::locale/attributes.adoc[]
+﻿include::locale/attributes-ru.adoc[]
+
 :toc: left
 :toclevels: 4
 :sectnums:
 :source-highlighter: coderay
 :docinfo1:
+
+# Краткое введение в современный Object Pascal для программистов
+Michalis Kamburelis
 
 ## Введение: Для чего это нужно?
 
