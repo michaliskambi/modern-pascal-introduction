@@ -1,5 +1,6 @@
 ﻿# Краткое введение в современный Object Pascal для программистов
 Michalis Kamburelis
+include::locale/attributes.adoc[]
 :toc: left
 :toclevels: 4
 :sectnums:
