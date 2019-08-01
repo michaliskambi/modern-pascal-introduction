@@ -16,5 +16,7 @@
 * PDF: https://castle-engine.io/modern_pascal_introduction.pdf
 
 Michalis Kamburelis (создатель Castle Game Engine https://castle-engine.io/ ).
+
 Перевод на русский: Александр Скворцов и Евгений Лоза
+
 Огромная благодарность за замеченные ошибки: vitaly_l и pupsik @ freepascal.ru
