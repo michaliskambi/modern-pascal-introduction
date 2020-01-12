@@ -1188,7 +1188,7 @@ Modern programs should use `TStream` class and its many descendants to do input 
 include::code-samples/file_stream.lpr[]
 ----
 
-*In the Castle Game Engine*: You should use the `Download` function to create a stream that obtains data from any URL. Regular files, HTTP and HTTPS resources, Android assets and more are supported this way. Moreover, to open the resource inside your game data (in the `data` subdirectory) use the `ApplicationData` function or special `castle-data:/xxx` URL. Examples:
+*In the Castle Game Engine*: You should use the `Download` function to create a stream that obtains data from any URL. Regular files, HTTP and HTTPS resources, Android assets and more are supported this way. Moreover, to open the resource inside your game data (in the `data` subdirectory) use the special `castle-data:/xxx` URL. Examples:
 
 [source,pascal]
 ----
@@ -1203,14 +1203,14 @@ S := Download('file:///home/michalis/my_binary_file.data');
 
 [source,pascal]
 ----
-S := Download(ApplicationData('gui/my_image.png'));
+S := Download('castle-data:/gui/my_image.png');
 ----
 
 To read text files, we advise using the `TTextReader` class. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
 
 [source,pascal]
 ----
-Text := TTextReader.Create(ApplicationData('my_data.txt'));
+Text := TTextReader.Create('castle-data:/my_data.txt');
 while not Text.Eof do
   WriteLnLog('NextLine', Text.ReadLine);
 ----
