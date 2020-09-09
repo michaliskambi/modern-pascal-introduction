@@ -1211,8 +1211,12 @@ To read text files, we advise using the `TTextReader` class. It provides a line-
 [source,pascal]
 ----
 Text := TTextReader.Create('castle-data:/my_data.txt');
-while not Text.Eof do
-  WriteLnLog('NextLine', Text.ReadLine);
+try
+  while not Text.Eof do
+    WriteLnLog('NextLine', Text.ReadLn);
+finally
+  FreeAndNil(Text);
+end;
 ----
 
 [[generic-containers-section]]
