@@ -68,14 +68,14 @@ If you want to call the function itself recursively, you can of course do it. If
 
 [source,pascal]
 ----
-function ReadIntegersUntilZero: string;
+function SumIntegersUntilZero: Integer;
 var
   I: Integer;
 begin
   Readln(I);
-  Result := IntToStr(I);
+  Result := I;
   if I <> 0 then
-    Result := Result + ' ' + ReadIntegersUntilZero();
+    Result := Result + SumIntegersUntilZero();
 end;
 ----
 
@@ -398,7 +398,7 @@ Note that this will only work in _console_ applications. Make sure you have `{$a
 To convert an arbitrary number of arguments to a string (instead of just directly outputting them), you have a couple of options.
 
 * You can convert particular types to strings using specialized functions like `IntToStr` and `FloatToStr`. Furthermore, you can concatenate strings in Pascal simply by adding them. So you can create a string like this: `'My int number is ' + IntToStr(MyInt) + ', and the value of Pi is ' + FloatToStr(Pi)`.
-** _Advantage_: Absolutely flexible. There are many `XxxToStr` overloaded versions and friends (like `FormatFloat`), covering many types.
+** _Advantage_: Absolutely flexible. There are many `XxxToStr` overloaded versions and friends (like `FormatFloat`), covering many types. Most of them are in the `SysUtils` unit.
 // They give you a lot of flexibility in formatting.
 ** _Another advantage_: Consistent with the reverse functions. To convert a string (for example, user input) back to an integer or float, you use `StrToInt`, `StrToFloat` and friends (like `StrToIntDef`).
 ** _Disadvantage_: A long concatenation of many `XxxToStr` calls and strings doesn't look nice.
