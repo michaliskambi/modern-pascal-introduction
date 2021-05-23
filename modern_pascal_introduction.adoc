@@ -759,7 +759,7 @@ At each property, you can declare some additional things that will be helpful fo
 
 * Whether the property should be stored at all (using the `stored` keyword).
 
-### Exceptions
+### Exceptions - Quick Example
 
 We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
 
@@ -769,6 +769,8 @@ include::code-samples/exception_finally.lpr[]
 ----
 
 Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
+
+See the <<Exceptions>> chapter for more in-depth description of _exceptions_.
 
 ### Visibility specifiers
 
@@ -1176,6 +1178,304 @@ begin
   inherited;
 end;
 ----
+
+## Exceptions
+
+### Overview
+
+Exceptions allow to _interrupt the normal execution of the code_.
+
+- At any point within the program, you can *raise* an exception using the `raise` keyword. In effect the lines of code following the `raise ...`  call will not execute.
+
+- An exception may be *caught* using a `try ... except ... end` construction. Catching an exception means that you somehow "deal" with exception, and the following code should execute as usual, the exception is no longer propagated upward.
++
+Note: If an exception is raised but never caught, it will cause the entire application to stop with an error.
++
+** But in LCL applications, the exceptions are always caught around events (and cause LCL dialog box) if you don't catch them earlier.
+** In _Castle Game Engine_ applications using `CastleWindow`, we similarly always catch exceptions around your events (and display proper dialog box).
+** So it is not so easy to make an exception that is _not caught anywhere_ (not caught in your code, LCL code, CGE code...).
+
+- Although an exception breaks the execution, you can use the `try ... finally ... end` construction to execute some code *always*, even if the code was interrupted by an exception.
++
+The `try ... finally ... end` construction also works when code is interrupted by `Break` or `Continue` or `Exit` keywords. The point is to always execute code in the `finally` section.
+
+An "exception" must a class instance.
+
+- The compiler does not enforce much. You just must call `raise XXX` where `XXX` is an instance of any class. Any class (so, anything descending from `TObject`) is fine.
+
+- It is a standard convention for exception classes to descend from a special `Exception` class. The `Exception` class extends `TObject`, adding a string `Message` property and a constructor to easily set this property. All exceptions raised by the standard library descend from `Exception`. We advise to follow this convention.
+
+- Exception classes (by convention) have names that start with `E`, not `T`. Like `ESomethingBadHappened`.
+
+- The compiler will automatically free exception object when it is handled. Don't free it yourself.
++
+In most cases, you just construct the object at the same time when you call `raise`, like `raise ESomethingBadHappened.Create('Description of what bad thing happened.')`.
+
+### Raising
+
+If you want to raise your own exception, declare it and call `raise ...` when appropriate:
+
+[source,pascal]
+----
+type
+  EInvalidParameter = class(Exception);
+
+function ReadParameter: String;
+begin
+  Result := Readln;
+  if Pos(' ', Result) <> '' then
+    raise EInvalidParameter.Create('Invalid parameter, space is not allowed');
+end;
+----
+
+Note that the expression following the `raise` should be a valid class instance to raise. You will almost always create the exception instance here.
+
+You can also use the `CreateFmt` constructor, which is a comfortable shortcut to `Create(Format(MessageFormat, MessageArguments))`. This is a common way to provide more information to the exception message. We can improve the previous example like this:
+
+[source,pascal]
+----
+type
+  EInvalidParameter = class(Exception);
+
+function ReadParameter: String;
+begin
+  Result := Readln;
+  if Pos(' ', Result) <> '' then
+    raise EInvalidParameter.CreateFmt('Invalid parameter %s, space is not allowed', [Result]);
+end;
+----
+
+### Catching
+
+You can catch an exception like this:
+
+[source,pascal]
+----
+var
+  Parameter1, Parameter2, Parameter3: String;
+begin
+  try
+    Writeln('Input 1st parameter:');
+    Parameter1 := ReadParameter;
+    Writeln('Input 2nd parameter:');
+    Parameter2 := ReadParameter;
+    Writeln('Input 3rd parameter:');
+    Parameter3 := ReadParameter;
+  except
+    // capture EInvalidParameter raised by one of the above ReadParameter calls
+    on EInvalidParameter do
+      Writeln('EInvalidParameter exception occurred');
+  end;
+end;
+----
+
+To improve the above example, we can declare the name for the exception instance (we will use `E` in the example). This way we can print the exception message:
+
+[source,pascal]
+----
+try
+...
+except
+  on E: EInvalidParameter do
+    Writeln('EInvalidParameter exception occurred with message: ' + E.Message);
+end;
+----
+
+One could also test for multiple exception classes:
+
+[source,pascal]
+----
+try
+...
+except
+  on E: EInvalidParameter do
+    Writeln('EInvalidParameter exception occurred with message: ' + E.Message)
+  else
+  on E: ESomeOtherException do
+    Writeln('ESomeOtherException exception occurred with message: ' + E.Message)
+  else
+    Writeln('Unexpected exception occurred');
+// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING BELOW ABOUT "CAPTURING ALL EXCEPTIONS"
+end;
+----
+
+You can also react to any exception raised:
+
+[source,pascal]
+----
+try
+...
+except
+  Writeln('Warning: Some exception occurred');
+end;
+// WARNING: DO NOT v THIS EXAMPLE WITHOUT READING A WARNING BELOW ABOUT "CAPTURING ALL EXCEPTIONS"
+----
+
+_Usually you should only catch exceptions of the specific class, that are appropriate in your case (you know what to do in case of this particular problem). Be careful with catching exceptions of a general type (like catching any `Exception` or any `TObject`), as you may easily catch too much, and later cause troubles when debugging other problems._ As in all programming languages with exceptions, the good rule to follow is to _never capture an exception that you do not know how to handle_. In particular, do not capture an exception just as a simple workaround of the problem, without investigating first _why_ the exception occurs. Is it a problem in user input (then you can report it)? Or is it a bug in your code logic (then you should fix the code, to avoid the exception)? And confirm that "catching" the exception at given place results in a correct code in all scenarios.
+
+Another way to capture all exception is to use:
+
+[source,pascal]
+----
+try
+...
+except
+  on E: TObject do
+    Writeln('Warning: Some exception occurred');
+end;
+// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE ABOUT "CAPTURING ALL EXCEPTIONS"
+----
+
+Although usually it is enough to capture `Exception`:
+
+[source,pascal]
+----
+try
+...
+except
+  on E: Exception do
+    Writeln('Warning: Some exception occurred: ' + E.ClassName + ', message: ' + E.Message);
+end;
+// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE ABOUT "CAPTURING ALL EXCEPTIONS"
+----
+
+You can "re-raise" the exception in the `except ... end` block, if you decide so. You can just do `raise E` if the exception instance is `E`, you can also just use parameter-less `raise`. For example:
+
+[source,pascal]
+----
+try
+...
+except
+  on E: EInvalidSoundFile do
+  begin
+    if E.InvalidUrl = 'http://example.com/blablah.wav' then
+      Writeln('Warning: loading http://example.com/blablah.wav failed, this is a known problem that we can ignore now')
+    else
+      raise;
+  end;
+end;
+----
+
+Note that, although the exception is an instance of an object, you should never manually free it after raising. The compiler will generate proper code that makes sure to free the exception object once it's handled.
+
+### Finally (doing things regardless if exception occurred)
+
+Often you use `try .. finally .. end` construction to free an instance of object, regardless if an exception occurred during some operation on this object. The way to write it looks like this:
+
+[source,pascal]
+----
+procedure MyProcedure;
+var
+  MyInstance: TMyClass;
+begin
+  MyInstance := TMyClass.Create;
+  try
+    MyInstance.DoSomething;
+    MyInstance.DoSomethingElse;
+  finally
+    FreeAndNil(MyInstance);
+  end;
+end;
+----
+
+This works reliably always, and does not cause memory leaks, even if `MyInstance.DoSomething` or `MyInstance.DoSomethingElse` raises an exception.
+
+Note that this takes into account that local variables, like `MyInstance` above, have undefined values (may contain random "memory garbage") before the first assignment. That is, writing something like this would not be valid:
+
+[source,pascal]
+----
+// INCORRECT EXAMPLE:
+procedure MyProcedure;
+var
+  MyInstance: TMyClass;
+begin
+  try
+    MyInstance := TMyClass.Create;
+    CallSomeOtherProcedure;
+    MyInstance.DoSomething;
+    MyInstance.DoSomethingElse;
+  finally
+    FreeAndNil(MyInstance);
+  end;
+end;
+----
+
+The above example is not valid: if an exception occurs within `TMyClass.Create` (a constructor may also raise an exception), or within the `CallSomeOtherProcedure`, then the `MyInstance` variable is not initialized. Calling `FreeAndNil(MyInstance)` will try to call destructor of `MyInstance`, which will most likely crash with _Access Violation (Segmentation Fault)_. In effect, one exception causes another exception, which will make the error report not useful: you will not see the message of the original exception.
+
+Sometimes it is justified to fix the above code by first initializing all local variables to `nil` (on which calling `FreeAndNil` is safe, and will not do anything). This makes sense if you free a *lot* of class instances. So the two code examples below work equally well:
+
+[source,pascal]
+----
+procedure MyProcedure;
+var
+  MyInstance1: TMyClass1;
+  MyInstance2: TMyClass2;
+  MyInstance3: TMyClass3;
+begin
+  MyInstance1 := TMyClass1.Create;
+  try
+    MyInstance1.DoSomething;
+
+    MyInstance2 := TMyClass2.Create;
+    try
+      MyInstance2.DoSomethingElse;
+
+      MyInstance3 := TMyClass2.Create;
+      try
+        MyInstance3.DoYetAnotherThing;
+      finally
+        FreeAndNil(MyInstance3);
+      end;
+    finally
+      FreeAndNil(MyInstance2);
+    end;
+  finally
+    FreeAndNil(MyInstance1);
+  end;
+end;
+----
+
+It is probably more readable in the form below:
+
+[source,pascal]
+----
+procedure MyProcedure;
+var
+  MyInstance1: TMyClass1;
+  MyInstance2: TMyClass2;
+  MyInstance3: TMyClass3;
+begin
+  MyInstance1 := nil;
+  MyInstance2 := nil;
+  MyInstance3 := nil;
+  try
+    MyInstance1 := TMyClass1.Create;
+    MyInstance1.DoSomething;
+
+    MyInstance2 := TMyClass2.Create;
+    MyInstance2.DoSomethingElse;
+
+    MyInstance3 := TMyClass2.Create;
+    MyInstance3.DoYetAnotherThing;
+  finally
+    FreeAndNil(MyInstance3);
+    FreeAndNil(MyInstance2);
+    FreeAndNil(MyInstance1);
+  end;
+end;
+----
+
+Note: you could also make a valid argument that it could be split into 3 separate procedures, one calling each other, in this simple case.
+
+### How the exceptions are displayed by various libraries
+
+- In case of Lazarus LCL, the exceptions raised during events (various callbacks assigned to `OnXxx` properties of LCL components) will be captured and will result in a nice dialog message, that allows the user to continue and stop the application. This means that your own exceptions do not "get out" from `Application.ProcessMessages`, so they do not automatically break the application. You can configure what happens using `TApplicationProperties.OnException`.
+
+- Similarly in case of _Castle Game Engine_ with `CastleWindow`: the exception is internally captured and results in nice error message. So exceptions do not "get out" from `Application.ProcessMessages`. Again, you can configure what happens using `Application.OnException`.
+
+- Some other GUI libraries may do a similar thing to above.
+
+- In case of other applications, you can configure how the exception is displayed by assigning a global callback to `OnHaltProgram`.
 
 ## Run-time library
 
