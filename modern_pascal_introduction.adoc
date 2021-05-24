@@ -1223,7 +1223,7 @@ type
 function ReadParameter: String;
 begin
   Result := Readln;
-  if Pos(' ', Result) <> '' then
+  if Pos(' ', Result) <> 0 then
     raise EInvalidParameter.Create('Invalid parameter, space is not allowed');
 end;
 ----
@@ -1240,7 +1240,7 @@ type
 function ReadParameter: String;
 begin
   Result := Readln;
-  if Pos(' ', Result) <> '' then
+  if Pos(' ', Result) <> 0 then
     raise EInvalidParameter.CreateFmt('Invalid parameter %s, space is not allowed', [Result]);
 end;
 ----
@@ -1289,17 +1289,13 @@ try
 ...
 except
   on E: EInvalidParameter do
-    Writeln('EInvalidParameter exception occurred with message: ' + E.Message)
-  else
+    Writeln('EInvalidParameter exception occurred with message: ' + E.Message);
   on E: ESomeOtherException do
-    Writeln('ESomeOtherException exception occurred with message: ' + E.Message)
-  else
-    Writeln('Unexpected exception occurred');
-// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING BELOW ABOUT "CAPTURING ALL EXCEPTIONS"
+    Writeln('ESomeOtherException exception occurred with message: ' + E.Message);
 end;
 ----
 
-You can also react to any exception raised:
+You can also react to any exception raised, if you don't use any `on` expression:
 
 [source,pascal]
 ----
@@ -1308,12 +1304,13 @@ try
 except
   Writeln('Warning: Some exception occurred');
 end;
-// WARNING: DO NOT v THIS EXAMPLE WITHOUT READING A WARNING BELOW ABOUT "CAPTURING ALL EXCEPTIONS"
+// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING BELOW
+// ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
-_Usually you should only catch exceptions of the specific class, that are appropriate in your case (you know what to do in case of this particular problem). Be careful with catching exceptions of a general type (like catching any `Exception` or any `TObject`), as you may easily catch too much, and later cause troubles when debugging other problems._ As in all programming languages with exceptions, the good rule to follow is to _never capture an exception that you do not know how to handle_. In particular, do not capture an exception just as a simple workaround of the problem, without investigating first _why_ the exception occurs. Is it a problem in user input (then you can report it)? Or is it a bug in your code logic (then you should fix the code, to avoid the exception)? And confirm that "catching" the exception at given place results in a correct code in all scenarios.
+In general _you should only catch exceptions of a specific class, that signal a particular problem that you know what to do with_. Be careful with catching exceptions of a general type (like catching any `Exception` or any `TObject`), as you may easily catch too much, and later cause troubles when debugging other problems. As in all programming languages with exceptions, the good rule to follow is to _never capture an exception that you do not know how to handle_. In particular, do not capture an exception just as a simple workaround of the problem, without investigating first _why_ the exception occurs. Is it a problem in user input (then you can report it)? Or is it a bug in your code logic (then you should fix the code, to avoid the exception)?
 
-Another way to capture all exception is to use:
+Another way to capture all exceptions is to use:
 
 [source,pascal]
 ----
@@ -1323,7 +1320,8 @@ except
   on E: TObject do
     Writeln('Warning: Some exception occurred');
 end;
-// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE ABOUT "CAPTURING ALL EXCEPTIONS"
+// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE
+// ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
 Although usually it is enough to capture `Exception`:
@@ -1336,7 +1334,8 @@ except
   on E: Exception do
     Writeln('Warning: Some exception occurred: ' + E.ClassName + ', message: ' + E.Message);
 end;
-// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE ABOUT "CAPTURING ALL EXCEPTIONS"
+// WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE
+// ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
 You can "re-raise" the exception in the `except ... end` block, if you decide so. You can just do `raise E` if the exception instance is `E`, you can also just use parameter-less `raise`. For example:
@@ -1349,7 +1348,7 @@ except
   on E: EInvalidSoundFile do
   begin
     if E.InvalidUrl = 'http://example.com/blablah.wav' then
-      Writeln('Warning: loading http://example.com/blablah.wav failed, this is a known problem that we can ignore now')
+      Writeln('Warning: loading http://example.com/blablah.wav failed, ignore it')
     else
       raise;
   end;
@@ -1358,9 +1357,9 @@ end;
 
 Note that, although the exception is an instance of an object, you should never manually free it after raising. The compiler will generate proper code that makes sure to free the exception object once it's handled.
 
-### Finally (doing things regardless if exception occurred)
+### Finally (doing things regardless if an exception occurred)
 
-Often you use `try .. finally .. end` construction to free an instance of object, regardless if an exception occurred during some operation on this object. The way to write it looks like this:
+Often you use `try .. finally .. end` construction to free an instance of some object, regardless if an exception occurred when using this object. The way to write it looks like this:
 
 [source,pascal]
 ----
@@ -1378,9 +1377,9 @@ begin
 end;
 ----
 
-This works reliably always, and does not cause memory leaks, even if `MyInstance.DoSomething` or `MyInstance.DoSomethingElse` raises an exception.
+This works reliably always, and does not cause memory leaks, even if `MyInstance.DoSomething` or `MyInstance.DoSomethingElse` raise an exception.
 
-Note that this takes into account that local variables, like `MyInstance` above, have undefined values (may contain random "memory garbage") before the first assignment. That is, writing something like this would not be valid:
+Note that this takes into account that local variables, like `MyInstance` above, have undefined values (may contain random "memory garbage") before the first assignment. That is, writing something like this would _not_ be valid:
 
 [source,pascal]
 ----
@@ -1390,8 +1389,8 @@ var
   MyInstance: TMyClass;
 begin
   try
-    MyInstance := TMyClass.Create;
     CallSomeOtherProcedure;
+    MyInstance := TMyClass.Create;
     MyInstance.DoSomething;
     MyInstance.DoSomethingElse;
   finally
@@ -1400,7 +1399,7 @@ begin
 end;
 ----
 
-The above example is not valid: if an exception occurs within `TMyClass.Create` (a constructor may also raise an exception), or within the `CallSomeOtherProcedure`, then the `MyInstance` variable is not initialized. Calling `FreeAndNil(MyInstance)` will try to call destructor of `MyInstance`, which will most likely crash with _Access Violation (Segmentation Fault)_. In effect, one exception causes another exception, which will make the error report not useful: you will not see the message of the original exception.
+The above example is not valid: if an exception occurs within `TMyClass.Create` (a constructor may also raise an exception), or within the `CallSomeOtherProcedure`, then the `MyInstance` variable is not initialized. Calling `FreeAndNil(MyInstance)` will try to call destructor of `MyInstance`, which will most likely crash with _Access Violation (Segmentation Fault)_. In effect, one exception causes another exception, which will make the error report not very useful: you will not see the message of the original exception.
 
 Sometimes it is justified to fix the above code by first initializing all local variables to `nil` (on which calling `FreeAndNil` is safe, and will not do anything). This makes sense if you free a *lot* of class instances. So the two code examples below work equally well:
 
@@ -1465,7 +1464,7 @@ begin
 end;
 ----
 
-Note: you could also make a valid argument that it could be split into 3 separate procedures, one calling each other, in this simple case.
+Note: you could also make a valid argument that above example could be split into 3 separate procedures, one calling each other, in this simple case.
 
 ### How the exceptions are displayed by various libraries
 
