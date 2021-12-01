@@ -1816,7 +1816,7 @@ include::code-samples_russian/interface_casting.lpr[]
 Copyright Michalis Kamburelis.
 
 Исходные файлы этого документа в формате AsciiDoc можно скачать по адресу: https://github.com/michaliskambi/modern-pascal-introduction.
-Автор будет рад любым пожеланиям, исправлениям, расширениям материала, доработкам и pull request-ам :). С автором можно связаться через профиль GitHub либо по e-mail: michalis.kambi@gmail.com. Домашняя страничка автора: https://michalis.ii.uni.wroc.pl/~michalis/.
+Автор будет рад любым пожеланиям, исправлениям, расширениям материала, доработкам и pull request-ам :). С автором можно связаться через профиль GitHub либо по e-mail: michalis@castle-engine.io. Домашняя страничка автора: https://michalis.xyz/.
 
 Этот документ можно свободно распространять и изменять согласно лицензи идентичной лицензии Wikipedia, см. https://en.wikipedia.org/wiki/Wikipedia:Copyrights:
 
