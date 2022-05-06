@@ -1588,13 +1588,21 @@ The _generic containers_ give you a lot of helpful methods to add, remove, itera
 
 There are three libraries providing generics containers in FPC now:
 
+* `Generics.Collections` unit and friends (since FPC >= 3.2.0)
 * `FGL` unit
-* `Generics.Collections` unit and friends
 * `GVector` unit and friends (together in `fcl-stl`)
 
-We advise using the `FGL` unit (if you need to work with the stable FPC 3.0.x or even older FPC 2.6.x), or the `Generics.Collections` unit (only available since FPC 3.1.1, but on the other hand compatible with Delphi). They both offer lists and dictionaries with naming consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+We advise using the `Generics.Collections` unit. The generic containers it implements are
 
-*In the Castle Game Engine*: We include a local copy of `Generics.Collections` even for FPC 3.0.x. We use the `Generics.Collections` throughout the engine, and advise you to use `Generics.Collections` too!
+- packed with useful features,
+
+- very efficient (in particular important for accessing dictionaries by keys),
+
+- compatible between FPC and Delphi,
+
+- the naming is consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+
+*In the Castle Game Engine*: We use the `Generics.Collections` intensively throughout the engine, and advise you to use `Generics.Collections` in your applications too!
 
 Most important classes from the `Generics.Collections` unit are:
 
@@ -1639,7 +1647,7 @@ An example code using the `TObjectDictionary` is below. Compile this example wit
 include::code-samples/generics_object_dictionary.lpr[]
 ----
 
-If you prefer using the `FGL` unit instead of `Generics.Collections`, here is a short overview of the most important classes from the `FGL` unit:
+If you prefer using the `FGL` unit instead of `Generics.Collections`, the most important classes from the `FGL` unit are:
 
 TFPGList:: A generic list of types.
 TFPGObjectList:: A generic list of object instances. It can "own" children.
@@ -1705,7 +1713,7 @@ Your class descends from some class that has already overridden the `Assign` met
 
   In this case, your class should _always_ use the `inherited` keyword (to call the ancestor `Assign`). In general, calling `inherited` in overridden methods is _usually_ a good idea.
 
-To understand the need when to call (or not to call) `inherited` from the `Assign` implementation, and how it relates to the `AssignTo` method, it's best to look at the `TPersistent.Assign` and `TPersistent.AssignTo` implementations:
+To understand the reason behind the above rule (when you should call, and when you should _not_ call `inherited` from the `Assign` implementation), and how it relates to the `AssignTo` method, let's look at the `TPersistent.Assign` and `TPersistent.AssignTo` implementations:
 
 [source,pascal]
 ----
@@ -1723,7 +1731,7 @@ begin
 end;
 ----
 
-NOTE: This is not the *exact* implementation of `TPersistent`, I simplified it to hide the boring details about how the exception message is build.
+NOTE: This is not the *exact* implementation of `TPersistent`. I copied the FPC standard library code, but then I simplified it to hide unimportant details about the exception message.
 //The exact source code, in the FPC standard library, can be found in the `rtl/objpas/classes/persist.inc` source file. Its behavior is 100% compatible with the Delphi standard library, as far as I know.
 
 The conclusions you can get from the above are:
