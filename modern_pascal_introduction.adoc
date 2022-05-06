@@ -1179,6 +1179,61 @@ begin
 end;
 ----
 
+### Free notification observer (Castle Game Engine)
+
+*In Castle Game Engine* we encourage to use `TFreeNotificationObserver` from `CastleClassUtils` unit instead of directly calling `FreeNotification`, `RemoveFreeNotification` and overriding `Notification`.
+
+In general using `TFreeNotificationObserver` looks a bit simpler than using `FreeNotification` mechanism directly (though I admit it is a matter of taste). But in particular when _the same class instance must be observed because of multiple reasons_ then `TFreeNotificationObserver` is much simpler to use (directly using `FreeNotification` in this case can get complicated, as you have to watch to not unregister the notification too soon).
+
+This is the example code using `TFreeNotificationObserver`, to achieve the same effect as example in the previous section:
+
+[source,pascal]
+----
+type
+  TControl = class(TComponent)
+  end;
+
+  TContainer = class(TComponent)
+  private
+    FSomeSpecialControlObserver: TFreeNotificationObserver;
+    FSomeSpecialControl: TControl;
+    procedure SetSomeSpecialControl(const Value: TControl);
+    procedure SomeSpecialControlFreeNotification(const Sender: TFreeNotificationObserver);
+  public
+    constructor Create(AOwner: TComponent); override;
+    property SomeSpecialControl: TControl
+      read FSomeSpecialControl write FSomeSpecialControl;
+  end;
+
+implementation
+
+uses CastleComponentSerialize;
+
+constructor TContainer.Create(AOwner: TComponent);
+begin
+  inherited;
+  FSomeSpecialControlObserver := TFreeNotificationObserver.Create(Self);
+  FSomeSpecialControlObserver.OnFreeNotification := {$ifdef FPC}@{$endif} SomeSpecialControlFreeNotification;
+end;
+
+procedure TContainer.SetSomeSpecialControl(const Value: TControl);
+begin
+  if FSomeSpecialControl <> Value then
+  begin
+    FSomeSpecialControl := Value;
+    FSomeSpecialControlObserver.Observed := Value;
+  end;
+end;
+
+procedure TContainer.SomeSpecialControlFreeNotification(const Sender: TFreeNotificationObserver);
+begin
+  // set property to nil when the referenced component is freed
+  SomeSpecialControl := nil;
+end;
+----
+
+See https://castle-engine.io/custom_components .
+
 ## Exceptions
 
 ### Overview
