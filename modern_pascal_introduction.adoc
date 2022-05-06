@@ -1254,9 +1254,9 @@ Note: If an exception is raised but never caught, it will cause the entire appli
 +
 The `try ... finally ... end` construction also works when code is interrupted by `Break` or `Continue` or `Exit` keywords. The point is to always execute code in the `finally` section.
 
-An "exception" must a class instance.
+An "exception" is, in general, any class instance.
 
-- The compiler does not enforce much. You just must call `raise XXX` where `XXX` is an instance of any class. Any class (so, anything descending from `TObject`) is fine.
+- The compiler does not enforce any particular class. You just must call `raise XXX` where `XXX` is an instance of any class. Any class (so, anything descending from `TObject`) is fine.
 
 - It is a standard convention for exception classes to descend from a special `Exception` class. The `Exception` class extends `TObject`, adding a string `Message` property and a constructor to easily set this property. All exceptions raised by the standard library descend from `Exception`. We advise to follow this convention.
 
@@ -1363,7 +1363,11 @@ end;
 // ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
-In general _you should only catch exceptions of a specific class, that signal a particular problem that you know what to do with_. Be careful with catching exceptions of a general type (like catching any `Exception` or any `TObject`), as you may easily catch too much, and later cause troubles when debugging other problems. As in all programming languages with exceptions, the good rule to follow is to _never capture an exception that you do not know how to handle_. In particular, do not capture an exception just as a simple workaround of the problem, without investigating first _why_ the exception occurs. Is it a problem in user input (then you can report it)? Or is it a bug in your code logic (then you should fix the code, to avoid the exception)?
+In general _you should only catch exceptions of a specific class, that signal a particular problem that you know what to do with_. Be careful with catching exceptions of a general type (like catching any `Exception` or any `TObject`), as you may easily catch too much, and later cause troubles when debugging other problems. As in all programming languages with exceptions, the good rule to follow is to _never capture an exception that you do not know how to handle_. In particular, do not capture an exception just as a simple workaround of the problem, without investigating first _why_ the exception occurs.
+
+- Does the exception indicate a problem in user input? Then you should report it to user.
+
+- Does the exception indicate a bug in your code? Then you should fix the code, to avoid the exception from happening at all.
 
 Another way to capture all exceptions is to use:
 
@@ -1474,7 +1478,7 @@ begin
     try
       MyInstance2.DoSomethingElse;
 
-      MyInstance3 := TMyClass2.Create;
+      MyInstance3 := TMyClass3.Create;
       try
         MyInstance3.DoYetAnotherThing;
       finally
@@ -1509,7 +1513,7 @@ begin
     MyInstance2 := TMyClass2.Create;
     MyInstance2.DoSomethingElse;
 
-    MyInstance3 := TMyClass2.Create;
+    MyInstance3 := TMyClass3.Create;
     MyInstance3.DoYetAnotherThing;
   finally
     FreeAndNil(MyInstance3);
@@ -1519,7 +1523,7 @@ begin
 end;
 ----
 
-Note: you could also make a valid argument that above example could be split into 3 separate procedures, one calling each other, in this simple case.
+NOTE: In this simple example, you could also make a valid argument that the code should be split into 3 separate procedures, one calling each other.
 
 ### How the exceptions are displayed by various libraries
 
