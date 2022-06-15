@@ -1,18 +1,17 @@
 {$mode objfpc}{$H+}{$J-}
 program showcolor;
 
-// и Graphics и GoogleMapsEngine определяют тип TColor.
+// І Graphics і GoogleMapsEngine визначають тип TColor.
 uses
   Graphics, GoogleMapsEngine;
 
 var
-  { Это не сработает, как мы ожидаем, поскольку TColor последний раз
-    был объявлен в unit-е GoogleMapsEngine. }
+  { Це не спрацює, як ми очікуємо, оскільки TColor останній раз
+    було об'явлено в unit-і GoogleMapsEngine. }
   // Color: TColor;
-  { This works Ok. }
+  { Це працює правильно. }
   Color: Graphics.TColor;
 begin
   Color := clYellow;
   WriteLn(Red(Color), ' ', Green(Color), ' ', Blue(Color));
 end.
-
