@@ -1,6 +1,6 @@
-{$mode objfpc}{$H+}{$J-} // Эту строку необходимо использовать во всех современных программах
+{$mode objfpc}{$H+}{$J-} // цей рядок потрібно використовувати у всіх програмах
 
-program MyProgram; // Сохраните этот файл под названием myprogram.lpr
+program MyProgram; // Збережіть цей файл під назвою myprogram.lpr
 begin
-  WriteLn('Hello world!');
+  WriteLn('Привіт, світ!');
 end.
