@@ -1,24 +1,23 @@
-﻿{$mode objfpc}{$H+}{$J-}
+{$mode objfpc}{$H+}{$J-}
 unit AnotherUnit;
 interface
 
 uses
   Classes;
 
-{ Тип класса "TComponent" определён в unit-е Classes.
-  По этому необходимо использовать uses Classes, как видно выше. }
+{ Тип (клас) "TComponent" визначається в модулі Classes.
+   Ось чому нам довелося використати модуль Classes вище. }
 procedure DoSomethingWithComponent(var C: TComponent);
 
 implementation
 
-uses
-  SysUtils;
+uses SysUtils;
 
 procedure DoSomethingWithComponent(var C: TComponent);
 begin
-  { Процедура FreeAndNil определена в unit-е SysUtils.
-    Поскольку мы лишь ссылаемся на её имя в разделе implementation,
-    вполне допустимо использовать SysUtils в секции "implementation". }
+  { Процедура FreeAndNil визначена в модулі SysUtils.
+     Оскільки ми посилаємося лише на його назву в реалізації,
+     модуль SysUtils можна використовувати у розділі «implementation». }
   FreeAndNil(C);
 end;
 

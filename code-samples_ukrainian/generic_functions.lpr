@@ -1,13 +1,13 @@
 {$mode objfpc}{$H+}{$J-}
-uses SysUtils;
+uses
+  SysUtils;
 
-{ Примечание: этот пример требует FPC 3.1.1 и не скомпилируется в FPC 3.0.0 или более ранних версиях. }
+{ Примітка: для цього прикладу потрібен FPC 3.1.1 (не компілюється з FPC 3.0.0 або старішим). }
 
 generic function Min<T>(const A, B: T): T;
 begin
   if A < B then
-    Result := A
-  else
+    Result := A else
     Result := B;
 end;
 

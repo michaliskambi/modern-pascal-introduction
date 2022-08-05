@@ -1,4 +1,4 @@
-﻿{$mode objfpc}{$H+}{$J-}
+{$mode objfpc}{$H+}{$J-}
 
 program MyProgram;
 
@@ -13,7 +13,7 @@ type
 procedure TMyClass.MyMethod;
 begin
   if Random > 0.5 then
-    raise Exception.Create('Вызываем exception!');
+    raise Exception.Create('Підняття винятку!');
 end;
 
 var
@@ -24,6 +24,6 @@ begin
   try
     C.MyMethod;
   finally
-    FreeAndNil(C)
+    FreeAndNil(C);
   end;
 end.

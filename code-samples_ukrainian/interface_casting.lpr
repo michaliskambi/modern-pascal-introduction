@@ -1,6 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
 
-// {$interfaces corba} // обратите внимание, что приведение типа с помощью "as" для интерфейсов типа CORBA не скомпилируется
+// {$interfaces corba} // зауважте, що приведення типу "as" для CORBA не компілюється
 
 uses Classes;
 
@@ -64,29 +64,29 @@ begin
   My := TMyClass2.Create(nil);
   MyClass := TMyClass2.Create(nil);
 
-  // Следующий код не скомпилируется, так как в момент компиляции неизвестно является ли My интерфейсом IMyInterface2.
+  // Це не компілюється, оскільки під час компіляції невідомо, чи My є IMyInterface2.
   // UseInterface2(My);
   // UseInterface2(MyClass);
 
-  // Это скомпилируется и работает правильно.
+  // Це компілюється та працює нормально.
   UseInterface2(IMyInterface2(My));
-  // А это не скомпилируется. Приведение типа InterfaceType(ClassType) проверяется в момент компиляции.
+  // Це не компілюється. Приведення InterfaceType(ClassType) перевіряється під час компіляції.
   // UseInterface2(IMyInterface2(MyClass));
 
-  // Это скомпилируется и работает правильно.
+  // Це компілюється та працює нормально.
   UseInterface2(My as IMyInterface2);
-  // Это скомпилируется и работает правильно.
+  // Це компілюється та працює нормально.
   UseInterface2(MyClass as IMyInterface2);
 
-  // Это скомпилируется, но приведёт к непонятной ошибке "Access violation" при выполнении программы.
+  // Це компілюється, але зазнає збою під час виконання, з потворним «Access Violation».
   // UseInterface3(IMyInterface3(My));
-  // Это не скомпилируется. Приведение типа InterfaceType(ClassType) проверяется в момент компиляции.
+  // Це не компілюється. Приведення InterfaceType(ClassType) перевіряється під час компіляції.
   // UseInterface3(IMyInterface3(MyClass));
 
-  // Это скомпилируется, но приведёт к понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
+  // Це компілюється, але зазнає збою під час виконання, з гарним «EInvalidCast: неправильне приведення типу».
   // UseInterface3(My as IMyInterface3);
-  // Это скомпилируется, но приведёт к понятному сообщению об ошибке "EInvalidCast: Invalid type cast" и укажет на проблему.
+  // Це компілюється, але зазнає збою під час виконання, з гарним «EInvalidCast: неправильне приведення типу».
   // UseInterface3(MyClass as IMyInterface3);
 
-  Writeln('Готово');
+  Writeln('Завершено');
 end.

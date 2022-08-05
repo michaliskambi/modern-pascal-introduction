@@ -39,7 +39,7 @@ end;
 
 procedure UseThroughInterface(I: IMyInterface);
 begin
-  Write('Стреляем... ');
+  Write('Shooting... ');
   I.Shoot;
 end;
 
@@ -51,7 +51,7 @@ var
 procedure UseInterfaces;
 begin
   if C1 is IMyInterface then
-  //if Supports(C1, IMyInterface) then // эта строчка идентична проверке "is" выше
+  //if Supports(C1, IMyInterface) then // equivalent to "is" check above
     UseThroughInterface(C1 as IMyInterface);
   if C2 is IMyInterface then
     UseThroughInterface(C2 as IMyInterface);

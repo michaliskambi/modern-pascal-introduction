@@ -16,12 +16,12 @@ type
 
 procedure TMyClass.MyVirtualMethod;
 begin
-  WriteLn('TMyClass отображает MyInt + 10: ', MyInt + 10);
+  WriteLn('TMyClass покаже MyInt + 10: ', MyInt + 10);
 end;
 
 procedure TMyClassDescendant.MyVirtualMethod;
 begin
-  WriteLn('TMyClassDescendant отображает MyInt + 20: ', MyInt + 20);
+  WriteLn('TMyClassDescendant покаже MyInt + 20: ', MyInt + 20);
 end;
 
 var

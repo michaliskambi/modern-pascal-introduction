@@ -2,9 +2,10 @@
 
 program MyProgram;
 
-uses MyUnit;
+uses
+  MyUnit;
 
 begin
-  WriteLn(MyFunction('Примечание: '));
+  WriteLn(MyFunction('Note: '));
   MyProcedure(5);
 end.

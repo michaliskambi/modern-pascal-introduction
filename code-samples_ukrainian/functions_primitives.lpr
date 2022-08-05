@@ -4,23 +4,22 @@ program MyProgram;
 
 procedure MyProcedure(const A: Integer);
 begin
-  WriteLn('A + 10 составляет: ', A + 10);
+  WriteLn('A + 10 is: ', A + 10);
 end;
 
 function MyFunction(const S: string): string;
 begin
-  Result := S + 'строки управляются автоматически';
+  Result := S + 'рядки керуються автоматично';
 end;
 
 var
   X: Single;
 begin
-  WriteLn(MyFunction('примечание: '));
+  WriteLn(MyFunction('Примітка: '));
   MyProcedure(5);
 
-  // деление с помощью оператора "/" всегда даёт результат с плавающей запятой
-  // для целочисленного деления необходимо использовать "div"
+  // Ділення за допомогою "/" завжди дає результат з плаваючою точкою, використовуйте "div" для цілочисельного ділення
   X := 15 / 5;
-  WriteLn('X составляет: ', X); // отобразить в научном формате вида 3.0000000E+000
-  WriteLn('X составляет: ', X:1:2); // отобразить 2 знака после запятой
+  WriteLn('X is now: ', X); // науковий запис
+  WriteLn('X is now: ', X:1:2); // 2 десяткові позиції
 end.

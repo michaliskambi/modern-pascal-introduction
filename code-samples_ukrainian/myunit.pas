@@ -9,12 +9,12 @@ implementation
 
 procedure MyProcedure(const A: Integer);
 begin
-  WriteLn('A + 10 составляет: ', A + 10);
+  WriteLn('A + 10 is: ', A + 10);
 end;
 
 function MyFunction(const S: string): string;
 begin
-  Result := S + 'строки управляются автоматически';
+  Result := S + 'strings are automatically managed';
 end;
 
 end.

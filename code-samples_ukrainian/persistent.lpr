@@ -23,9 +23,11 @@ begin
   begin
     SourceMyClass := TMyClass(Source);
     MyInt := SourceMyClass.MyInt;
-    // Xxx := SourceMyClass.Xxx; // добавить необходимые поля здесь
+    // Xxx := SourceMyClass.Xxx; // add new fields here
   end else
-    { Вызываем inherited ТОЛЬКО если не получается вручную обработать Source }
+    { Since TMyClass is a direct TPersistent descendant,
+      it calls inherited ONLY when it cannot handle Source class.
+      See comments below. }
     inherited Assign(Source);
 end;
 
@@ -37,11 +39,13 @@ begin
   begin
     SourceMyClassDescendant := TMyClassDescendant(Source);
     MyString := SourceMyClassDescendant.MyString;
-    // Xxx := SourceMyClassDescendant.Xxx; // добавить необходимые поля здесь
+    // Xxx := SourceMyClassDescendant.Xxx; // add new fields here
   end;
 
-  { ВСЕГДА вызываем inherited, чтобы TMyClass.Assign сама обработала
-    все остающиеся поля. }
+  { Since TMyClassDescendant has an ancestor that already overrides
+    Assign (in TMyClass.Assign), it calls inherited ALWAYS,
+    to allow TMyClass.Assign to handle remaining fields.
+    See comments below for a detailed reasoning. }
   inherited Assign(Source);
 end;
 
@@ -49,26 +53,26 @@ var
   C1, C2: TMyClass;
   CD1, CD2: TMyClassDescendant;
 begin
-  // тестируем TMyClass.Assign
+  // test TMyClass.Assign
   C1 := TMyClass.Create;
   C2 := TMyClass.Create;
   try
     C1.MyInt := 666;
     C2.Assign(C1);
-    WriteLn('C2 состояние: ', C2.MyInt);
+    WriteLn('C2 state: ', C2.MyInt);
   finally
     FreeAndNil(C1);
     FreeAndNil(C2);
   end;
 
-  // тестируем TMyClassDescendant.Assign
+  // test TMyClassDescendant.Assign
   CD1 := TMyClassDescendant.Create;
   CD2 := TMyClassDescendant.Create;
   try
     CD1.MyInt := 44;
-    CD1.MyString := 'что-нибудь';
+    CD1.MyString := 'blah';
     CD2.Assign(CD1);
-    WriteLn('CD2 состояние: ', CD2.MyInt, ' ', CD2.MyString);
+    WriteLn('CD2 state: ', CD2.MyInt, ' ', CD2.MyString);
   finally
     FreeAndNil(CD1);
     FreeAndNil(CD2);

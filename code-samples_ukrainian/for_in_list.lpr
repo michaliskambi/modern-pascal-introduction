@@ -13,7 +13,7 @@ var
   C: TMyClass;
   I: Integer;
 begin
-  List := TMyClassList.Create(true); // значение true означает, что List владеет всеми дочерними объектами
+  List := TMyClassList.Create(true); // true = володіє дітьми
   try
     for I := 0 to 9 do
     begin
@@ -24,7 +24,7 @@ begin
     end;
 
     for C in List do
-      WriteLn('Квадрат ', C.I, ' составляет ', C.Square);
+      WriteLn('Квадрат ', C.I, ' є ', C.Square);
   finally
     FreeAndNil(List);
   end;

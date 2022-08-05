@@ -1,38 +1,38 @@
 {$mode objfpc}{$H+}{$J-}
-{$R+} // включаем проверку на диапазон величин, очень полезно для отладки
+{$R+} // range checking on - nice for debugging
 var
   MyArray: array [0..9] of Integer;
   I: Integer;
 begin
-  // инициализация
+  // initialize
   for I := 0 to 9 do
     MyArray[I] := I * I;
 
-  // отображение
+  // show
   for I := 0 to 9 do
-    WriteLn('Квадрат составляет ', MyArray[I]);
+    WriteLn('Square is ', MyArray[I]);
 
-  // делает то же самое, что и предыдущий вариант
+  // does the same as above
   for I := Low(MyArray) to High(MyArray) do
-    WriteLn('Квадрат составляет ', MyArray[I]);
+    WriteLn('Square is ', MyArray[I]);
 
-  // делает то же самое
+  // does the same as above
   I := 0;
   while I < 10 do
   begin
-    WriteLn('Квадрат составляет ', MyArray[I]);
-    I := I + 1; // это идентично "I += 1" или "Inc(I)"
+    WriteLn('Square is ', MyArray[I]);
+    I := I + 1; // or "I += 1", or "Inc(I)"
   end;
 
-  // делает то же самое
+  // does the same as above
   I := 0;
   repeat
-    WriteLn('Квадрат составляет ', MyArray[I]);
+    WriteLn('Square is ', MyArray[I]);
     Inc(I);
   until I = 10;
 
-  // делает то же самое
-  // обратите внимание, тут переменная I перечисляет значения элементов массива, а не его индексы
+  // does the same as above
+  // note: here I enumerates MyArray values, not indexes
   for I in MyArray do
-    WriteLn('Квадрат составляет ', I);
+    WriteLn('Square is ', I);
 end.

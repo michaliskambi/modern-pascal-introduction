@@ -22,5 +22,5 @@ begin
     FreeAndNil(S);
   end;
 
-  WriteLn('Из файла прочитано целое число: ', OutputInt);
+  WriteLn('Прочитано з файлу отримано ціле число: ', OutputInt);
 end.

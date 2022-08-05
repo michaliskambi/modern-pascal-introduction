@@ -1,6 +1,6 @@
-{$mode objfpc}{$H+}{$J-} // цей рядок потрібно використовувати у всіх програмах
+{$mode objfpc}{$H+}{$J-} // Просто використовуйте цей рядок у всіх сучасних сирцях
 
-program MyProgram; // Збережіть цей файл під назвою myprogram.lpr
+program MyProgram; // Збережіть цей файл як myprogram.lpr
 begin
   WriteLn('Привіт, світ!');
 end.
