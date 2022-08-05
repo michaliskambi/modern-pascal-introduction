@@ -6,12 +6,13 @@
 
 Насолоджуйтесь, діліться й вільно розповсюджуйте!
 
-Вихідний код цієї книги виконано в синтаксисі AsciiDoctor, який можна порацювати з допомогою одноіменної програми http://asciidoctor.org/ .
+Вихідний код цієї книги виконано в синтаксисі AsciiDoctor, який можна порацювати з допомогою одноіменної програми <http://asciidoctor.org/> .
 
 Оригінальний текст книги на английскій мові:
-* https://castle-engine.io/modern_pascal_introduction.html
-* PDF: https://castle-engine.io/modern_pascal_introduction.pdf
 
-Michalis Kamburelis (творець Castle Game Engine https://castle-engine.io/ ).
+* <https://castle-engine.io/modern_pascal_introduction.html>
+* PDF: <https://castle-engine.io/modern_pascal_introduction.pdf>
 
-Переклад на українську мову: Вадим Вітомський (https://github.com/iso4free)
+Michalis Kamburelis (творець Castle Game Engine <https://castle-engine.io/> ).
+
+Переклад на українську мову: Вадим Вітомський (<https://github.com/iso4free>)
