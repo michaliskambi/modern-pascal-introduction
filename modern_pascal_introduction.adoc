@@ -1202,7 +1202,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property SomeSpecialControl: TControl
-      read FSomeSpecialControl write FSomeSpecialControl;
+      read FSomeSpecialControl write SetSomeSpecialControl;
   end;
 
 implementation
