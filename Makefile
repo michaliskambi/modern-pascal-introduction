@@ -43,7 +43,7 @@ HTML_BASE:=https://castle-engine.io/
 
 .PHONY: upload
 upload: test clean all
-	scp $(NAME).html $(NAME).pdf patreon-link.png $(SCP_TARGET)
+	scp $(NAME).html $(NAME).pdf patreon-wordmark.png $(SCP_TARGET)
 	$(TEST_BROWSER) $(HTML_BASE)$(NAME).html &
 	$(TEST_BROWSER) $(HTML_BASE)$(NAME).pdf &
 	ssh $(SSH_TARGET) www_permissions.sh
