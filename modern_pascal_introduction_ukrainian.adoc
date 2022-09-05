@@ -56,21 +56,21 @@ include::code-samples_ukrainian/hello_world.lpr[]
 include::code-samples_ukrainian/functions_primitives.lpr[]
 ----
 
-To return a value from a function, assign something to the magic `Result` variable. You can read and set the `Result` freely, just like a local variable.
+Щоб повернути значення з функції, присвойте щось магічній змінні `Result`. Можна вільно читати і встановлювати `Result`, наче локальній змінні.
 
 [source,pascal]
 ----
 function MyFunction(const S: string): string;
 begin
-  Result := S + 'something';
-  Result := Result + ' something more!';
-  Result := Result + ' and more!';
+  Result := S + 'щось';
+  Result := Result + ' щось більше!';
+  Result := Result + ' і більше!';
 end;
 ----
 
-You can also treat the function name (like `MyFunction` in example above) as the variable, to which you can assign. But I would discourage it in new code, as it looks "fishy" when used on the right side of the assignment expression. Just use `Result` always when you want to read or set the function result.
+Також можна розглядати ім'я функції (наприклад, `MyFunction` у прикладі вище) як змінну, якій можна присвоїти значення. Але я б не рекомендував це використовувати в новому коді, оскільки коли ім'я функції використовується в правій частині виразу присвоєння, це виглядає підозрілим.
 
-If you want to call the function itself recursively, you can of course do it. If you're calling a parameter-less function recursively, be sure to specify the parenthesis `()` (even though in Pascal you can usually omit the parentheses for a parameter-less function), this makes a recursive call to a parameter-less function different from accessing this function's current result. Like this:
+Якщо потрібно викликати саму функцію рекурсивно, Ви, звичайно, можете це зробити. Якщо Ви викликаєте функцію без параметрів рекурсивно, обов'язково вкажть дужки "()" після назви функці (хоча в Паскалі Ви зазвичай можете опускати дужки для функцій без параметрів), це робить рекурсивний виклик функції без параметрів, що відрізняється від доступу до поточного результату цієї функції. Ось так:
 
 [source,pascal]
 ----
