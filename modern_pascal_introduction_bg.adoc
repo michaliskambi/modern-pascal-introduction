@@ -457,15 +457,15 @@ include::code-samples/anotherunit.pas[]
 //, but also makes circular dependencies _between units interfaces_ impossible.
 //(That said, this constraint is not existing in some other languages. You can actually do parsing without "complete understanding" of your dependencies, just some stuff will have to be resolved later, e.g. at linking. You can also "repeat" the compilation until your knowledge is "settled". Anyway, you have to live with this constraint now, and enjoy fast compilation times.:)
 
-It is _OK to make a circular dependency between units when at least one "usage" is only in the implementation_. So it's OK for unit `A` to use unit `B` in the interface, and then unit `B` to use unit `A` in the implementation.
+Напълно е възможно кръговото използване на unit-и при условие, че _поне единият от тях се използва в секция implementation_. Така например unit `A` може да използва `B` в секцията си interface а от друга страна unit `B` може да използва  unit `A` в секцията си implementation.
 
-### Qualifying identifiers with unit name
+### Квалифициране на идентификаторите с името на unit-а
 
-Different units may define the same identifier. To keep the code simple to read and search, you should usually avoid it, but it's not always possible.
+Различни unit-и може да дефинират един и същи идентификатор. За да бъде кода прост за четене и търсене, това би трябвало да се избягва но не винаги е възможно.
 // in some situations (e.g. when you use a third-party library).
-In such cases, the last unit on the `uses` clause "wins", which means that the identifiers it introduces hide the same identifiers introduced by earlier units.
+В тези случаи обикновено "печели" последния включен unit в клаузата `uses`, което означава че неговите идентификатори скриват тези със същите имена от предишните unit-и.
 
-You can always explicitly define a unit of a given identifier, by using it like `MyUnit.MyIdentifier`. This is the usual solution when the identifier you want to use from `MyUnit` is hidden by another unit. Of course you can also rearrange the order of units on your uses clause, although this can affect other declarations than the one you're trying to fix.
+Винаги може да укажете изрично unit-а за даден идентификатор като използвате името на unit-а пред него разделено с точка `MyUnit.MyIdentifier`. Това е стандартното решение за ситуации, в които желания идентификатор от `MyUnit` е скрит от друг unit. Разбира се може също да промените реда на unit-ите в клаузата uses, но пък това ще засегне и всички други дефинирани идентификатори.
 
 [source,pascal]
 ----
@@ -487,7 +487,7 @@ begin
 end.
 ----
 
-In case of units, remember that they have two `uses` clauses: one in the interface, and another one in the implementation. The rule _later units hide the stuff from earlier units_ is applied here consistently, which means that _units used in the implementation section_ can hide identifiers from units _used in the interface section_. However, remember that when reading the `interface` section, only the units used in the interface matter. This may create a confusing situation, where two seemingly-equal declarations are considered different by the compiler:
+За unit-ите трябва да се запомни, че имат две `uses` клаузи: едната в част interface и другата в част implementation. Правилото _следващите unit-и скриват идентификаторите на предишните_ се прилага навсякъде, което означава и че _unit-ите използвани в част implementation_ могат да скрият идентификатори от unit-и _използвани в секция interface_. От друга страна, факта че за секция `interface` имат значение само unit-ите използвани в interface, може да доведе до объркващи ситуации, в които привидно еднакви декларации се приемат за различни от компилатора: 
 
 [source,pascal]
 ----
@@ -514,7 +514,7 @@ end;
 end.
 ----
 
-The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compiler will fail to compile the above unit, claiming that you don't implement a procedure `ShowColor` that matches the interface declaration. The problem is that unit `GoogleMapsEngine` also defines a `TColor` type. And it is used only in the `implementation` section, therefore it _shadows_ the `TColor` definition only in the implementation. The equivalent version of the above unit, where the error is obvious, looks like this:
+В unit `Graphics` (от Lazarus LCL) се дефинира тип `TColor`. Но компилатора няма да компилира горния unit, твърдейки че не сте написали тяло на процедурата `ShowColor`, която да отговаря на декларацията в interface. Проблемът е че unit `GoogleMapsEngine` също дефинира тип с името `TColor`. Понеже се използва само в секция `implementation`, тази дефиниция _засенчва_ дефиницията `TColor` само в implementation. Еквивалентната версия на горния unit, където грешката е очевидна, би изглеждала така:
 
 [source,pascal]
 ----
@@ -542,7 +542,7 @@ end;
 end.
 ----
 
-The solution is trivial in this case, just change the implementation to explicitly use `TColor` from `Graphics` unit. You could fix it also by moving the `GoogleMapsEngine` usage, to the interface section and earlier than `Graphics`, although this could result in other consequences in real-world cases, when `UnitUsingColors` would define more things.
+Решението на проблема в случая е просто -- укажете изрично в implementaton да се използва `TColor` от unit `Graphics`. Може и да го оправите като преместите `GoogleMapsEngine` в секция interface преди `Graphics`. Това обаче ще доведе до други последици в unit-а `UnitUsingColors` защото ще се отрази на всичките му дефиниции.
 
 [source,pascal]
 ----
@@ -567,13 +567,13 @@ end;
 end.
 ----
 
-### Exposing one unit identifiers from another
+### Представяне на идентификаторите от един unit чрез друг
 
-Sometimes you want to take an identifier from one unit, and _expose_ it in a new unit. The end result should be that using the new unit will make the identifier available in the namespace.
+Понякога искате да вземете идентификатор от един unit и да го _представите_ чрез друг. Крайният резултат трябва да бъде, че когато исползвате новия unit, стария идентификатор ще бъде достъпен в пространството на имената.
 
-Sometimes this is necessary to preserve backward compatibility with previous unit versions. Sometimes it's nice to "hide" an internal unit this way.
+Понякога това е необходимо за да се запази съвместимостта с по-стари версии на unit-а. А понякога е удобно да се "скрие" някой unit само за вътрешно ползване.
 
-This can be done by redefining the identifier in your new unit.
+Това може да се направи с повторна дефиниция на идентификатора в новия unit.
 
 [source,pascal]
 ----
@@ -603,11 +603,12 @@ implementation
 end.
 ----
 
-Note that this trick cannot be done as easily with global procedures, functions and variables. With procedures and functions, you could expose a constant pointer to a procedure in another unit (see <<Callbacks>>), but that looks quite dirty.
+Трябва да се отбележи, че този трик не може така лесно да се направи с глобалните процедури, функции и променливи. С процедурите и функциите можете да обявите константен указател към процедура в друг unit (виж <<Callbacks>>), но това изглежда доста "мръснишко".
+// AI: The meaning of that is not clear for me ... needs clarification... 
 
-The usual solution is then to create a trivial "wrapper" functions that underneath simply call the functions from the internal unit, passing the parameters and return values around.
+Обикновено решението се състои в създаване на "опаковъчни" функции, които просто извикват старите от вътрешния unit, като им подават параметрите и връщат резултата.
 
-To make this work with global variables, one can use global (unit-level) properties, see <<Properties>>.
+За да се направи нещо подобно с глобалните променливи, може да се използват глобални свойства (unit-level properties), виж <<Properties>>.
 
 ## Classes
 
