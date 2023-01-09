@@ -1,6 +1,6 @@
 # Модерен обектен Паскал - Въведение за програмисти
 Michalis Kamburelis
-include::locale/attributes.adoc[]
+include::locale/attributes-bg.adoc[]
 :toc: left
 :toclevels: 4
 :sectnums:
@@ -669,7 +669,7 @@ if A is TMyClass then
 
 Свойствата са много удобна _"синтактична захар"_ (б.пр. syntax sugar - особеност на синтаксиса, която не влияе на поведението на програмата, но прави използването на езика по-удобно) за:
 
-1. Нещо да изглегда като поле (да може да се чете и записва) но под него да има методи за четене (_getter_) и запис (_setter_). Често се използва за получаване на странични ефекти (напр. обновяване на екрана) всеки път когато стойността се промени;
+1. Нещо да изглежда като поле (да може да се чете и записва) но под него да има методи за четене (_getter_) и запис (_setter_). Често се използва за получаване на странични ефекти (напр. обновяване на екрана) всеки път когато стойността се промени;
 2. Нещо да изглежда като поле, но да е само за четене. В резултат на това полето е подобно на константа или функция без аргументи.
 
 [source,pascal]
@@ -724,120 +724,119 @@ end;
 . Дали може да се чете и как (с директен достъп до поле или с извикване на метод `getter`);
 . И съответно -- дали може да се записва и как (с директен достъп до поле или с използване на метод `setter`).
 
-The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
+Компилатора проверява дали типовете на указаните полета и методи съответстват на типа на свойството. Например, за да прочетете `Integer` свойство, трябва да укажете или поле от тип `Integer` или метод без параметри, който връща `Integer`.
 
-
-Technically, for the compiler, the "getter" and "setter" methods are just normal methods and they can do absolutely anything (including side-effects or randomization). But it's a good convention to design properties to behave more-or-less like fields:
+Технически, за компилатора методите "getter" и "setter" са просто нормални методи и могат да правят абсолютно всичко (включително странични ефекти или рандомизация). Но е добра практика свойствата да се проектират така, че да се държат повече или по-малко като полета:
 
 // There are some good conventions to follow when creating properties. These are only conventions, the compiler doesn't prevent you from making something weird using properties -- f. But the good
 // They should be somewhat predictable, like fields:
 
-* The _getter_ function should have no visible side-effects (e.g. it should not read some input from file / keyboard). It should be deterministic (no randomization, not even pseudo-randomization :). Reading a property many times should be valid, and return the same value, if nothing changed in-between.
+* Функцията _getter_ не би трябвало да има видими странични ефекти (напр. не трябва да чете от файл или от клавиатурата). Четенето трябва да е детерминистично (без рандомизация, дори псевдо-рандомизация :). Многократното четене на свойство трябва да връща една и съща стойност ако нищо не се е променило междувременно. 
 +
-Note that it's OK for _getter_ to have some _invisible_ side-effect, for example to cache a value of some calculation (known to produce the same results for given instance), to return it faster next time. This is in fact one of the cool possibilities of a "getter" function.
+Напълно в реда на нещата е _getter_ да има някакви _невидими_ странични ефекти, например да съхрани стойностите от някакво изчисление за да се ускори изпълнението при следващо извикване. Това е една от полезните функции на методите "getter".
 
-* The _setter_ function should always set the requested value, such that calling the _getter_ yields it back. Do not reject invalid values silently in the "setter" (raise an exception if you must). Do not convert or scale the requested value. The idea is that after `MyClass.MyProperty := 123;` the programmer can expect that `MyClass.MyProperty = 123`.
+* Функцията _setter_ трябва винаги да запише подадената стойност, по такъв начин, че извикването на _getter_ да я върне обратно. Не бива некоректните стойности автоматично да се игнорират в "setter", в такива случаи е редно да се предизвика изключение (exception). Не е добре също стойността да се конвертира или мащабира. Идеята е, че след `MyClass.MyProperty := 123;` програмиста трябва да очаква, че `MyClass.MyProperty = 123`.
 
-* The _read-only properties_ are often used to make some field read-only from the outside. Again, the good convention is to make it behave like a constant, at least constant for this object instance with this state. The value of the property should not change unexpectedly. _Make it a function, not a property, if using it has a side effect or returns something random._
+* Свойствата само за четене, _read-only properties_, често се използват за да е възможно само четенето на някое поле отвън. Отново, добрата практика е това свойство да се държи като константа или поне като константа за това състояние на обекта. Стойността не бива да се променя неочаквано. _Ако четенето предизвиква странични ефекти или се връща случайна стойност, вместо свойство трябва да се използва функция_.
 
-* The _"backing" field of a property is almost always private_, since the idea of a property is to encapsulate all outside access to it.
+* Полето, към което се обръща свойството трябва винаги да е _private_ защото идеята на свойството е да "капсулира" целия външен достъп до него.
 
-* It's technically possible to make _set-only properties_, but I have not yet seen a good example of such thing:)
+* Технически е възможно да се направи свойство само за запис, _set-only property_, но още не съм видял добър пример за какво може да послужи такова свойство :)
 
-NOTE: Properties can also be defined outside of class, at a unit level. They serve an analogous purpose then: look like a global variable, but are backed by a _getter_ and _setter_ routines.
+NOTE: Свойствата могат да се дефинират и извън клас, на ниво unit. Такива свойства служат за аналогични цели -- изглеждат като глобални променливи, но четенето и записа им извиква указаните подпрограми за _getter_ и _setter_.
 
-#### Serialization of properties
+#### Сериализация на свойства
 
-_Published properties_ are the basis of a _serialization_ (also known as _streaming components_) in Pascal. _Serialization_ means that the instance data is recorded into a stream (like a file), from which it can be later restored.
+_Пуликуваните свойства_ са база за _сериализацията_ (или _streaming components_) в Паскал. _Сериализация_ означава, че данните на инстанцията от даден клас се записва в поток (_stream_, подобно на файл), от който може по-късно да се прочете обратно.
 
-Serialization is what happens when Lazarus reads (or writes) the component state from an `xxx.lfm` file. (In Delphi, the equivalent file has `.dfm` extension.) You can also use this mechanism explicitly, using routines like `ReadComponentFromTextStream` from the `LResources` unit. You can also use other serialization algorithms, e.g. `FpJsonRtti` unit (serializing to JSON).
+Сериализирането е това, което се случва, когато Lazarus чете (или записва) състоянието на компонент във файл `xxx.lfm`. (В Delphi еквивалентния файл има разширение `.dfm`). Този механизъм може да се използва и за други цели с помощта на процедури като `ReadComponentFromTextStream` от unit `LResources`. Също така може да се използват и други сериализационни алгоритми, например от unit `FpJsonRtti` (сериализация в JSON формат).
 
-*In the Castle Game Engine:* Use the `CastleComponentSerialize` unit (based on `FpJsonRtti`) to serialize our user-interface and transformation component hierarchies.
+В *Castle Game Engine*: Използвайте unit `CastleComponentSerialize` (базиран на `FpJsonRtti`) за да сериализирате нашите компоненти като user-interface и transformation component hierarchies.
 
-At each property, you can declare some additional things that will be helpful for any serialization algorithm:
+За всяко свойство може да се декларират допълнителни полезни неща за алгоритъма за сериализация:
 
-* You can specify the property default value (using the `default` keyword). Note that you are still required to initialize the property in the constructor to this exact default value (it is not done automatically). The `default` declaration is merely an information to the serialization algorithm: _"when the constructor finishes, the given property has the given value"_.
+* Може да укажете подразбираща се стойност за свойството (с резервираната дума `default`). Обърнете внимание, че така или иначе в конструктора е необходимо да се инициализира това свойство с тази конкретна стойност по подразбиране. Това не се прави автоматично. Декларацията `default` е само информативна за сериализиращия алгоритъм: _"когато конструктора се изпълни, даденото свойство има дадената стойност"_.
 
-* Whether the property should be stored at all (using the `stored` keyword).
+* Дали свойството трябва да се записва изобщо (с резервираната дума `stored`).
 
-### Exceptions - Quick Example
+### Изключения - Кратък пример
 
-We have exceptions. They can be caught with `try ... except ... end` clauses, and we have finally sections like `try ... finally ... end`.
+В Паскал може да се предизвикват и обработват изключения. Обработката се прави с клаузи `try ... except ... end`, също така има и финални секции `try ... finally ... end`.
 
 [source,pascal]
 ----
 include::code-samples/exception_finally.lpr[]
 ----
 
-Note that the `finally` clause is executed even if you exit the block using the `Exit` (from function / procedure / method) or `Break` or `Continue` (from loop body).
+Обърнете внимание, че клаузата `finally` се изпълнява дори ако излезете от блок с използването на `Exit` (от функция / процедура /метод) или `Break` или `Continue` (от тялото на цикъл).
 
-See the <<Exceptions>> chapter for more in-depth description of _exceptions_.
+Виж глава <<Exceptions>> за по-задълбочено описание на _изключенията_.
 
-### Visibility specifiers
+### Нива на видимост
 
-As in most object-oriented languages, we have visibility specifiers to hide fields / methods / properties.
+Както в повечето обектно-ориентирани езици, в Паскал има спецификатори за ограничаване на видимостта на полета / методи / свойства.
 
-The basic visibility levels are:
+Основните нива на видимост са:
 
-`public`:: everyone can access it, including the code in other units.
-`private`:: only accessible in this class.
-`protected`:: only accessible in this class and descendants.
+`public`:: всеки може да го достъпи, в това число и кода от други unit-и.
+`private`:: достъпно само в този клас.
+`protected`:: достъпно само в този клас и наследниците му.
 
-The explanation of `private` and `protected` visibility above is not precisely true. The code _in the same unit_ can overcome their limits, and access the `private` and `protected` stuff freely. Sometimes this is a nice feature, allows you to implement tightly-connected classes. Use `strict private` or `strict protected` to secure your classes more tightly. See the <<Private and strict private>>.
+Даденото по-горе обяснение за `private` и `protected` не е напълно вярно. Кодът _в същия unit_ може да прескача ограничението и да достъпва неща, които са указани като `private` или `protected`. Понякога това е удобно, тъй като позволява създаване на по-силно свързани класове. Използвайте `strict private` или `strict protected` за да обезопасите вашите класове още по-стриктно. По-подробно това е описано в <<Private and strict private>>.
 
-By default, if you don't specify the visibility, then the visibility of declared stuff is `public`. The exception is for classes compiled with `{$M+}`, or descendants of classes compiled with `{$M+}`, which includes all descendants of `TPersistent`, which also includes all descendants of `TComponent` (since `TComponent` descends from `TPersistent`). For them, the default visibility specifier is `published`, which is like `public`, but in addition the streaming system knows to handle this.
+Ако не укажете видимост, по подразбиране се приема `public`. Изключение се прави за класовете компилирани с `{$M+}`, или наследници на класове компилирани с `{$M+}`, което включва всички наследници на `TPersistent`, също така включва и всички наследници на `TComponent` (защото `TComponent` е наследник на `TPersistent`). За тях видимостта по подразбиране е `published`, което е като `public`, но с допълнението, че системата за сериализация знае как да ги обработва.
 
-Not every field and property type is allowed in the `published` section (not every type can be streamed, and only classes can be streamed from simple fields). Just use `public` if you don't care about streaming but want something available to all users.
+Не всяко поле и свойство може да бъде в секция `published` (не веки тип може да се сериализира и само класове от прости полета могат да се сериализират). Просто използвайте `public`, ако не ви е грижа за сериализацията, но искате нещо да е достъпно за всички ползватели.
 
-### Default ancestor
+### Предшественик по подразбиране
 
-If you don't declare the ancestor type, every `class` inherits from `TObject`.
+Ако не декларирате предшестващ клас, то по подразбиране се приема, че се наследява класа `TObject`.
 
 ### Self
 
-The special keyword `Self` can be used within the class implementation to explicitly refer to your own instance. It is equivalent to `this` from C++, Java and similar languages.
+Резервираната дума `Self` (аз) може да се използва в реализацията на класа за да укаже изрично, че става дума за вашата собствена инстанция. Това е еквивалент на `this` от C++, Java и подобни езици.
 
-### Calling inherited method
+### Извикване на наследен метод
 
-Within a method implementation, if you call another method, then by default you call the method of your own class. In the example code below, `TMyClass2.MyOtherMethod` calls `MyMethod`, which ends up calling `TMyClass2.MyMethod`.
+В рамките на реализация на метод, ако извикате друг метод, тогава по подразбиране вие извиквате метода на вашия собствен клас. В примерния код по-долу, `TMyClass2.MyOtherMethod` извиква `MyMethod`, който в крайна сметка извиква `TMyClass2.MyMethod`.
 
 [source,pascal]
 ----
 include::code-samples/method_calls_inheritance_1.lpr[]
 ----
 
-If the method is not defined in a given class, then it calls the method of an ancestor class. In effect, when you call `MyMethod` on an instance of `TMyClass2`, then
+Ако метода не е дефиниран за дадения клас, тогава се извиква метод от предшестващия клас. If the method is not defined in a given class, then it calls the method of an ancestor class. Всъщност, когато извикате `MyMethod` на инстация от `TMyClass2`, тогава
 
-* The compiler looks for `TMyClass2.MyMethod`.
-* If not found, it looks for `TMyClass1.MyMethod`.
-* If not found, it looks for `TObject.MyMethod`.
-* if not found, then the compilation fails.
+* Компилатора търси `TMyClass2.MyMethod`.
+* Ако не го намери, търси `TMyClass1.MyMethod`.
+* Ако не го намери, търси `TObject.MyMethod`.
+* Ако не го намери, дава грешка при компилация.
 
-You can test it by commenting out the `TMyClass2.MyMethod` definition in the example above. In effect, `TMyClass1.MyMethod` will be called by `TMyClass2.MyOtherMethod`.
+Може да го проверите като сложите коментар пред дефиницията на `TMyClass2.MyMethod` в по-горния пример. Като резултат от извикването на `TMyClass2.MyOtherMethod` ще се извика `TMyClass1.MyMethod`.
 
-Sometimes, you don't want to call the method of your own class. You want to call the method of an ancestor (or ancestor's ancestor, and so on). To do this, add the keyword `inherited` before the call to `MyMethod`, like this:
+Понякога не искате да извиквате метода на собствения си клас а аскате да извикате метода на предшественик (или предшественик на предшественик и т.н). За да направите това, добавете ключовата дума `inherited` преди извикването на `MyMethod` по следния начин:
 
 [source,pascal]
 ----
 inherited MyMethod;
 ----
 
-This way you _force_ the compiler to start searching from an ancestor class. In our example, it means that compiler is searching for `MyMethod` inside `TMyClass1.MyMethod`, then `TObject.MyMethod`, and then gives up. It does not even consider using the implementation of `TMyClass2.MyMethod`.
+По този начин вие _насилвате_ компилаторът да започне да търси от предшестващия клас. В нашия пример това означава, че компилаторът търси `MyMethod` в `TMyClass1.MyMethod`, след това `TObject.MyMethod` и след това се отказва. Дори и не обмисля използването на `TMyClass2.MyMethod`.
 
-TIP: Go ahead, change the implementation of `TMyClass2.MyOtherMethod` above to use `inherited MyMethod`, and see the difference in the output.
+TIP: Променете `TMyClass2.MyOtherMethod` така, че да използва `inherited MyMethod` и вижте каква ще е разликата в резултата.
 
-The `inherited` call is often used to call the ancestor method of the same name. This way the descendants can enhance the ancestors (keeping the ancestor functionality, instead of replacing the ancestor functionality). Like in the example below.
+Най-често извикването на наследен метод се използва от метода със същото име в наследника. По този начин наследника може да допълни и подобри предшественика запазвайки неговата функционалност вместо да я подмени изцяло. Както в примера по-долу.
 
 [source,pascal]
 ----
 include::code-samples/method_calls_inherited.lpr[]
 ----
 
-Since using `inherited` to call a method with the same name, with the same arguments, is a very often case, there is a special shortcut for it: you can just write `inherited;` (`inherited` keyword followed immediately by a semicolon, instead of a method name). This means "_call an inherited method with the same name, passing it the same arguments as the current method_".
+Понеже използването на `inherited` за извикване на метод със същото име и аргументи се среща много често, има специален съкратен вариант: може да напишете само `inherited;` (ключовата дума `inherited`, следвана непосредствено от точка и запетая, вместо името на метод). Това означава "_извикай наследения метод със същото име, предавайки му същите аргументи както на текущия метод_".
 
-TIP: In the above example, all the `inherited ...;` calls could be replaced by a simple `inherited;`.
+TIP: В горния пример, всички извиквания на `inherited ...;` могат да се заменят просто с `inherited;`.
 
-Note 1: The `inherited;` is really just a shortcut for calling the ancestor's method with the _same variables passed in_. If you have modified your own parameter (which is possible, if the parameter is not `const`), then the ancestor's method can receive different input values from your descendant. Consider this:
+Бележка 1: Този `inherited;` е наистина съкращение на извикването на наследения метод със _същите параметри_. Ако вече сте променили стойностите на параметрите (което е напълно възможно ако не са `const`), тогава наследения метод може да получи различни входни стойности от вашия наследник. Разгледайте следното:
 
 [source,pascal]
 ----
@@ -852,23 +851,23 @@ begin
 end;
 ----
 
-Note 2: You usually want to make the `MyMethod` _virtual_ when many classes (along the "_inheritance chain_") define it. More about the virtual methods in the section below. But the `inherited` keyword works regardless if the method is virtual or not. The `inherited` always means that the compiler starts searching for the method in an ancestor, and it makes sense for both _virtual_ and _not virtual_ methods.
+Бележка 2: Когато много класове дефинират метода `MyMethod` (по "_веригата на наследяване_") обикновено той се прави _виртуален_. Повече за виртуалните методи има в раздела по-долу. Но ключовата дума `inherited` работи независимо дали методът е виртуален или не. `inherited` винаги означава, че компилаторът започва да търси метода в предшественика и има смисъл както за _виртуални_, така и за _не виртуални_ методи.  
 
 [[virtual-methods-section]]
-### Virtual methods, override and reintroduce
+### Виртуални методи, подмяна и скриване
 
-By default, the methods are _not virtual_. This is similar to C++, and unlike Java.
+По подразбиране методите _не са виртуални_. Това е както в езика C++ и за разлика от Java.
 
-When a method is _not virtual_, the compiler determines which method to call based on the currently _declared_ class type, not based on the _actually created_ class type. The difference seems subtle, but it's important when your variable is declared to have a class like `TFruit`, but it may be in fact a descendant class like `TApple`.
+Когато методът _не е виртуален_, компилаторът определя кой метод да се извика въз основа на текущия _деклариран_ тип клас, а не въз основа на _действително създадения_ тип клас. Разликата изглежда незначителна, но е важно, когато променливата ви е декларирана, че е от клас `TFruit`, но всъщност може да е от клас-наследник например `TApple`.
 
-The idea of the object-oriented programming is that _the descendant class is always as good as the ancestor_, so the compiler allows to use a descendant class always when the ancestor is expected. When your method is not virtual, this can have undesired consequences. Consider the example below:
+Идеята на обектно-ориентираното програмиране е, че _класът-наследник винаги е добър поне колкото наследения_, така че компилатора позволява използването на наследник винаги когато се очаква някой от предшествениците му. Когато един метод _не е виртуален_, това може да доведе до нежелани последици. Разгледайте следния случай:
 
 [source,pascal]
 ----
 include::code-samples/without_virtual_methods.lpr[]
 ----
 
-This example will print
+Този пример ще се отпечата
 
 ----
 We have a fruit with class TApple
@@ -876,18 +875,18 @@ We eat it:
 Eating a fruit
 ----
 
-In effect, the call `Fruit.Eat` called the `TFruit.Eat` implementation, and nothing calls the `TApple.Eat` implementation.
+Всъщност извикването `Fruit.Eat` извиква имплементацията на `TFruit.Eat` и нищо не извика имплементацията на `TApple.Eat`.
 
-If you think about how the compiler works, this is natural: when you wrote the `Fruit.Eat`, the `Fruit` variable was declared to hold a class `TFruit`. So the compiler was searching for the method called `Eat` within the `TFruit` class. If the `TFruit` class would not contain such method, the compiler would search within an ancestor (`TObject` in this case). But the compiler _cannot search within descendants (like `TApple`)_, as it doesn't know whether the _actual class_ of `Fruit` is `TApple`, `TFruit`, or some other `TFruit` descendant (like a `TOrange`, not shown in the example above).
+Ако се замислите как работи компилатора, това ще ви се стори естествено: когато написахте `Fruit.Eat`, променливата `Fruit` бе декларирана от тип `TFruit`. Компилаторът търси метод наречен `Eat` в класа `TFruit`. Ако класът `TFruit` не съдържа такъв метод, компилаторът ще търси в предшественика (`TObject` в този случай). Но компилаторът _не може да търси в наследници (като `TApple`)_, тъй като не знае дали _действителният клас_ на `Fruit` е `TApple`, `TFruit` или някакъв друг наследник на `TFruit` (като `TOrange`, не е показан в примера по-горе).
 
-In other words, the _method to be called_ is determined _at compile-time_.
+С други думи, _методът, който ще бъде извикан_, се определя по време на компилиране.
 
-Using the _virtual methods_ changes this behavior. *If the `Eat` method would be virtual* (an example of it is shown below), then the actual implementation to be called is determined _at runtime_. If the `Fruit` variable will hold an instance of the class `TApple` (even if it's declared as `TFruit`), then the `Eat` method will be searched within the `TApple` class first.
+Използването на _виртуалните методи_ променя това поведение. *Ако методът `Eat` е виртуален* (пример за него е показан по-долу), тогава действителната метод, която ще бъде извикан, се определя _по време на изпълнение_. Ако променливата `Fruit` съдържа екземпляр на класа `TApple` (дори ако променливата е декларирана като `TFruit`), тогава методът `Eat` ще бъде потърсен първо в `TApple`.
 
-In Object Pascal, to define a method as _virtual_, you need to
+В Обектния Паскал, за да дефинирате метод като _виртуален_, трябва да:
 
-* Mark its first definition (in the top-most ancestor) with the `virtual` keyword.
-* Mark all the other definitions (in the descendants) with the `override` keyword. All the overridden versions must have exactly the same parameters (and return the same types, in case of functions).
+* Маркирайте първата му дефиниция (в най-горния предшественик) с ключовата дума `virtual`.
+* Маркирайте всички останали дефиниции (в наследниците) с ключовата дума `override`. Всички подменени версии трябва да имат абсолютно еднакви параметри (и да връщат едни и същи типове, в случая на функции).
 
 [source,pascal]
 ----
@@ -902,23 +901,23 @@ We eat it:
 Eating an apple
 ----
 
-Internally, virtual methods work by having so-called _virtual method table_ associated with each class. This table is a list of pointers to the implementations of virtual methods for this class. When calling the `Eat` method, the compiler looks into a virtual method table associated with the actual class of `Fruit`, and uses a pointer to the `Eat` implementation stored there.
+Вътрешно виртуалните методи работят, като използват така наречената _виртуална таблица с методи (VMT)_, свързана с всеки клас. Тази таблица е списък с указатели към виртуалните методи за този клас. Когато извиква метода `Eat`, компилаторът разглежда таблица с виртуални методи, свързана с _действителния_ клас на `Fruit`, и използва указател към конкретния метод `Eat` съхранен там.
 
-If you don't use the `override` keyword, the compiler will warn you that you're _hiding_ (obscuring) the virtual method of an ancestor with a non-virtual definition. If you're sure that this is what you want, you can add a `reintroduce` keyword. But in most cases, you will rather want to keep the method virtual, and add the `override` keyword, thus making sure that it's always invoked correctly.
+Ако не използвате ключовата дума `override`, компилаторът ще ви предупреди, че _скривате_ виртуалния метод на предшественика с невиртуална дефиниция. Ако сте сигурни, че точно това искате да направите, можете да добавите ключова дума `reintroduce`. Но в повечето случаи e по-добре да запазите метода виртуален и да добавите ключовата дума `override`, като по този начин сте сигурни, че се извиква правилно.
 
-## Freeing classes
+## Освобождаване на паметта за класове
 
-### Remember to free the class instances
+### Помнете да освобождавате паметта заета от инстанциите
 
-The class instances have to be manually freed, otherwise you get memory leaks. I advise using FPC `-gl -gh` options to detect memory leaks (see https://castle-engine.io/manual_optimization.php#section_memory ).
+Инстанциите на класове трябва да се освобождават ръчно. В противен случай ще се получи _изтичане на памет_. Съветвам да се използват опциите `-gl -gh` на FPC за засичане на изтичания (виж https://castle-engine.io/manual_optimization.php#section_memory ).
 
-Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
+Забележете, че това не касае възникналите изключения. Въпреки че изрично създавате инстанция от клас, когато предизвиквате изключение (и това е напълно нормален клас и можете да създадете свои собствени класове за тази цел), то тази инстанция ще бъде освободена автоматично от вградения механизъм за обработка на изключения.
 
-### How to free
+### Как да освободим паметта
 
-To free the class instance, it's best to call `FreeAndNil(A)` from `SysUtils` unit on your class instance. It checks whether `A` is `nil`, if not -- calls its destructor, and sets `A` to `nil`. So calling it many times in a row is not an error.
+За да освободите заетата памет от инстанция на клас, най-добре извикайте `FreeAndNil(A)` от unit `SysUtils` върху нея. Тази процедура ще провери дали `A` е `nil`, ако не е -- ще извика нейния деструктор (destructor) и ще и присвои стойност `nil`. Така многократното и извикване няма да доведе до грешка.
 
-It is more-or-less a shortcut for
+Приблизително това съответства на следното:
 
 [source,pascal]
 ----
@@ -929,9 +928,9 @@ begin
 end;
 ----
 
-Actually, that's an oversimplification, as `FreeAndNil` does a useful trick and sets the variable `A` to `nil` *before* calling the destructor on a suitable reference. This helps to prevent a certain class of bugs -- the idea is that the "outside" code should never access a half-destructed instance of the class.
+Всъщност това е доста опростено, тъй като `FreeAndNil` използва трик за да присвои `nil` на `A` *преди* да извика деструктора с подходяща препратка. Това предотвратява  определен клас грешки -- идеята е, че "външният" код никога не бива да има достъп до полуразрушено копие на инстанция от класа.
 
-Often you will also see people using the `A.Free` method, which is like doing
+Често ще видите и да се използва метода `A.Free`, което е същото като:
 
 [source,pascal]
 ----
@@ -939,17 +938,19 @@ if A <> nil then
   A.Destroy;
 ----
 
-This frees the `A`, unless it's `nil`.
+което унищожава инстанцията `A` (и освобождава заетата памет от нея) , освен ако тя е `nil`.
 
-Note that in normal circumstances, you should never call a method on an instance which may be `nil`. So the call `A.Free` may look suspicious at the first sight, if `A` can be `nil`. However, the `Free` method is an exception to this rule. It does something dirty in the implementation -- namely, checks whether `Self <> nil`. This dirty trick works only in non-virtual methods (that don't call any virtual methods and don't access any fields).
+Забележете, че при нормални обстоятелства никога не бива да се извиква метод на инстанция, която може да е `nil`. Затова извикването `A.Free` може да изглежда подозрително на пръв поглед. may look suspicious at the first sight, if `A` can be `nil`. Методът `Free` обаче е изключение от това правило. Той прави нещо "нечисто" в тялото си -- именно проверява дали `Self <> nil`. Този трик работи само при методи, които не са виртуални (които не извикват други виртуални методи и не достъпват никакви полета).
+// AI: But it calls Destroy which is actually virtual ?!?
 
-I advise using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_.
+Съветвам ви да използвате `FreeAndNil(A)` винаги, без изключения и никога да не извиквате директно метода `Free` или деструктора `Destroy`. _Castle Game Engine_ работи по този начин. Това позволява да бъдете уверени в това, че _всички препратки са или `nil`, или сочат към валидни инстанции_.
+// AI: Highly debatable assertion.
 
-### Manual and automatic freeing
+### Ръчно и автоматично освобождаване
 
-In many situations, the need to free the instance is not much problem. You just write a destructor, that matches a constructor, and deallocates everything that was allocated in the constructor (or, more completely, in the whole lifetime of the class). Be careful to only free each thing *once*. Usually it's a good idea to set the freed reference to `nil`, usually it's most comfortable to do it by calling the `FreeAndNil(A)`.
+В много случаи необходимостта от освобождаване на инстанцията не е голям проблем. Вие просто пишете деструктор, който съответства на конструктора и освобождава всичко, за което е заделена памет в конструктора (или по-точно - през целия живот на инстанцията). Внимавайте да освободите всяко нещо само *веднъж*. Добра идея е да установите освободения указател на `nil`, обикновено е най-удобно да го направите, като извикате `FreeAndNil(A)`.
 
-So, like this:
+Пример:
 
 [source,pascal]
 ----
@@ -980,7 +981,7 @@ begin
 end;
 ----
 
-To avoid the need to explicitly free the instance, one can also use the `TComponent` feature of _"ownership"_. An object that is _owned_ will be automatically freed by the _owner_. The mechanism is smart and it will never free an already freed instance (so things will also work correctly if you manually free the owned object earlier). We can change the previous example to this:
+За да избегнете необходимостта от изрично освобождаване, можете също да използвате функцията за _"собственост"_ на `TComponent`. Обект, който е _нечий_ ще бъде автоматично освободен от _собственика_. Механизмът е достатъчно съобразителен и никога няма да освободи вече освободена инстанция (така че нещата ще работят правилно, дори ако ръчно освободите притежавания обект по-рано). Можем да променим предишния пример така:
 
 [source,pascal]
 ----
@@ -1003,11 +1004,11 @@ begin
 end;
 ----
 
-Note that we need to override a virtual `TComponent` constructor here. So we cannot change the constructor parameters. (Actually, you can -- declare a new constructor with `reintroduce`. But be careful, as some functionality, e.g. streaming, will still use the virtual constructor, so make sure it works right in either case.)
+Обърнете внимание, че тук трябва да заменим виртуалния конструктор на `TComponent`. Така че не можем да променим параметрите на конструктора. (Всъщност можете -- декларирайте нов конструктор с `reintroduce`. Но бъдете внимателни, тъй като някои функции, например тези за сериализация, все още ще използват виртуалния конструктор, така че се уверете, че работи правилно и в двата случая.)
 
-Note that you can always use `nil` value for the owner. This way the _"ownership"_ mechanism will not be used for this component. It makes sense if you need to use the `TComponent` descendant, but you want to always manually free it. To do this, you would create a component descendant like this: `ManualGun := TGun.Create(nil);`.
+Имайте предвид, че винаги можете да използвате за собственик `nil`. По този начин механизмът за _"собственост"_ няма да се използва за този компонент. Това има смисъл, ако трябва да използвате наследника на `TComponent`, но искате винаги да го освобождавате ръчно. За да направите това, трябва да създадете наследник на компонент като този: `ManualGun := TGun.Create(nil);`.
 
-Another mechanism for automatic freeing is the `OwnsObjects` functionality (by default already `true`!) of list-classes like `TFPGObjectList` or `TObjectList`. So we can also write:
+Друг механизъм за автоматично освобождаване е функционалността `OwnsObjects` (по подразбиране вече е `true`!) на класовете-контейнери като `TFPGObjectList` или `TObjectList`. Така че можем също да напишем:
 
 [source,pascal]
 ----
@@ -1058,36 +1059,36 @@ begin
 end;
 ----
 
-Beware that the list classes "ownership" mechanism is simple, and you will get an error if you free the instance using some other means, while it's also contained within a list. Use the `Extract` method to remove something from a list without freeing it, thus taking the responsibility to free it yourself.
+Имайте предвид, че механизмът за "собственост" в този случай е сравнително прост и ще се получи грешка, ако освободите инстанция по друг начин докато тя все още присъства в списъка. Използвайте метода `Extract` за да извлечете инстанцията от него без да я освобождавате и по този начин да поемете отговорността за освобождаването й.
 
-*In the Castle Game Engine*: The descendants of `TX3DNode` have automatic memory management when inserted as children of another `TX3DNode`. The root X3D node, `TX3DRootNode`, is in turn usually owned by `TCastleSceneCore`. Some other things also have a simple ownership mechanism -- look for parameters and properties called `OwnsXxx`.
+В *Castle Game Engine*: Наследниците на `TX3DNode` имат автоматично управление на заетата памет когато са вмъкнати като children на друг `TX3DNode`. Основният X3D възел, `TX3DRootNode`, на свой ред обикновено се притежава от `TCastleSceneCore`. Някои други обекти също имат прост механизъм за собственост - потърсете параметри и свойства, наречени `OwnsXxx`.
 
-### The virtual destructor called Destroy
+### Виртуалният деструктор наречен Destroy
 
-As you saw in the examples above, when the class is destroyed, its `destructor` called `Destroy` is called.
+Както видяхте в примерите по-горе, когато класът се унищожожава, се извиква неговият `деструктор`, наречен `Destroy`.
 
-In theory, you could have multiple destructors, but in practice it's almost never a good idea. It's much easier to have only one destructor called `Destroy`, which is in turn called by the `Free` method, which is in turn called by the `FreeAndNil` procedure.
+На теория можете да имате много деструктори, но на практика почти никога не е добра идея. Много по-лесно е да имате само един деструктор, наречен `Destroy`, който от своя страна се извиква от метода `Free`, той пък от своя страна се извиква от процедурата `FreeAndNil`.
 
-The `Destroy` destructor in the `TObject` is defined as a _virtual_ method, so you should always mark it with the `override` keyword in all your classes (since all classes descend from `TObject`). This makes the `Free` method work correctly. Recall how the virtual methods work from the <<virtual-methods-section>>.
+Деструкторът `Destroy` в `TObject` е дефиниран като _виртуален_ метод, така че винаги трябва да го маркирате с ключовата дума `override` във всички ваши класове (тъй като всички класове произлизат от `TObject`). Това е предпоставка за правилната работа на `Free`. Спомнете си как работят виртуалните методи от <<virtual-methods-section>>.
 
 [NOTE]
 ====
-This information about _destructors_ is, indeed, inconsistent with the _constructors_.
+Тази информация за _деструкторите_ не важи за _конструкторите_.
 
-It's normal that a class has multiple constructors. Usually they are all called `Create`, and only have different parameters, but it's also OK to invent other names for constructors.
+Нормално е един клас да има множество конструктори. Обикновено всички те се наричат `Create` и имат различни параметри, но не е неправилно да има и конструктори с други имена.
 
-Also, the `Create` constructor in the `TObject` is _not virtual_, so you do not mark it with `override` in the descendants.
+Освен това конструкторът `Create` в `TObject` _не е виртуален_, така че не го маркирате с `override` в наследниците.
 
-This all gives you a bit of extra flexibility when defining constructors. It is often not necessary to make them virtual, so by default you're not forced to do it.
+Това дава допълнителна гъвкавост при дефиниране на конструкторите. Често не е необходимо да ги правите виртуални, така че по подразбиране не сте принудени да го правите.
 
-Note, however, that this changes for `TComponent` descendants. The `TComponent` defines a virtual constructor `Create(AOwner: TComponent)`. It needs a virtual constructor in order for the streaming system to work. When defining descendants of the `TComponent`, you should override this constructor (and mark it with the `override` keyword), and perform all your initialization inside it. It is still OK to define additional constructors, but they should only act as _"helpers"_. The instance should always work when created using the `Create(AOwner: TComponent)` constructor, otherwise it will not be correctly constructed when streaming. The _streaming_ is used e.g. when saving and loading this component on a Lazarus form.
+Имайте предвид обаче, че ситуацията е различна за наследниците на `TComponent`. `TComponent` дефинира виртуален конструктор `Create(AOwner: TComponent)` защото се нуждае от такъв, за да работи системата за сериализация. Когато наследявате `TComponent`, трябва да замените този конструктор (да го маркирате с ключовата дума `override`) и да извършите цялата си инициализация вътре в него. Дефинирането на допълнителни конструктори все пак е възможно, но те трябва да са само в ролята на _"помощни"_. Инстанцията трябва да работи винаги, когато е създадена с помощта _именно_ на конструктора `Create(AOwner: TComponent)`, в противен случай тя няма да бъде правилно конструирана при сериализацията. _Сериализация_ се използва напр. когато записвате и зареждате този компонент във формуляр на Lazarus.
 ====
 
 ### Free notification
 
-If you copy a reference to the instance, such that you have two references to the same memory, and then one of them is freed -- the other one becomes a _"dangling pointer"_. It should not be accessed, as it points to a memory that is no longer allocated. Accessing it may result in a runtime error, or garbage being returned (as the memory may be reused for other stuff in your program).
+Ако копирате препратка към инстанция, така че да имате две препратки към една и съща памет, и след това едната от тях се освободи -- другата се превръща във _"висящ указател"_. Тя не бива да се използва, тъй като сочи към памет, която вече не е заета. Достъпът до нея може да доведе до грешка по време на изпълнение или връщане на произволен "боклук" (тъй като паметта може да се използва повторно вече за други неща).
 
-Using the `FreeAndNil` to free the instance doesn't help here. `FreeAndNil` sets to `nil` only the reference it got -- there's no way for it to set all other references automatically. Consider this code:
+Използването на `FreeAndNil` тук вече не може да помогне. `FreeAndNil` записва `nil` само в препратката, която е получила -- няма начин да нулира автоматично всички други препратки. Разгледайте следния код:
 
 [source,pascal]
 ----
@@ -1102,7 +1103,7 @@ begin
 end;
 ----
 
-1. At the end of this block, the `Obj1` is `nil`. If some code has to access it, it can reliably use `if Obj1 <> nil then ...` to avoid calling methods on a freed instance, like
+1. В края на този блок `Obj1` е `nil`. Ако някакъв код трябва да има достъп до него, той може надеждно да използва `if Obj1 <> nil then ...`, за да избегне извикване на методи на несъществуваща вече инстанция, като
 +
 [source,pascal]
 ----
@@ -1110,27 +1111,27 @@ if Obj1 <> nil then
   WriteLn(Obj1.ClassName);
 ----
 +
-Trying to access a field of a `nil` instance results in a predictable exception at runtime. So even if some code will not check `Obj1 <> nil`, and will blindly access `Obj1` field, you will get a clear exception at runtime.
+Опитът за достъп до поле на нулева инстанция води до предвидимо изключение по време на изпълнение. Така че дори ако някой код не провери `Obj1 <> nil` и сляпо се обърне към полето `Obj1`, ще се получи ясно изключение по време на изпълнение.
 +
-Same goes for calling a virtual method, or calling a non-virtual method that accessed a field of a `nil` instance.
+Същото важи и за извикване на виртуален или невиртуален метод, който се обръща към поле на `nil` инстанция.
 
-2. With `Obj2`, things are less predictable. It's not `nil`, but it's invalid. Trying to access a field of a non-nil invalid instance
+2. С `Obj2`, нещата не са така предвидими. Той не е `nil`, но е невалиден. Опита за обръщение към поле на ненулева невалидна инстанция 
 //(or call a method that accessed a field of such instance)
-results in an unpredictable behavior -- maybe an access violation exception, maybe a garbage data returned.
+ще предизвика непредвидимо поведение -- може би ще предизвика изключение (exception), а може би ще върне безсмисленни данни.
 
-There are various solutions to it:
+Има различни решения на проблема:
 
-* One solution is to, well, be careful and read the documentation. Don't assume anything about the lifetime of the reference, if it's created by other code. If a class `TCar` has a field pointing to some instance of `TWheel`, it's a _convention_ that the reference to _wheel_ is valid as long as the reference to _car_ exists, and the _car_ will free its _wheels_ inside its destructor. But that's just a convention, the documentation should mention if there's something more complicated going on.
+* Едно от решенията е да бъдете внимателни и да прочетете документацията. Не предполагайте нищо относно живота на инстанцията, ако е създадена от друг код. Ако клас `TCar` има поле, сочещо към някакъв екземпляр на `TWheel`, това е _конвенция_, че препратката към _wheel_ е валидна, докато препратката към _car_ съществува, и _car_ ще освободи своите _wheels_ в своя деструктор. Но това е само конвенция, документацията трябва да споменава, ако има нещо по-сложно.
 
-* In the above example, right after freeing the `Obj1` instance, you can simply set the `Obj2` variable explicitly to `nil`. That's trivial in this simple case.
+* В горния пример, веднага след освобождаването на екземпляра `Obj1`, можете просто да присвоите изрично `nil` на променливата `Obj2` . Това е тривиално в такива прости случаи.
 
-* The most future-proof solution is to use `TComponent` class "free notification" mechanism. One component can be notified when another component is freed, and thus set its reference to `nil`.
+* Най-сигурното решение е да се използва механизма на клас `TComponent` за "известяване при освобождаване". Един компонент може да бъде известен, когато друг току-що е освободен и по този начин неговата референция да се направи равна на `nil`.
 +
-Thus you get something like a _weak reference_. It can cope with various usage scenarios, for example you can let the code from outside of the class to set your reference, and the outside code can also free the instance at anytime.
+По този начин получавате нещо подобно на _слаба референция_. Тя може да се справи в различни сценарии, например можете да оставите кода извън класа да зададе вашата препратка, а външният код може също да освободи екземпляра по всяко време.
 +
-This requires both classes to descend from `TComponent`. Using it in general boils down to calling `FreeNotification` , `RemoveFreeNotification`, and overriding `Notification`.
+Това изисква и двата класа да са наследници на `TComponent`. Използването му като цяло се свежда до извикване на `FreeNotification`, `RemoveFreeNotification` и замяна на `Notification`.
 +
-Here's a complete example, showing how to use this mechanism, together with constructor / destructor and a setter property. Sometimes it can be done simpler, but this is the full-blown version that is always correct:)
+Ето пълен пример, показващ как да използвате този механизъм, заедно с конструктор/деструктор и свойство за настройка със _setter_. Понякога може да се направи и по-просто, но това е пълната версия, която винаги е правилна :)
 +
 [source,pascal]
 ----
@@ -1180,13 +1181,13 @@ begin
 end;
 ----
 
-### Free notification observer (Castle Game Engine)
+### Наблюдател за известяване при освобождаване (Castle Game Engine)
 
-*In Castle Game Engine* we encourage to use `TFreeNotificationObserver` from `CastleClassUtils` unit instead of directly calling `FreeNotification`, `RemoveFreeNotification` and overriding `Notification`.
+В *Castle Game Engine* препоръчваме да използвате `TFreeNotificationObserver` от модула `CastleClassUtils` вместо директно извикване на `FreeNotification`, `RemoveFreeNotification` и замяна на `Notification`.
 
-In general using `TFreeNotificationObserver` looks a bit simpler than using `FreeNotification` mechanism directly (though I admit it is a matter of taste). But in particular when _the same class instance must be observed because of multiple reasons_ then `TFreeNotificationObserver` is much simpler to use (directly using `FreeNotification` in this case can get complicated, as you have to watch to not unregister the notification too soon).
+Като цяло използването на `TFreeNotificationObserver` изглежда малко по-просто от използването на механизма `FreeNotification` директно (въпреки че признавам, че е въпрос на вкус). Но по-специално, когато _един и същи екземпляр на клас трябва да се наблюдава поради множество причини_ тогава `TFreeNotificationObserver` е много по-прост за използване (директното използване на `FreeNotification` в този случай може да стане комплицирано, тъй като трябва да внимавате да не дерегистрирате известието твърде скоро) .
 
-This is the example code using `TFreeNotificationObserver`, to achieve the same effect as example in the previous section:
+Това е примерният код, използващ `TFreeNotificationObserver`, за постигане на същия ефект като примера в предишния раздел:
 
 [source,pascal]
 ----
@@ -1233,7 +1234,7 @@ begin
 end;
 ----
 
-See https://castle-engine.io/custom_components .
+Вижте https://castle-engine.io/custom_components .
 
 ## Exceptions
 
