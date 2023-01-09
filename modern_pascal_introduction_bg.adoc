@@ -610,16 +610,16 @@ end.
 
 За да се направи нещо подобно с глобалните променливи, може да се използват глобални свойства (unit-level properties), виж <<Properties>>.
 
-## Classes
+## Класове
 
-### Basics
+### Основи
 
-We have classes. At the basic level, a class is just a container for
+В Паскал се използват класове (classes). На базово ниво класовете са просто контейнери за:
 
-* _fields_ (which is fancy name for _"a variable inside a class"_),
-* _methods_ (which is fancy name for _"a procedure or function inside a class"_),
-* and _properties_ (which is a fancy syntax for something that looks like a field, but is in fact a pair of methods to _get_ and _set_ something; more in <<Properties>>).
-* Actually, there are more possibilities, described in <<More stuff inside classes and nested classes>>.
+* _полета (fields)_ (друго име за _"променлива вътре в класа"_),
+* _методи (methods)_ (друго име за _"процедура или функция вътре в класа"_),
+* и _свойства (properties)_ (удобен синтаксис за нещо, което е подобно на поле, но всъщност е двойка методи за _четене (get)_ и _запис (set)_ на някаква стойност; повече за това в <<Properties>>).
+* Общо казано, в един клас може да се вместят много други неща, повече е описано в <<More stuff inside classes and nested classes>>.
 
 [source,pascal]
 ----
@@ -636,25 +636,25 @@ begin
 end;
 ----
 
-### Inheritance, is, as
+### Наследяване, проверка (is), конверсия на типа (as)
 
-We have inheritance and virtual methods.
+Паскал поддържа _наследяване_ на класове и _виртуални_ методи.
 
 [source,pascal]
 ----
 include::code-samples/inheritance.lpr[]
 ----
 
-By default methods are not virtual, declare them with `virtual` to make them. Overrides must be marked with `override`, otherwise you will get a warning. To hide a method without overriding (usually you don't want to do this, unless you now what you're doing) use `reintroduce`.
+По подразбиране методите не са виртуални, за да бъдат такива трябва да се декларират със запазената дума `virtual`. Подмяната на виртуален метод трябва да се декларира с `override`, в противен случай ще се изведе предупреждение. За да скриете метод без да го подменяте трябва да се използва думата `reintroduce` (обикновено това не се прави без основателна причина).
 
-To test the class of an instance at runtime, use the `is` operator. To typecast the instance to a specific class, use the `as` operator.
+За да се провери какъв е класа на обектна инстанция по време на изпълнение се използва оператора `is`. За да се смени типа на инстанция, т.е. да се конвертира до друг клас, се използва оператора  `as`.
 
 [source,pascal]
 ----
 include::code-samples/is_as.lpr[]
 ----
 
-Instead of casting using `X as TMyClass`, you can also use the _unchecked_ typecast `TMyClass(X)`. This is faster, but results in an undefined behavior if the `X` is not, in fact, a `TMyClass` descendant. So don't use the `TMyClass(X)` typecast, or use it only in a code where it's blindingly obvious that it's correct, for example right after testing with `is`:
+Вместо `X as TMyClass`, може да използвате и конвертиране _без проверка_ `TMyClass(X)`. Това е по-бързо от предишното, но резултата може да доведе до неопределено поведение ако `X` не се явява наследник на `TMyClass`. Поради тази причина не използвайте `TMyClass(X)`, освен ако не е абсолютно сигурно, че `X` е наследник на `TMyClass`, например ако преди това сте проверили с `is`:
 
 [source,pascal]
 ----
@@ -665,12 +665,12 @@ if A is TMyClass then
   TMyClass(A).CallSomeMethodOfMyClass;
 ----
 
-### Properties
+### Свойства
 
-Properties are a very nice _"syntax sugar"_ to
+Свойствата са много удобна _"синтактична захар"_ (б.пр. syntax sugar - особеност на синтаксиса, която не влияе на поведението на програмата, но прави използването на езика по-удобно) за:
 
-1. Make something that looks like a field (can be read and set) but underneath is realized by calling a _getter_ and _setter_ methods. The typical usage is to perform some side-effect (e.g. redraw the screen) each time some value changes.
-2. Make something that looks like a field, but is read-only. In effect, it's like a constant or a parameter-less function.
+1. Нещо да изглегда като поле (да може да се чете и записва) но под него да има методи за четене (_getter_) и запис (_setter_). Често се използва за получаване на странични ефекти (напр. обновяване на екрана) всеки път когато стойността се промени;
+2. Нещо да изглежда като поле, но да е само за четене. В резултат на това полето е подобно на константа или функция без аргументи.
 
 [source,pascal]
 ----
@@ -717,12 +717,12 @@ end;
 //   even if setting RenderingComponent.Color many times to the same value
 //   would be slow. }
 
-Note that instead of specifying a method, you can also specify a field (typically a private field) to directly get or set. In the example above, the `Color` property uses a _setter_ method `SetColor`. But for getting the value, the `Color` property refers directly to the private field `FColor`. Directly referring to a field is faster than implementing trivial getter or setter methods (faster for you, and faster at execution).
+Забележете, че вместо да се укаже метод, може да се укаже и име на поле (обикновено частно поле) за директно четене или запис. В горния пример, свойството `Color` използва метод за запис (_setter_ `SetColor`. Но за прочитане на стойността свойството `Color` указва директно към частното поле `FColor`. Указването на поле е по-бързо отколкото изписването на тривиален метод за четене или запис. По-бързо е за писане а също така и се изпълнява по-бързо.
 
-When declaring a property you specify:
+Когато се декларира свойство трябва да се укаже:
 
-. Whether it can be read, and how (by directly reading a field, or by using a "getter" method).
-. And, in a similar manner, whether it can be set, and how (by directly writing to a designated field, or by calling a "setter" method).
+. Дали може да се чете и как (с директен достъп до поле или с извикване на метод `getter`);
+. И съответно -- дали може да се записва и как (с директен достъп до поле или с използване на метод `setter`).
 
 The compiler checks that the types and parameters of indicated fields and methods match with the property type. For example, to read an `Integer` property you have to either provide an `Integer` field, or a parameter-less method that returns an `Integer`.
 
