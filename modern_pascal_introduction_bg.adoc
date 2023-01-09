@@ -1236,41 +1236,41 @@ end;
 
 Вижте https://castle-engine.io/custom_components .
 
-## Exceptions
+## Изключения
 
-### Overview
+### Преглед
 
-Exceptions allow to _interrupt the normal execution of the code_.
+Изключенията позволяват _прекъсване на нормалното изпълнение на кода_.
 
-- At any point within the program, you can *raise* an exception using the `raise` keyword. In effect the lines of code following the `raise ...`  call will not execute.
+- Във всеки момент от програмата можете да *предизвикате* изключение, като използвате ключовата дума `raise`. На практика редовете код, следващи извикването `raise ...`, няма да се изпълнят.
 
-- An exception may be *caught* using a `try ... except ... end` construction. Catching an exception means that you somehow "deal" with exception, and the following code should execute as usual, the exception is no longer propagated upward.
+- Изключение може да бъде *прихванато* с помощта на конструкция `try ... except ... end`. Прихващането на изключение означава, че по някакъв начин ще се "справите" с изключението и следващият код трябва да се изпълни както обикновено, изключението повече няма да се разпространява нагоре.
 +
-Note: If an exception is raised but never caught, it will cause the entire application to stop with an error.
+Забележка: Ако бъде предизвикано изключение, но то никога не е уловено, това ще доведе до спиране на цялото приложение с грешка.
 +
-** But in LCL applications, the exceptions are always caught around events (and cause LCL dialog box) if you don't catch them earlier.
-** In _Castle Game Engine_ applications using `CastleWindow`, we similarly always catch exceptions around your events (and display proper dialog box).
-** So it is not so easy to make an exception that is _not caught anywhere_ (not caught in your code, LCL code, CGE code...).
+** Но в LCL приложенията изключенията около събития (events) винаги се улавят (и извеждат в LCL диалогов прозорец), ако предварително не ги прихванете.
+** В _Castle Game Engine_ приложения, използващи `CastleWindow`, изключенията около вашите събития винаги се прихващат по същия начин (и се показва правилния диалогов прозорец).
+** Така че не е толкова лесно да се предизвика изключение, което _не е прихванато никъде_ (не е прихванато във вашия код, в LCL код, в CGE код...).
 
-- Although an exception breaks the execution, you can use the `try ... finally ... end` construction to execute some code *always*, even if the code was interrupted by an exception.
+- Въпреки че изключенията прекъсват изпълнението, можете да използвате конструкцията `try ... finally ... end`, за да изпълните някакъв код *винаги*, дори ако кодът е бил прекъснат от изключение.
 +
-The `try ... finally ... end` construction also works when code is interrupted by `Break` or `Continue` or `Exit` keywords. The point is to always execute code in the `finally` section.
+Конструкцията `try ... finally ... end` също сработва, когато кодът е прекъснат от ключови думи `Break` или `Continue` или `Exit`. Въпросът е кода в секцията `finally` да се изпълнява наистина _винаги_.
 
-An "exception" is, in general, any class instance.
+Като цяло "изключение" може да бъде инстанция от всеки един клас.
 
-- The compiler does not enforce any particular class. You just must call `raise XXX` where `XXX` is an instance of any class. Any class (so, anything descending from `TObject`) is fine.
+- Компилаторът не налага никой конкретен клас. Просто трябва да извикате `raise XXX`, където `XXX` е екземпляр от какъвто и да е клас (така че всичко, произлизащо от `TObject` става за целта).
 
-- It is a standard convention for exception classes to descend from a special `Exception` class. The `Exception` class extends `TObject`, adding a string `Message` property and a constructor to easily set this property. All exceptions raised by the standard library descend from `Exception`. We advise to follow this convention.
+- Стандартна конвенция за класовете от изключения е те да наследяват специалния клас `Exception`. Класът `Exception` наследява `TObject`, като добавя свойството низ `Message` и конструктор за лесно задаване на това свойство. Всички изключения, предизвикани от стандартната библиотека, наследяват `Exception`. Съветваме ви да следвате тази конвенция.
 
-- Exception classes (by convention) have names that start with `E`, not `T`. Like `ESomethingBadHappened`.
+- Класовете с изключение (по конвенция) имат имена, които започват с `E`, не с `T`. Например `ESomethingBadHappened`.
 
-- The compiler will automatically free exception object when it is handled. Don't free it yourself.
+- Компилаторът автоматично ще освободи обекта-изключение, когато той бъде обработен. Не го освобождавайте сами.
 +
-In most cases, you just construct the object at the same time when you call `raise`, like `raise ESomethingBadHappened.Create('Description of what bad thing happened.')`.
+В повечето случаи вие просто конструирате обекта в същото време, когато извиквате `raise`, например `raise ESomethingBadHappened.Create('Описание на случилото се лошо нещо.')`.
 
-### Raising
+### Предизвикване
 
-If you want to raise your own exception, declare it and call `raise ...` when appropriate:
+Ако искате да предизвикате свое собствено изключение, декларирайте го и извикайте `raise ...`, когато е подходящо:
 
 [source,pascal]
 ----
@@ -1285,9 +1285,9 @@ begin
 end;
 ----
 
-Note that the expression following the `raise` should be a valid class instance to raise. You will almost always create the exception instance here.
+Обърнете внимание, че изразът след `raise` трябва да бъде валиден екземпляр на клас. Почти винаги ще създавате екземпляра за изключение тук.
 
-You can also use the `CreateFmt` constructor, which is a comfortable shortcut to `Create(Format(MessageFormat, MessageArguments))`. This is a common way to provide more information to the exception message. We can improve the previous example like this:
+Можете също да използвате конструктора `CreateFmt`, който е удобно съкращение на `Create(Format(MessageFormat, MessageArguments))`. Това е обичаен начин за предоставяне на повече информация в съобщението за изключение. Можем да подобрим предишния пример така:
 
 [source,pascal]
 ----
@@ -1302,9 +1302,9 @@ begin
 end;
 ----
 
-### Catching
+### Прихващане
 
-You can catch an exception like this:
+Можете да прихванете изключение така:
 
 [source,pascal]
 ----
@@ -1326,7 +1326,7 @@ begin
 end;
 ----
 
-To improve the above example, we can declare the name for the exception instance (we will use `E` in the example). This way we can print the exception message:
+За да подобрим горния пример, можем да декларираме име за инстанцията на изключение (ще използваме `E` в примера). По този начин можем да отпечатаме съобщението за грешка:
 
 [source,pascal]
 ----
@@ -1338,7 +1338,7 @@ except
 end;
 ----
 
-One could also test for multiple exception classes:
+Може също да се тества за множество изключения:
 
 [source,pascal]
 ----
@@ -1352,7 +1352,7 @@ except
 end;
 ----
 
-You can also react to any exception raised, if you don't use any `on` expression:
+Можете също така да отработите и произволно предизвикано изключение, ако не използвате никакъв израз `on`:
 
 [source,pascal]
 ----
@@ -1365,13 +1365,13 @@ end;
 // ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
-In general _you should only catch exceptions of a specific class, that signal a particular problem that you know what to do with_. Be careful with catching exceptions of a general type (like catching any `Exception` or any `TObject`), as you may easily catch too much, and later cause troubles when debugging other problems. As in all programming languages with exceptions, the good rule to follow is to _never capture an exception that you do not know how to handle_. In particular, do not capture an exception just as a simple workaround of the problem, without investigating first _why_ the exception occurs.
+Като цяло _трябва да прихванете само изключения от определен клас, които сигнализират за определен проблем, с който знаете как да се справите_. Бъдете внимателни с прихващането на изключения от общ тип (като всяко `Exception` или всеки `TObject`), тъй като лесно можете да уловите прекалено много и по-късно да причините проблеми при отстраняване на други грешки. Както във всички езици за програмиране с изключения, доброто правило, което трябва да следвате, е _никога да не прихващате изключение, с което не знаете как да се справите_. По-специално, не прихващайте изключение само за да отстраните проблема, без първо да проучите _защо_ възниква изключението.
 
-- Does the exception indicate a problem in user input? Then you should report it to user.
+- Изключението показва ли проблем при въвеждането от потребителя? Тогава трябва да го докладвате на потребителя.
 
-- Does the exception indicate a bug in your code? Then you should fix the code, to avoid the exception from happening at all.
+- Изключението показва ли грешка във вашия код? Тогава трябва да поправите кода, за да не се случва повече изключението.
 
-Another way to capture all exceptions is to use:
+Друг начин да прихванете всички изключения е да използвате:
 
 [source,pascal]
 ----
@@ -1385,7 +1385,7 @@ end;
 // ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
-Although usually it is enough to capture `Exception`:
+Въпреки че обикновено е достатъчно да се прихване само `Exception`:
 
 [source,pascal]
 ----
@@ -1399,7 +1399,7 @@ end;
 // ABOUT "CAPTURING ALL EXCEPTIONS"
 ----
 
-You can "re-raise" the exception in the `except ... end` block, if you decide so. You can just do `raise E` if the exception instance is `E`, you can also just use parameter-less `raise`. For example:
+Можете да "предизвикате отново" изключението в блока `except ... end`, ако е необходимо. Можете да извикате `raise E;`, ако инстанцията е `E`, можете също така просто да използвате `raise` без параметър. Например:
 
 [source,pascal]
 ----
@@ -1416,11 +1416,11 @@ except
 end;
 ----
 
-Note that, although the exception is an instance of an object, you should never manually free it after raising. The compiler will generate proper code that makes sure to free the exception object once it's handled.
+Имайте предвид, че въпреки че изключението е екземпляр на обект, никога не бива да го освобождавате ръчно. Компилаторът ще генерира подходящ код, който гарантира освобождаването след като бъде обработен.
 
-### Finally (doing things regardless if an exception occurred)
+### Finally (изпълнение на код независимо дали има изключение)
 
-Often you use `try .. finally .. end` construction to free an instance of some object, regardless if an exception occurred when using this object. The way to write it looks like this:
+Често се използва конструкцията `try .. finally .. end`, за освобождаване на екземпляр от някакъв клас, независимо дали е възникнало изключение при използването му. Начинът за използване е следния:
 
 [source,pascal]
 ----
@@ -1438,9 +1438,9 @@ begin
 end;
 ----
 
-This works reliably always, and does not cause memory leaks, even if `MyInstance.DoSomething` or `MyInstance.DoSomethingElse` raise an exception.
+Това работи надеждно винаги и не причинява изтичане на памет, дори ако `MyInstance.DoSomething` или `MyInstance.DoSomethingElse` предизвикат изключение.
 
-Note that this takes into account that local variables, like `MyInstance` above, have undefined values (may contain random "memory garbage") before the first assignment. That is, writing something like this would _not_ be valid:
+Обърнете внимание, че това взема предвид, че локалните променливи, като `MyInstance` по-горе, имат недефинирани стойности (може да съдържат случаен "боклук в паметта") преди първото присвояване. Тоест, писането на нещо подобно _не_ би било вярно:
 
 [source,pascal]
 ----
@@ -1460,9 +1460,9 @@ begin
 end;
 ----
 
-The above example is not valid: if an exception occurs within `TMyClass.Create` (a constructor may also raise an exception), or within the `CallSomeOtherProcedure`, then the `MyInstance` variable is not initialized. Calling `FreeAndNil(MyInstance)` will try to call destructor of `MyInstance`, which will most likely crash with _Access Violation (Segmentation Fault)_. In effect, one exception causes another exception, which will make the error report not very useful: you will not see the message of the original exception.
+Горният пример е грешен: ако възникне изключение в `TMyClass.Create` (конструктора може също да предизвика изключение) или в рамките на `CallSomeOtherProcedure`, тогава променливата `MyInstance` не се инициализира. Извикването на `FreeAndNil(MyInstance)` ще се опита да извика деструктора на `MyInstance`, което най-вероятно ще се срине с _Access Violation (Segmentation Fault)_. Всъщност едно изключение ще причини друго изключение, което ще направи съобщението за грешка безполезно: няма да видите съобщението на първото изключение.
 
-Sometimes it is justified to fix the above code by first initializing all local variables to `nil` (on which calling `FreeAndNil` is safe, and will not do anything). This makes sense if you free a *lot* of class instances. So the two code examples below work equally well:
+Понякога е оправдано да поправите горния код, като първо инициализирате всички локални променливи на `nil` (тогава извикването на `FreeAndNil` е безопасно). Това има смисъл, ако освождавате *много* екземпляри на класове. Така че двата примера по-долу работят еднакво добре:
 
 [source,pascal]
 ----
@@ -1495,7 +1495,7 @@ begin
 end;
 ----
 
-It is probably more readable in the form below:
+Вероятно това е по-четливо във вида по-долу:
 
 [source,pascal]
 ----
@@ -1525,17 +1525,17 @@ begin
 end;
 ----
 
-NOTE: In this simple example, you could also make a valid argument that the code should be split into 3 separate procedures, one calling each other.
+NOTE: В този прост пример можете да направите правилния довод, че кодът би трябвало да се раздели на 3 отделни процедури, като едната извиква всяка от другите две.
 
-### How the exceptions are displayed by various libraries
+### Как изключенията се показват от различните библиотеки
 
-- In case of Lazarus LCL, the exceptions raised during events (various callbacks assigned to `OnXxx` properties of LCL components) will be captured and will result in a nice dialog message, that allows the user to continue and stop the application. This means that your own exceptions do not "get out" from `Application.ProcessMessages`, so they do not automatically break the application. You can configure what happens using `TApplicationProperties.OnException`.
+- В случая на Lazarus LCL, изключенията, предизвикани по време на събития (различни обратни извиквания, _callbacks_, присвоени на свойствата на `OnXxx` в LCL компонентите) ще бъдат прихванати и ще доведат до диалогово съобщение, което позволява на потребителя да продължи или да спре приложението. Това означава, че вашите собствени изключения не "излизат" от `Application.ProcessMessages`, така че те не прекъсват директно приложението. Можете да конфигурирате какво точно да се случи с помощта на `TApplicationProperties.OnException`.
 
-- Similarly in case of _Castle Game Engine_ with `CastleWindow`: the exception is internally captured and results in nice error message. So exceptions do not "get out" from `Application.ProcessMessages`. Again, you can configure what happens using `Application.OnException`.
+- По същия начин, в _Castle Game Engine_ с `CastleWindow`: изключението се прихваща вътрешно и води до съобщение за грешка. Така изключенията не "излизат" от `Application.ProcessMessages`. Отново можете да конфигурирате какво да се случва с помощта на `Application.OnException`.
 
-- Some other GUI libraries may do a similar thing to above.
+- Някои други GUI библиотеки може да направят нещо подобно на горното.
 
-- In case of other applications, you can configure how the exception is displayed by assigning a global callback to `OnHaltProgram`.
+- В случай на други приложения, можете да конфигурирате как се показва изключението, като присвоите глобално _callback_ на `OnHaltProgram`.
 
 ## Run-time library
 
