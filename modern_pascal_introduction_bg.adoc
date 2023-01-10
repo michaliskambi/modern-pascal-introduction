@@ -1980,26 +1980,26 @@ end.
 
 ### Записи
 
-_Record_ is just a container for other variables. It's like a much, much simplified _class_: there is no inheritance or virtual methods. It is like a _structure_ in C-like languages.
+_Record_ е просто контейнер за други променливи. Това е като много, много опростен _class_: няма наследяване или виртуални методи. Това е като _struct_ в C-подобни езици.
 
-If you use the `{$modeswitch advancedrecords}` directive, records *can* have methods and visibility specifiers. In general, language features that are available for classes, and _do not break the simple predictable memory layout of a record_, are then possible.
+Ако използвате директивата `{$modeswitch advancedrecords}`, записите *могат* да имат методи и спецификатори за видимост. Като цяло, тогава са възможни езикови функции, които са налични за класове и _не нарушават простото предвидимо разпределение на паметта на запис_.
 
 [source,pascal]
 ----
 include::code-samples/records.lpr[]
 ----
 
-In modern Object Pascal, your first instinct should be to design a `class`, not a `record` -- because classes are packed with useful features, like constructors and inheritance.
+В съвременния Object Pascal първият ви инстинкт трябва да бъде да проектирате „клас“, а не „запис“ -- защото класовете са пълни с полезни функции, като конструктори и наследяване.
 
-But records are still very useful when you need speed or a predictable memory layout:
+Но записите все още са много полезни, когато имате нужда от скорост или предвидимо разпределение на паметта:
 
-* Records do not have any constructor or destructor. You just define a variable of a record type. It has undefined contents (memory garbage) at the beginning (except auto-managed types, like strings; they are guaranteed to be initialized to be empty, and finalized to free the reference count). So you have to be more careful when dealing with records, but it gives you some performance gain.
-* Arrays of records are nicely linear in memory, so they are cache-friendly.
-* The memory layout of records (size, padding between fields) is clearly defined in some situations: when you request the _C layout_, or when you use `packed record`. This is useful:
-** to communicate with libraries written in other programming languages, when they expose an API based on records,
-** to read and write binary files,
-** to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
-* Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases. And it allows for more _dirty, low-level unsafe tricks_:)
+* Записите нямат конструктор или деструктор. Вие просто дефинирате променлива от тип запис. Има недефинирано съдържание (боклук в паметта) в началото (с изключение на автоматично управлявани типове, като низове; гарантирано е, че те ще бъдат инициализирани, така че да бъдат празни, и финализирани, за да освободят броя на препратките). Така че трябва да сте по-внимателни, когато работите със записи., Те обаче ви давар известно предимство в скоростта.
+* Масивите от записи са добре линеаризирани в паметта, така че са удобни за кеширане.
+* Разпределението на паметта при записите (размер, празнини между полетата) е ясно дефинирано в някои ситуации: когато поискате _C layout_ или когато използвате `packed record`. Това е полезно:
+** за комуникация с библиотеки, написани на други езици за програмиране, когато предоставят API, базиран на записи,
+** за четене и запис на двоични файлове,
+** да правят мръсни трикове на ниско ниво (като нерестриктирано конвертиране на типове от един тип към друг, когато сте наясно с тяхното представяне в паметта).
+* Записите също могат да имат `case` варианти, които работят като _unions_ в C-подобните езици. Те позволяват да се третира една и съща част от паметта като различен тип, в зависимост от вашите нужди. Това позволява по-добро използване на паметта в някои случаи. И позволява повече _мръсни, опасни трикове на ниско ниво_:)
 
 ### Old-style objects
 
