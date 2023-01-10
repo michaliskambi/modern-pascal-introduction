@@ -1535,20 +1535,20 @@ NOTE: В този прост пример можете да направите �
 
 - Някои други GUI библиотеки може да направят нещо подобно на горното.
 
-- В случай на други приложения, можете да конфигурирате как се показва изключението, като присвоите глобално _callback_ на `OnHaltProgram`.
+- В случай на други приложения, можете да конфигурирате как се показва изключението, като присвоите глобален _callback_ на `OnHaltProgram`.
 
-## Run-time library
+## Run-time библиотека
 
-### Input/output using streams
+### Вход/изход с помощта на потоци
 
-Modern programs should use `TStream` class and its many descendants to do input / output. It has many useful descendants, like `TFileStream`, `TMemoryStream`, `TStringStream`.
+Съвременните програми на Паскал трябва да използват класа `TStream` и неговите наследници за да извършват входно/изходни операции. Много полезни класове наследяват `TStream`, например: `TFileStream`, `TMemoryStream`, `TStringStream`.
 
 [source,pascal]
 ----
 include::code-samples/file_stream.lpr[]
 ----
 
-*In the Castle Game Engine*: You should use the `Download` function to create a stream that obtains data from any URL. Regular files, HTTP and HTTPS resources, Android assets and more are supported this way. Moreover, to open the resource inside your game data (in the `data` subdirectory) use the special `castle-data:/xxx` URL. Examples:
+В *Castle Game Engine*: Трябва да използвате функцията `Download` за създаването на поток, който получава данни от произволен URL адрес. По този начин се поддържат обикновени файлове, HTTP и HTTPS ресурси, Android assets и други. Освен това, за да отворите ресурс във вашите данни за играта (в поддиректорията `data`), използвайте специалния URL адрес `castle-data:/xxx`. Примери:
 
 [source,pascal]
 ----
@@ -1566,7 +1566,7 @@ S := Download('file:///home/michalis/my_binary_file.data');
 S := Download('castle-data:/gui/my_image.png');
 ----
 
-To read text files, we advise using the `TTextReader` class. It provides a line-oriented API, and wraps a `TStream` inside. The `TTextReader` constructor can take a ready URL, or you can pass there your custom `TStream` source.
+За да четете текстови файлове, препоръчваме да използвате класа `TTextReader`. Той предоставя поредово API и съдържа в себе си `TStream`. Конструкторът `TTextReader` може да вземе готов URL адрес или вие можете да подадете там вашия персонализиран източник `TStream`.
 
 [source,pascal]
 ----
@@ -1580,92 +1580,92 @@ end;
 ----
 
 [[generic-containers-section]]
-### Containers (lists, dictionaries) using generics
+### Контейнери (списъци, речници), използващи генерици
 
-The language and run-time library offer various flexible containers. There are a number of non-generic classes (like `TList` and `TObjectList` from the `Contnrs` unit), there are also dynamic arrays (`array of TMyType`). But to get the most flexibility *and* type-safety, I advise using *generic containers* for most of your needs.
+Езикът и run-time библиотеката предлагат различни гъвкави контейнери. Има редица "негенерични" класове (като `TList` и `TObjectList` от модула `Contnrs`), има и динамични масиви (`array of TMyType`). Но за да получите най-голяма гъвкавост *и* безопасност, съветвам за повечето от вашите нужди да използвате *генерични контейнери*.
 
-The _generic containers_ give you a lot of helpful methods to add, remove, iterate, search, sort... The compiler also knows (and checks) that the container holds only items of the appropriate type.
+_Генеричните контейнери_ ви дават много полезни методи за добавяне, премахване, обхождане, търсене, сортиране... Компилаторът също така знае (и проверява), че контейнерът съдържа единствено елементи от указания тип.
 
 // Using these lists is a good idea, as you get type-safety, and their API is rich (there are methods to find, sort, iterate and so on). We discourage using _dynamic arrays_ (`array of X`, `SetLength(X, ...)`) as their API is poor (you can only use `SetLength` and your own type helpers). We discourage using `TList` or `TObjectList` as it will require casting your references from `TObject` to your type.
 
-There are three libraries providing generics containers in FPC now:
+В момента има три библиотеки, предоставящи генерични контейнери в FPC:
 
-* `Generics.Collections` unit and friends (since FPC >= 3.2.0)
-* `FGL` unit
-* `GVector` unit and friends (together in `fcl-stl`)
+* Модул `Generics.Collections` (от FPC >= 3.2.0)
+* Модул `FGL`
+* Модул `GVector` (включен в `fcl-stl`)
 
-We advise using the `Generics.Collections` unit. The generic containers it implements are
+Съветваме да се използва модул `Generics.Collections`. Генерични контейнери реализирани там са:
 
-- packed with useful features,
+- пакетирани с полезни функции,
 
-- very efficient (in particular important for accessing dictionaries by keys),
+- много ефективни (особено важно при достъп до речници{empty}footnote:dictionary[речник = Dictionary, a.k.a. Associative array] с помощта на ключове),
 
-- compatible between FPC and Delphi,
+- съвместими между FPC и Delphi,
 
-- the naming is consistent with other parts of the standard library (like the non-generic containers from the `Contnrs` unit).
+- именуването е в съответствие с другите части на стандартната библиотека (като негенеричните контейнери от модула `Contnrs`).
 
-*In the Castle Game Engine*: We use the `Generics.Collections` intensively throughout the engine, and advise you to use `Generics.Collections` in your applications too!
+В *Castle Game Engine*: Ние използваме интензивно `Generics.Collections` и съветваме да използвате `Generics.Collections` и във вашите приложения!
 
-Most important classes from the `Generics.Collections` unit are:
+Най-важните класове от `Generics.Collections` са:
 
-TList:: A generic list of types.
-TObjectList:: A generic list of object instances. It can "own" children, which means that it will free them automatically.
-TDictionary:: A generic dictionary.
-TObjectDictionary:: A generic dictionary, that can "own" the keys and/or values.
+TList:: Генеричен списък от елементи от указан тип.
+TObjectList:: Генеричен списък от екземпляри от указан клас. Може да "притежава" екземплярите, което означава че ще ги унищожи автоматично.
+TDictionary:: Генеричен речник{empty}footnote:dictionary[].
+TObjectDictionary:: Генеричен речник, Може да "притежава" ключовете и/или стойностите.
 // So (which means that they should be object instances, and will be automatically freed).
 
-Here's how to you use a simple generic `TObjectList`:
+Ето как да използвате прост генеричен `TObjectList`:
 
 [source,pascal]
 ----
 include::code-samples/generics_lists.lpr[]
 ----
 
-Note that some operations require comparing two items, like sorting and searching (e.g. by `Sort` and `IndexOf` methods). The `Generics.Collections` containers use for this a _comparer_. The _default comparer_ is reasonable for all types, even for records (in which case it compares memory contents, which is a reasonable default at least for searching using `IndexOf`).
+Обърнете внимание, че някои операции изискват сравняване на два елемента, като сортиране и търсене (напр. чрез методите `Sort` и `IndexOf`). Контейнерите в `Generics.Collections` използват за това _сравнител_. _Подразбиращия се сравнител_ е смислен за всички типове, дори за записи (в дадения случай сравнява съдържанието на паметта, което е разумна настройка по подразбиране поне за търсене чрез `IndexOf`).
 // It can be customized if needed.
 
-When sorting the list you can provide a _custom comparer_ as a parameter. The _comparer_ is a class implementing the `IComparer` interface. In practice, you usually define the appropriate callback, and use `TComparer<T>.Construct` method to wrap this callback into an `IComparer` instance. An example of doing this is below:
+Когато сортирате списък, можете да укажете _персонализиран сравнител_ като параметър. _Сравнителя_ е клас, реализиращ интерфейса `IComparer`. На практика обикновено дефинирате подходящ _callback_ и използвате метода `TComparer<T>.Construct`, за да пакетирате този _callback_ в екземпляр на `IComparer`. Пример за това е по-долу:
 
 [source,pascal]
 ----
 include::code-samples/generics_sorting.lpr[]
 ----
 
-The `TDictionary` class implements a *dictionary*, also known as a *map (key -> value)*, also known as an *associative array*. Its API is a bit similar to the C# `TDictionary` class. It has useful iterators for keys, values, and pairs of key->value.
+Класът `TDictionary` реализира *речник*, познат като *map (key -> value)*, също познат като *associative array*. Неговото API е малко подобно на C# `TDictionary`. Има полезни итератори за ключове, стойности и двойки ключ->стойност.
 
-An example code using a dictionary:
+Примерен код, използващ речник:
 
 [source,pascal]
 ----
 include::code-samples/generics_dictionary.lpr[]
 ----
 
-The `TObjectDictionary` can additionally _own_ the dictionary keys and/or values, which means that they will be automatically freed. Be careful to _only own keys and/or values if they are object instances_. If you set to _"owned"_ some other type, like an `Integer` (for example, if your keys are `Integer`, and you include `doOwnsKeys`), you will get a nasty crash when the code executes.
+`TObjectDictionary` може да _притежава_ ключовете и/или стойностите, което означава че ще ги унищожава автоматично. Внимавайте _това притежание да бъде само когато ключовете/стойностите са екземпляри на обекти_. Ако укажете, че ще се притежават елементи от друг тип, например `Integer` (т.е. ако ключовете са `Integer`, и включите `doOwnsKeys`), ще получите много неприятен срив при изпълнение на програмата.
 
-An example code using the `TObjectDictionary` is below. Compile this example with _memory leak detection_, like `fpc -gl -gh generics_object_dictionary.lpr`, to see that everything is freed when program exits.
+Пример за това как се използва `TObjectDictionary` е даден по-долу. Компилирайте примера с _memory leak detection_, напр. така `fpc -gl -gh generics_object_dictionary.lpr`, за да видите, че няма изтичане на памет при приключване на програмата.
 
 [source,pascal]
 ----
 include::code-samples/generics_object_dictionary.lpr[]
 ----
 
-If you prefer using the `FGL` unit instead of `Generics.Collections`, the most important classes from the `FGL` unit are:
+Ако предпочитате да използвате модула `FGL` вместо `Generics.Collections`, най-важните класове от `FGL` са:
 
-TFPGList:: A generic list of types.
-TFPGObjectList:: A generic list of object instances. It can "own" children.
-TFPGMap:: A generic dictionary.
+TFPGList:: Генеричен списък от елементи от указан тип.
+TFPGObjectList:: Генеричен списък от екземпляри от указан клас. Може да "притежава" екземплярите.
+TFPGMap:: Генеричен речник{empty}footnote:dictionary[].
 
 //Use `TFPGList` for lists of primitives (or records or old-style objects), `TFPGObjectList` for a list of class instances. *In the Castle Game Engine:* You can also use `CastleGenericLists` with `TGenericStructList` for a list of records or old-style objects, this workarounds the problem of impossibility to override their operators in older FPC versions.
 
-In `FGL` unit, the `TFPGList` can be only used for types for which the equality operator (=) is defined. For `TFPGMap` the _"greater than"_ (>) and _"less than"_ (<) operators must be defined for the key type. If you want to use these lists with types that don't have built-in comparison operators (e.g. with records), you have to overload their operators as shown in the <<Operator overloading>>.
+В модул `FGL`, `TFPGList` може да се използва само с типове, които имат дефиниран оператор за равенство (=). При `TFPGMap` за типа на ключа трябват дефинирани оператори _"по-голямо"_ (>) и _"по-малко"_ (<). Ако искате да използвате тези контейнери с типове, които нямат дефинирани оператори за сравнение (например записи), ще трябва да им дефинирате съответните оператори както е показано в <<Operator overloading>>.
 
-*In the Castle Game Engine* we include a unit `CastleGenericLists` that adds `TGenericStructList` and `TGenericStructMap` classes. They are similar to `TFPGList` and `TFPGMap`, but they do not require a definition of the comparison operators for the appropriate type (instead, they compare memory contents, which is often appropriate for records or method pointers). But the `CastleGenericLists` unit is deprecated since the engine version 6.3, as we advise using `Generics.Collections` instead.
+В *Castle Game Engine* сме включили модул `CastleGenericLists`, който добавя класовете `TGenericStructList` и `TGenericStructMap`. Те са подобни на `TFPGList` и `TFPGMap`, но не изискват дефиниране на оператори за сравнение за съответните типове (вместо това, те сравняват съдържанието на паметта, което е често подходящо за записи или указатели). Но от версия 6.3 модула `CastleGenericLists` е маркиран като отживял (_deprecated_) и препоръчваме използването на `Generics.Collections` вместо него.
 
-If you want to know more about the generics, see <<Generics>>.
+Ако искате да научите повече за генериците, вижте <<Generics>>.
 
-### Cloning: TPersistent.Assign
+### Клониране: TPersistent.Assign
 
-Copying the class instances by a simple assignment operator copies the *reference*.
+Копирането на екземплярите на клас чрез прост оператор за присвояване (:=) копира единствено *препратката*.
 
 [source,pascal]
 ----
@@ -1680,7 +1680,7 @@ begin
 end;
 ----
 
-To copy the *class instance contents*, the standard approach is to derive your class from `TPersistent`, and override its `Assign` method. Once it's implemented properly in `TMyObject`, you use it like this:
+За да копирате *съдържанието на екземпляр* от някакъв клас, стандартния подход е да наследите класа от `TPersistent`, и да подмените неговия метод `Assign`. След като бъде правилно написан за `TMyObject`, може да се използва така:
 
 [source,pascal]
 ----
@@ -1696,26 +1696,26 @@ begin
 end;
 ----
 
-To make it work, you need to implement the `Assign` method to actually copy the fields you want. You should carefully implement the `Assign` method, to copy from a class that may be a descendant of the current class.
+За да работи правилно, кодът в тялото на метода `Assign` трябва да копира стойностите на необходимите полета. Трябва внимателно да кодирате `Assign`, за да копирате от клас, който може да е наследник на текущия клас.
 
 [source,pascal]
 ----
 include::code-samples/persistent.lpr[]
 ----
 
-Sometimes it's more comfortable to alternatively override the `AssignTo` method in the source class, instead of overriding the `Assign` method in the destination class.
+Понякога е по-удобно да замените метода `AssignTo` в класa източник, вместо да замените метода `Assign` в класa, на който се присвоява.
 
-Be careful when you call `inherited` in the overridden `Assign` implementation. There are two situations:
+Бъдете внимателни, когато извиквате `inherited` в подменения `Assign`. Има две ситуации:
 
-Your class is a direct descendant of the `TPersistent` class. (Or, it's not a direct descendant of `TPersistent`, but no ancestor has overridden the `Assign` method.)::
+Вашият клас е пряк наследник на класа `TPersistent`. (Или не е пряк наследник на `TPersistent`, но нито един предшественик не е заменил метода `Assign`.)::
 
-  In this case, your class should use the `inherited` keyword (to call the `TPersistent.Assign`) _only if you cannot handle the assignment in your code_.
+   В този случай вашият клас трябва да използва ключовата дума `inherited` (за извикване на `TPersistent.Assign`) _само ако не можете да се справите с присвояването във вашия код_.
 
-Your class descends from some class that has already overridden the `Assign` method.::
+Вашият клас произлиза от клас, който вече е заменил метода `Assign`.::
 
-  In this case, your class should _always_ use the `inherited` keyword (to call the ancestor `Assign`). In general, calling `inherited` in overridden methods is _usually_ a good idea.
+  В този случай вашият клас трябва _винаги_ да използва ключовата дума `inherited` (за да извика наследения `Assign`). Като цяло извикването на `inherited` в подменени методи _обикновено_ е добра идея.
 
-To understand the reason behind the above rule (when you should call, and when you should _not_ call `inherited` from the `Assign` implementation), and how it relates to the `AssignTo` method, let's look at the `TPersistent.Assign` and `TPersistent.AssignTo` implementations:
+За да разберете причината зад горното правило (кога трябва и кога _не трябва_ да извикате `inherited` от имплементацията `Assign`) и как това е свързано с метода `AssignTo`, нека да разгледаме `TPersistent.Assign` и `TPersistent.AssignTo` реализации:
 
 [source,pascal]
 ----
@@ -1733,37 +1733,37 @@ begin
 end;
 ----
 
-NOTE: This is not the *exact* implementation of `TPersistent`. I copied the FPC standard library code, but then I simplified it to hide unimportant details about the exception message.
+NOTE: Това не е *точната* реализация в `TPersistent`. Копиран е кода на стандартната FPC библиотека, но след това е опростен, за да се скрият маловажни подробности относно съобщението за изключение.
 //The exact source code, in the FPC standard library, can be found in the `rtl/objpas/classes/persist.inc` source file. Its behavior is 100% compatible with the Delphi standard library, as far as I know.
 
-The conclusions you can get from the above are:
+Изводите, които можете да направите от горното са:
 
-* _If neither `Assign` nor `AssignTo` are overridden_, then calling them will result in an exception.
+* _Ако нито `Assign`, нито `AssignTo` не са заменени_, извикването им ще доведе до изключение.
 
-* Also, note that there is _no_ code in `TPersistent` implementation that automatically copies all the fields (or all the published fields) of the classes. That's why you need to do that yourself, by overriding `Assign` in all the classes. You can use RTTI (runtime type information) for that, but for simple cases you will probably just list the fields to be copied manually.
+* Също така имайте предвид, че няма _няма_ код в изпълнението на `TPersistent`, който автоматично да копира всички полета (или всички публикувани полета) на класовете. Ето защо трябва да направите това сами, като замените `Assign` във всички класове. Можете да използвате RTTI (информация за тип на изпълнение) за това, но за прости случаи вероятно просто ще копирате полетата ръчно.
 
-When you have a class like `TApple`, your `TApple.Assign` implementation usually deals with copying fields that are specific to the `TApple` class (not to the `TApple` ancestor, like `TFruit`). So, the `TApple.Assign` implementation usually checks whether `Source is TApple` at the beginning, before copying apple-related fields. Then, it calls `inherited` to allow `TFruit` to handle the rest of the fields.
+Когато имате клас като `TApple`, вашата реализация `TApple.Assign` обикновено ще се занимава с копиране на полета, които са специфични само за класа `TApple` (не за предшественика на `TApple`, като `TFruit`). И така, изпълнението на `TApple.Assign` обикновено проверява дали `Source is TApple` в началото, преди да копира полета, свързани с ябълка. След това извиква `inherited`, за да позволи на `TFruit` да обработва останалите полета.
 
-Assuming that you implemented `TFruit.Assign` and `TApple.Assign` following the standard pattern (as shown in the example above), the effect is like this:
+Ако приемем, че сте написали `TFruit.Assign` и `TApple.Assign` по описания начин, тогава ефектът ще е следният:
 
-* If you pass `TApple` instance to `TApple.Assign`, it will work and copy all the fields.
-* If you pass `TOrange` instance to `TApple.Assign`, it will work and only copy the common fields shared by both `TOrange` and `TApple`. In other words, the fields defined at `TFruit`.
-* If you pass `TWerewolf` instance to `TApple.Assign`, it will raise an exception (because `TApple.Assign` will call `TFruit.Assign` which will call `TPersistent.Assign` which raises an exception).
+* Ако подадете екземпляр `TApple` на `TApple.Assign`, той ще копира всички полета.
+* Ако подадете екземпляр `TOrange` на `TApple.Assign`, той ще копира само общите полета на `TOrange` и `TApple`. С други думи - ще копира полетата дефинирани в `TFruit`.
+* Ако подадете екземпляр `TWerewolf` на `TApple.Assign`, той ще предизвика изключение (защото `TApple.Assign` ще извика `TFruit.Assign`, който ще извика `TPersistent.Assign`, който ще предизвика изключение).
 
-NOTE: Remember that when descending from `TPersistent`, the default _visibility specifier_ is `published`, to allow streaming of `TPersistent` descendants. Not all field and property types are allowed in the `published` section. If you get errors related to it, and you don't care about streaming, just change the visibility to `public`. See the <<Visibility specifiers>>.
+NOTE: Запомнете, че когато наследявате `TPersistent`, по подразбиране _спецификатора за видимост_ е `published`, за да се позволи сериализиране на наследниците на `TPersistent`. Не всички типове на полета и свойства са разрешени в секция `published`. Ако поради това получите грешки и не ви е грижа за сериализацията, просто променете видимостта на `public`. Вижте <<Visibility specifiers>>.
 
-## Various language features
+## Разни възможности на езика
 
-### Local (nested) routines
+### Локални (вложени) подпрограми
 
-Inside a larger _routine_ (function, procedure, method) you can define a helper routine.
+Вътре в по-голяма _подпрограма_ (функция, процедура, метод) може да се дефинира друга, помощна подпрограма.
 
 //It has all the flexibility of a normal routine, it's just not
 //This is quite powerful feature that allows you to _easily_ split a long routine into many smaller ones.
 
-The local routine can freely access (read and write) all the parameters of a parent, _and all the local variables of the parent that were declared above it_. This is very powerful. It often allows to split long routines into a couple of small ones without much effort (as you don't have to pass around all the necessary information in the parameters). Be careful to not overuse this feature -- if many nested functions use (and even change) the same variable of the parent, the code may get hard to follow.
+Вложената подпрограма може свободно да достъпва (чете и записва) всички параметри подадени на външната, _както и всички нейни локални променливи_. Това е много мощно средство, което позволява да се разбие голяма подпрограма в няколко по-малки без да е необходимо голямо усилие (тъй като не е нужно да предавате цялата необходима информация в параметрите). Внимавайте да не прекалите -- ако много вложени подпрограми използват (и дори променят) една и съща променлива на външната подпрограма, кодът може да стане труден за разчитане.
 
-These two examples are equivalent:
+Долните два примера са еквивалентни:
 
 [source,pascal]
 ----
@@ -1783,7 +1783,7 @@ begin
 end;
 ----
 
-Another version, where we let the local routine `Square` to access `I` directly:
+Друга версия, в която локалната функция `Square` осъществява директен достъп до `I`:
 
 [source,pascal]
 ----
@@ -1803,30 +1803,30 @@ begin
 end;
 ----
 
-Local routines can go to any depth -- which means that you can define a local routine within another local routine. So you can go wild (but please don't go _too wild_, or the code will get unreadable:).
+Локалните процедури могат да достигнат всякаква дълбочина -- което означава, че можете да дефинирате локална процедура в друга локална процедура. Така че можете да се развихрите (но, моля, не ставайте _прекалено диви_, или кодът ще стане нечетлив:).
 
 [[Callbacks]]
 
-### Callbacks (aka events, aka pointers to functions, aka procedural variables)
+### Callbacks (познати като _Събития_, също като _Указатели към функции_, също като _Процедурни променливи_)
 
-They allow to call a function indirectly, through to a variable. The variable can be assigned at runtime to point to any function _with matching parameter types and return types_.
+Позволяват индиректно извикване на подпрограми чрез променлива. Променливата може да бъде присвоена по време на изпълнение, за да сочи към всяка функция _със съвпадащи типове параметри и връщани типове_.
 
-The callback can be:
+Callback-ът може да бъде:
 
-* Normal, which means it can point to any normal routine (not a method, not local).
+* Нормален, което означава, че може да сочи към всяка обикновена подпрограма (без методи и вложени подпрограми).
 +
 [source,pascal]
 ----
 include::code-samples/callbacks.lpr[]
 ----
-* A method: declare with `of object` at the end.
+* Метод: декларира се с `of object` накрая.
 +
 [source,pascal]
 ----
 include::code-samples/callbacks_of_object.lpr[]
 ----
 +
-Note that you _cannot_ pass global procedures / functions as methods. They are incompatible. If you have to provide an `of object` callback, but don't want to create a dummy class instance, you can pass <<Class methods>> as methods.
+Имайте предвид, че _не можете_ да предавате глобални процедури / функции като методи. Те не са съвместими. Ако ви трябва `of object` callback, но не искате да създавате екземпляр от фиктивен клас, можете да използвате <<Class methods>> as methods.
 +
 [source,pascal]
 ----
@@ -1834,8 +1834,8 @@ type
   TMyMethod = function (const A, B: Integer): Integer of object;
 
   TMyClass = class
-    class function Add(const A, B: Integer): Integer
-    class function Multiply(const A, B: Integer): Integer
+    class function Add(const A, B: Integer): Integer;
+    class function Multiply(const A, B: Integer): Integer;
   end;
 
 var
@@ -1846,15 +1846,16 @@ begin
 end;
 ----
 +
-Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMyClass.Add`.
+За съжаление, ще трябва да изпишете грозното `@TMyClass(nil).Add` вместо просто `@TMyClass.Add`.
+// AI: Not true. The latter also works.
 
-* A (possibly) local routine: declare with `is nested` at the end, and make sure to use `{$modeswitch nestedprocvars}` directive for the code. These go hand-in-hand with <<Local (nested) routines>>.
+* (Евентуално) локална подпрограма: декларирайте с `is nested` в края и се уверете, че използвате директивата `{$modeswitch nestedprocvars}`. Те вървят ръка за ръка с <<Local (nested) routines>>.
 
-### Generics
+### Генерици
 
-A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
+Генериците са мощно средство във всеки съвременен език. Дефиницията на нещо (обикновено клас) може да бъде параметризирана с друг тип. Най-типичният пример е, когато трябва да създадете контейнер (списък, речник, дърво, граф...): тогава може да дефинирате _списък елементи от тип  T_, и после _да го специализирате_ за да получите незабавно _списък от цели числа_, _списък от низове_, _списък инстанции от клас TMyRecord_ и т.н.
 
-The generics in Pascal work much like generics in C++. Which means that they are _"expanded"_ at the specialization time, a _little_ like macros (but much safer than macros; for example, the identifiers are resolved at the time of generic definition, not at specialization, so you cannot "inject" any unexpected behavior when specializing the generic). In effect this means that they are very fast (can be optimized for each particular type) and work with types of any size. You can use a primitive type (integer, float) as well as a record, as well as a class when specializing a generic.
+Генериците в Pascal работят подобно на генериците в C++. Което означава, че те се _"разширяват"_ по време на специализацията, _подобно_ на макроси (но са много по-безопасни от тях; например идентификаторите се разкриват по време на дефиницията, а не при специализацията, така че не можете да "инжектирате" някакво неочаквано поведение при специализация). На практика това означава, че те са много бързи (могат да бъдат оптимизирани за всеки отделен тип) и работят с типове от всякакъв размер. Когато специализирате генеричен тип можете да използвате примитивен тип (цяло число, float), както запис, така и клас.
 
 // Unlike in Java, you are *not* limited to only generics of things that are a reference.
 
@@ -1863,30 +1864,30 @@ The generics in Pascal work much like generics in C++. Which means that they are
 include::code-samples/generics.lpr[]
 ----
 
-Generics are not limited to classes, you can have generic functions and procedures as well:
+Генериците не се ограничават до класове, можете да имате и генерични функции и процедури:
 
 [source,pascal]
 ----
 include::code-samples/generic_functions.lpr[]
 ----
 
-See also the <<generic-containers-section>> about important standard classes using generics.
+Вижте също <<generic-containers-section>> относно важните стандартни класове, използващи генерици.
 
 ### Overloading
 
-Methods (and global functions and procedures) with the same name are allowed, as long as they have different parameters. At compile time, the compiler detects which one you want to use, knowing the parameters you pass.
+Позволени са методи (също и глобални функции и процедури) с едно и също име, стига да имат различни параметри. По време на компилиране компилаторът открива кой искате да използвате, като узнае параметрите, които подавате.
 
-By default, the overloading uses the FPC approach, which means that all the methods in given namespace (a class or a unit) are equal, and hide the other methods in namespaces with less priority. For example, if you define a class with methods `Foo(Integer)` and `Foo(string)`, and it descends from a class with method `Foo(Float)`, then the users of your new class will not be able to access the method `Foo(Float)` easily (they still can --- if they typecast the class to its ancestor type). To overcome this, use the `overload` keyword.
+По подразбиране overloading-a използва FPC подхода, което означава, че всички методи в дадено пространство от имена (клас или единица) са равнопоставени и закриват другите методи в пространства от имена с по-малък приоритет. Например, ако дефинирате клас с методи `Foo(Integer)` и `Foo(string)` и той наследява клас с метод `Foo(Float)`, тогава потребителите на вашия нов клас няма да имат достъп до метод `Foo(Float)` толкова лесно (те все още могат --- ако преобразуват класа към неговия тип-предшественик). За да преодолеете това, използвайте ключовата дума `overload`.
 
-### Preprocessor
+### Препроцесор
 
-You can use simple preprocessor directives for
+Можете да използвате прости препроцесорни директиви за:
 
-* conditional compilation (code depending on platform, or some custom switches),
-* to include one file in another,
-* you can also use parameter-less macros.
+* условна компилация (код зависим от платформата или други ръчно зададени параметри),
+* да включите един файл в друг,
+* да дефинирате макроси без параметри.
 
-Note that macros with parameters are not allowed. In general, you should avoid using the preprocessor stuff... unless it's really justified. The preprocessing happens before parsing, which means that you can "break" the normal syntax of the Pascal language. This is a powerful, but also somewhat dirty, feature.
+Имайте предвид, че макроси с параметри не се поддържат. Като цяло трябва да избягвате използването на препроцесорните директиви... освен ако наистина не се налага. Предварителната обработка се прави преди компилатора да извърши анализа на кода, което означава, че можете да "нарушите" нормалния синтаксис на езика Pascal. Това е мощна, но и донякъде "нечиста" функция.
 
 [source,pascal]
 ----
@@ -1948,9 +1949,9 @@ implementation
 end.
 ----
 
-Include files have commonly the `.inc` extension, and are used for two purposes:
+Включваните файлове обикновено имат разширение `.inc` и се използват за две цели:
 
-* The include file may only contain other compiler directives, that "configure" your source code. For example you could create a file `myconfig.inc` with these contents:
+* Включеният файл може да съдържа само други директиви на компилатора, които "конфигурират" вашия изходен код. Например можете да създадете файл `myconfig.inc` със следното съдържание:
 +
 [source,pascal]
 ----
@@ -1963,12 +1964,11 @@ Include files have commonly the `.inc` extension, and are used for two purposes:
 {$endif}
 ----
 +
-Now you can include this file using `{$I myconfig.inc}` in all your sources.
+Сега можете да включите този файл с помощта на `{$I myconfig.inc}` във всички ваши изходни файлове.
 
-* The other common use is to split a large unit into many files, while still keeping it a single unit as far as the language rules are concerned. Do not overuse this technique -- your first instinct should be to split a single unit into multiple units, not to split a single unit into multiple include files. Never the less, this is a useful technique.
-  . It allows to avoid "exploding" the number of units, while still keeping your source code files short. For example, it may be better to have a single unit with _"commonly used UI controls"_ than to create _one unit for each UI control class_, as the latter approach would make the typical "uses" clause long (since a typical UI code will depend on a couple of UI classes). But placing all these UI classes in a single `myunit.pas` file would make it a long file, unhandy to navigate, so splitting it into multiple include files may make sense.
+* Друга цел е да се раздели голям unit на много файлове, като същевременно се запази като един unit относно езиковите правила. Не прекалявайте с тази техника - първият ви инстинкт трябва да бъде да разделите един unit на множество unit-и, а не да разделяте един unit на множество включени файлове. Все пак това е полезна техника. Позволява да се избегне "експлозията" на броя на unit-ите, като същевременно поддържа вашите файлове с изходен код кратки. Например, може да е по-добре да имате единичен unit с _"често използвани UI контроли"_ отколкото да създавате _по един unit за всеки UI контролен клас_, тъй като последното би направило клаузата `uses` дълга (тъй като обикновено UI ще зависи от няколко UI класа). Но поставянето на всички тези UI класове в един файл `myunit.pas` би го направило дълъг и неудобен за навигация, така че разделянето му на множество включени файлове може да има смисъл.
 //For example, *Castle Game Engine* has a unit `CastleControls` with a couple of user-interface controls, like `TCastleButton`, `TCastleLabel`, `TCastleImageControl` and more. We could split it into many units, even to _one unit per class_, as the classes are not really tightly connected. But that would often force you to have a long `uses` clause, since a lot of user-interface code will want to use a couple of control classes. So we made a practical decision to just put all _often used controls_ in a single unit.
-  . It allows to have a cross-platform unit interface with platform-dependent implementation easily. Basically you can do
+  . Позволява лесно да имате междуплатформен интерфейс на unit с платформено-зависима реализация. По принцип можете да направите:
 +
 [source,pascal]
 ----
@@ -1976,9 +1976,9 @@ Now you can include this file using `{$I myconfig.inc}` in all your sources.
 {$ifdef MSWINDOWS} {$I my_windows_implementation.inc} {$endif}
 ----
 +
-Sometimes this is better than writing a long code with many `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}` intermixed with normal code (variable declarations, routine implementation). The code is more readable this way. You can even use this technique more aggressively, by using the `-Fi` command-line option of FPC to include some subdirectories only for specific platforms. Then you can have many version of include file `{$I my platform_specific_implementation.inc}` and you simply include them, letting the compiler find the correct version.
+Понякога това е по-добре от писането на дълъг код с много `{$ifdef UNIX}`, `{$ifdef MSWINDOWS}`, примесени с нормален код (декларации на променливи, тела на подпрограми). По този начин кодът става по-четлив. Можете дори да използвате тази техника по-агресивно, като използвате опцията на командния ред `-Fi` на FPC, за да включите някои поддиректории само за определени платформи. Тогава можете да имате много версии на включения файл `{$I my platform_specific_implementation.inc}` и просто да ги включвате, позволявайки на компилатора да намери правилната версия.
 
-### Records
+### Записи
 
 _Record_ is just a container for other variables. It's like a much, much simplified _class_: there is no inheritance or virtual methods. It is like a _structure_ in C-like languages.
 
