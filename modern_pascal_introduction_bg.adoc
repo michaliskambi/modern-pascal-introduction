@@ -1989,7 +1989,7 @@ _Record_ е просто контейнер за други променливи
 include::code-samples/records.lpr[]
 ----
 
-В съвременния Object Pascal първият ви инстинкт трябва да бъде да проектирате „клас“, а не „запис“ -- защото класовете са пълни с полезни функции, като конструктори и наследяване.
+В съвременния Обектен Паскал първият ви мисъл трябва да бъде да проектирате "клас", а не "запис" -- защото класовете са пълни с полезни функции, като конструктори и наследяване.
 
 Но записите все още са много полезни, когато имате нужда от скорост или предвидимо разпределение на паметта:
 
@@ -2001,20 +2001,20 @@ include::code-samples/records.lpr[]
 ** да правят мръсни трикове на ниско ниво (като нерестриктирано конвертиране на типове от един тип към друг, когато сте наясно с тяхното представяне в паметта).
 * Записите също могат да имат `case` варианти, които работят като _unions_ в C-подобните езици. Те позволяват да се третира една и съща част от паметта като различен тип, в зависимост от вашите нужди. Това позволява по-добро използване на паметта в някои случаи. И позволява повече _мръсни, опасни трикове на ниско ниво_:)
 
-### Old-style objects
+### Обекти, стар стил
 
-In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's somewhat of a blend between the concept of a `record` and a modern `class`.
+Преди време Turbo Pascal въведе друг синтаксис за функционалност, подобна на клас, използвайки ключовата дума `object`. Това е донякъде смесица между концепцията за „запис“ и модерна „класа“.
 
-* The old-style objects can be allocated / freed, and during that operation you can call their constructor / destructor.
-* But they can also be simply declared and used, like records. A simple `record` or `object` type is not a reference (pointer) to something, it's simply the data. This makes them comfortable for small data, where calling allocation / free would be bothersome.
+* Старите обекти могат да се създават / освобождават и по време на тези операции можете да извикате техния конструктор / деструктор.
+* Но те също могат да бъдат просто декларирани и използвани, като обикновени записи. Простият тип "запис" или "обект" не е препратка (указател) към нещо друго, това са просто данни. Това ги прави удобни за малки обеми от данни, където многократното създаване и освобождаване не винаги е оправдано.
 //It also makes them fast -- a list of such structures is nicely linear in memory, iterating over it doesn't involve jumping over pointers. Also, their memory layout is defined in _some_ situations (packed records, or records with C layout), which makes them suitable to pass to external APIs, like OpenGL.
-* Old-style objects offer inheritance and virtual methods, although with small differences from the modern classes. Be careful -- _bad things_ will happen if you try to use an object without calling its constructor, and the object has virtual methods.
+* Старите обекти предлагат наследяване и виртуални методи, макар и с малки разлики от съвременните класове. Бъдете внимателни -- _лоши неща_ могат да се случат, ако се опитате да използвате обект с виртуални методи, без да извикате неговия конструктор.
 
-It's discouraged to use the old-style objects in most cases. Modern _classes_ provide much more functionality. And when needed, records (including _advanced records_) can be used for performance. These concepts are usually a better idea than old-style objects.
+В повечето случаи не се препоръчва използването на обекти от стария вид. Съвременните _класове_ предоставят много повече функционалност. Когато е необходимо да се повиши скоростта на изпълнение, могат да се използват записи (вкл. _разширени записи_).Този подход е по-добър от използването на стари обекти.
 
-### Pointers
+### Указатели
 
-You can create a _pointer_ to any other type. The pointer to type `TMyRecord` is declared as `^TMyRecord`, and by convention is called `PMyRecord`. This is a traditional example of a linked list of integers using records:
+Можете да създадете _указател_ към всеки тип данни. Указателят към типа `TMyRecord` се декларира като `^TMyRecord` и по конвенция се нарича `PMyRecord`. По-долу е показан традиционен пример за свързан списък от цели числа, използващи записи:
 
 [source,pascal]
 ----
@@ -2026,15 +2026,15 @@ type
   end;
 ----
 
-Note that the definition is recursive (type `PMyRecord` is defined using type `TMyRecord`, while `TMyRecord` is defined using `PMyRecord`). It is allowed to define a pointer type to a _not-yet-defined type_, as long as it will be resolved within the same `type` block.
+Обърнете внимание, че дефиницията е рекурсивна (тип `PMyRecord` се дефинира с помощта на тип `TMyRecord`, докато `TMyRecord` се дефинира с помощта на `PMyRecord`). Позволено е да се дефинира тип указател към _все още недефиниран тип_, стига той да бъде дефиниран в рамките на същия раздел `type`.
 
-You can allocate and free pointers using the `New` / `Dispose` methods, or (more low-level, not type-safe) `GetMem` / `FreeMem` methods. You dereference the pointer (to access the stuff _pointed by_) you append the `^` operator (e.g. `MyInteger := MyPointerToInteger^`). To make the inverse operation, which is to _get a pointer of an existing variable_, you prefix it with `@` operator (e.g. `MyPointerToInteger := @MyInteger`).
+Можете да заемате и освобождавате памет за указателите с помоща на методите `New` и `Dispose` или (на по-ниско ниво, типово необезопасено) методите `GetMem` и `FreeMem`. За да достъпите данните, които указателите сочат, следва да добавите оператора `^ (например `MyInteger := MyPointerToInteger^`). За да направите обратната операция, която е _получаване на указател към съществуваща променлива_, трябва да използвате префикс-оператора `@` (например `MyPointerToInteger := @MyInteger`).
 
-There is also an untyped `Pointer` type, similar to `void*` in C-like languages. It is completely unsafe, and can be typecasted to any other pointer type.
+Има и нетипизиран тип `Pointer`, подобен на `void*` в C-подобните езици. Той е напълно типово необезопасен и може да бъде преобразуван във всеки друг тип указател.
 
-Remember that a _class instance_ is also in fact a pointer, although it doesn't require any `^` or `@` operators to use it.
+Не забравяйте, че _екземплярът на class_ всъщност е указател, въпреки че не изисква оператори `^` или `@`, за да го използвате.
 //That's why it's called a _reference_.
-A linked list using classes is certainly possible, it would simply be this:
+Възможно е да се направи свързан списък, използващ класове, той би бил следният:
 
 [source,pascal]
 ----
