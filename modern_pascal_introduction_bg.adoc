@@ -7,21 +7,27 @@ include::locale/attributes-bg.adoc[]
 :source-highlighter: coderay
 :docinfo1:
 
+++++
+<style>
+body { font-family: "Open Sans", "DejaVu Sans", sans-serif; }
+</style>
+++++
+
 ## Защо
 
-Има много книги и ресурси за Паскал, но в прекалено много от тях се говори само за стария Паскал, без класове, модули или генерици.
+Има много книги и ресурси за Паскал, но в повечето от тях се говори само за стария Паскал, който е без класове, модулиfootnote:unit[модул = Unit] или генерициfootnote:generics[генерици = Generics].
 // В някои от тях се говори за Паскал, преди той дори да има класове. Някои от тях показват класове, както са направени в Делфи, но не споменават по -съвременни функции, като генерици.
 
-Затова написах бързо въведение в това, което наричам *модерен Обектен Паскал*. Повечето от програмистите, които го използват, всъщност не го наричат _"модерен Обектен Паскал"_, Просто го наричаме _"нашия Паскал"_. Но когато представям езика, чувствам, че е важно да подчертая, че това е модерен, обектно-ориентиран език. Той се е развил *много* от времето на стария(Turbo) Паскал, който много хора са учили преди време в училищата. Функционална, той е доста подобен на C++, Java или C#.
+Затова написах бързо въведение в това, което аз наричам *модерен Обектен Паскал*. Повечето от програмистите, които го използват, всъщност не го наричат така. Просто го наричаме _"нашия Паскал"_. Но чувствам, че когато представям езика е важно да подчертая, че е вече модерен, обектно-ориентиран език. Той се е развил *значително* от времето на стария (Turbo) Паскал, който много хора са учили преди време в училище. Функционално е доста подобен на C++, Java или C#.
 
-* Той има всички съвременни функции, които очаквате - класове, модули, интерфейси, генерици ...
-* Той се компилира до бърз машинен код,
-* Той е много типово безопасен,
+* Той има всички съвременни функции, които можете да очаквате - класове, модули, интерфейсиfootnote:interface[интерфейс = Interface], генерици ...
+* Той се компилира директно до бърз машинен код,
+* Той е типово обезопасен,
 * Той е език от високо ниво, но също така може да е и от ниско ако желаете.
 
-Освен това има отличен, преносим компилатор с отворен код, наречен _Free Pascal Compiler_, http://freepascal.org/ . И придружаващо IDE (редактор, Debugger, библиотека от визуални компоненти, дизайнер на форми), наречена _Lazarus_ http://lazarus.freepascal.org/ . Самият аз съм създател на _Castle Game Engine_, https://castle-engine.io/ , която е 3D и 2D библиотека с отворен код, използваща модерен Паскал за създаване на игри на много платформи (Windows, Linux, macOS, Android, iOS, Nintendo Switch; също се подготвя и WebGL).
+Освен това има отличен преносим компилатор с отворен код, наречен _Free Pascal Compiler_, http://freepascal.org/ . Има и придружаващо IDE (редактор, Debugger, библиотека от визуални компоненти, дизайнер на форми), наречен _Lazarus_ http://lazarus.freepascal.org/ . Самият аз съм автор на _Castle Game Engine_, https://castle-engine.io/ , която е 3D и 2D библиотека с отворен код, използваща Паскал за създаване на игри на много платформи (Windows, Linux, macOS, Android, iOS, Nintendo Switch; подготвя се и WebGL).
 
-Това въведение е насочено най-вече към програмисти, които вече имат опит в програмирането на други езици. Тук няма да разглеждаме значенията на някои универсални концепции, като _ "Какво е клас" _, ще покажем само как да ги правим в Паскал.
+Това въведение е насочено най-вече към програмисти, които вече имат опит в програмирането на други езици. Тук няма да разглеждаме значенията на някои универсални концепции като _"Какво е клас"_, само ще покажем как да ги използваме в Паскал.
 
 ## Основи
 
@@ -32,7 +38,7 @@ include::locale/attributes-bg.adoc[]
 include::code-samples/hello_world.lpr[]
 ----
 
-Това е пълна програма, която можете да _компилирате_ и _стартирате_.
+Това е завършена програма, която можете да _компилирате_ и _стартирате_.
 
 * Ако използвате FPC на командния ред, просто създайте нов файл `myprogram.lpr` и изпълнете `fpc myprogram.lpr`.
 * Ако използвате _Lazarus_, създайте нов проект (меню _Project_ -> _New Project_ -> _Simple Program_). Запазете го като `myProgram` и поставете по-горния код като основен файл. Компилирайте го с помощта на командата от менюто _Run -> Compile_.
@@ -2045,53 +2051,53 @@ type
   end;
 ----
 
-### Operator overloading
+### Замяна на оператори
 
-You can override the meaning of many language operators, for example to allow addition and multiplication of your custom types. Like this:
+Можете да замените значението на много от езиковите оператори, за да позволите например събиране и умножение във вашите потребителски типове. Като например:
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading.lpr[]
 ----
 
-You can override operators on classes too. Since you usually create new instances of your classes inside the operator function, the caller must remember to free the result.
+Също така можете да заменяте значението на оператори върху класове. Понеже в такива функции-оператори обикновено се създават нови екземпляри на класовете, в извикващия код трябва да се предвиди надлежното освобождаване на заетата памет.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_classes.lpr[]
 ----
 
-You can override operators on records too. This is usually easier than overloading them for classes, as the caller doesn't have to deal then with memory management.
+Можете и да замените значението на оператори върху записи. Това е по-просто отколкото да го правите върху класове, защото няма нужда да се грижите за освобождаването на заетата памет.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_records.lpr[]
 ----
 
-For records, it's advised to use `{$modeswitch advancedrecords}` and override operators as `class operator` inside the record. This allows to use generic classes that depend on some operator existence (like `TFPGList`, that depends on equality operator being available) with such records. Otherwise the "global" definition of an operator (not inside the record) would not be found (because it's not available at the code that implements the `TFPGList`), and you could not specialize a list like `specialize TFPGList<TMyRecord>`.
+За работа със записи се препоръчва да използвате `{$modeswitch advancedrecords}` и да замените операторите като `class operator` вътре в записа. Това позволява да се използват генерични контейнери, които зависят от съществуването на някакъв оператор (като `TFPGList`, който зависи от наличието на оператор за равенство) с такива записи. В противен случай "глобалната" дефиниция на оператор (не в записа) няма да бъде открита (защото не е налична в кода, който имплементира `TFPGList`) и няма да можете да специализирате списък със `specialize TFPGList<TMyRecord>`.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_records_lists.lpr[]
 ----
 
-## Advanced classes features
+## Допълнителни възможности на класовете
 
-### Private and strict private
+### Частни и лични полета
 
-The `private` visibility specifier means that the field (or method) is not accessible outside of this class. But it allows an exception: all the code defined _in the same unit_ can break this, and access private fields and methods. A C++ programmer would say that in Pascal _all classes within a single unit are friends_. This is often useful, and doesn't break your encapsulation, since it's limited to a unit.
+Спецификатора `private` означава, че полето (или метода) не е достъпно извън класа, в който е декларирано. Това правило обаче позволява изключение: кодът _в същия модул_ може да работи с частни полета и методи. Някой програмист на C++ би могъл да каже, че _всички класове в един модул са "приятели"_. Това изключение често е полезно и не руши енкапсулацията защото в крайна сметка е в границите на един модул.
 
-However, if you create larger units, with many classes (that are not tightly integrated with each other), it's safer to use `strict private`. It means that the field (or method) is not accessible outside of this class -- period. No exceptions.
+От друга страна, ако правите големи модули с много класове, които не са силно свързани един с друг, е по-безопасно да използвате спецификатора `strict private`. Той наистина ще ограничи достъпа до полето (или метода) само в рамките на класа. Без изключения.
 
-In a similar manner, there's `protected` visibility (visible to descendants, or friends in the same unit) and `strict protected` (visible to descendants, period).
+Аналогично -- спецификатора `protected` означава, че полето или метода е достъпен за наследниците и "приятелите" в модула, докато `strict protected`, че е достъпно само за наследниците.
 
-### More stuff inside classes and nested classes
+### Допълнителни декларации и вложени класове
 
-You can open a section of constants (`const`) or types (`type`) within a class. This way, you can even define a class within a class. The visibility specifiers work as always, in particular the nested class can be private (not visible to the outside world), which is often useful.
+В един клас можете да декларирате и вложени секции за константи (`const`) или типове (`type`). По този начин може дори да се декларират и вложени класове. Спецификаторите за видимост работят както винаги, в частност вложеният клас може да бъде `private`(невидим за външния свят), което доста често е полезно.
 //The compiler watches that you don't break the visibility rules (for example you cannot declare a _public function_ that returns a type that is _private_).
 // (I wish - it doesn't, unfortunately...)
 
-Note that to declare a field after a constant or type you will need to open a `var` block.
+Имайте предвид, че за да декларирате поле след константа или тип, ще трябва да започнете блок `var`.
 
 [source,pascal]
 ----
@@ -2133,9 +2139,9 @@ begin
 end;
 ----
 
-### Class methods
+### Методи на класа
 
-These are methods you can call having a class reference (`TMyClass`), not necessarily a class instance.
+Това са методи, които можете да извикате с препратка към клас (`TMyClass`), не непременно към екземпляр на клас.
 
 [source,pascal]
 ----
@@ -2156,17 +2162,17 @@ begin
 end;
 ----
 
-Note that they can be virtual -- it makes sense, and is sometimes very useful, when combined with <<Class references>>.
+Имайте предвид, че те също могат да бъдат виртуални - това понякога е много полезно когато се комбинират с <<Class references>>.
 
 // The class methods namespace is limited to that of the containing class, just like regular methods.
 
-The class methods can also be limited by the <<Visibility specifiers>>, like `private` or `protected`. Just like regular methods.
+Методите на клас съшо могат да бъдат ограничени с <<Visibility specifiers>> като `private` or `protected` съвсем като обикновените методи.
 
-Note that a constructor always acts like a class method when called in a normal fashion (`MyInstance := TMyClass.Create(...);`). Although it's possible to also call a constructor from within the class itself, like a normal method, and then it acts like a normal method. This is a useful feature to "chain" constructors, when one constructor (e.g. overloaded to take an integer parameter) does some job, and then calls another constructor (e.g. parameter-less).
+Имайте предвид, че конструкторът винаги действа като метод на клас, когато се извиква по нормален начин (`MyInstance := TMyClass.Create(...);`). Въпреки, че е възможно също така да се извика конструктор от самия клас и тогава той действа като нормален метод. Това е полезна функция за "верижни" конструктори, когато един конструктор (напр. подменен за да приеме целочислен параметър) върши нещо и след това извиква друг конструктор (напр. без параметър).
 
-### Class references
+### Препратки към клас
 
-_Class reference_ allows you to choose the class at runtime, for example to call a class method or constructor without knowing the exact class at compile-time. It is a type declared as `class of TMyClass`.
+_Препратките към клас_ ви позволява да изберете класа по време на изпълнение, например да извикате метод на клас или конструктор, без да знаете точния клас по време на компилация. Това е тип, деклариран като `class of TMyClass`.
 
 [source,pascal]
 ----
@@ -2205,7 +2211,7 @@ begin
 end;
 ----
 
-Class references can be combined with virtual class methods. This gives a similar effect as using classes with virtual methods -- the actual method to be executed is determined at runtime.
+Препратките към класове могат да се комбинират с виртуални клас-методи. Това дава същия ефект както използването на класове с виртуални методи - действителният метод, който трябва да бъде извикан, се определя по време на изпълнение.
 
 [source,pascal]
 ----
