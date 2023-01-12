@@ -2328,34 +2328,28 @@ end.
 include::code-samples/static_class_method.lpr[]
 ----
 
-### Class properties and variables
+### Полета и свойства на клас
 
-A _class property_ is a property that can be accessed through a class reference (it does not need a class instance).
+_Полето на клас_ може да се дефинира в секция `class var` вътре в класа. То е подобно на обикновеното поле но няма нужда от инстанция за да се достъпва. Като резултат, то е подобно на глобална променлива но видимостта му е ограничена само в класа, в който е дефинирано.
 
-It is quite straightforward analogy of a regular property (see <<Properties>>). For a _class property_, you define a _getter_ and / or a _setter_. They may refer to a _class variable_ or a _static class method_.
+_Свойството на клас_ е такова свойство, което може да се достъпи през референция на клас и без да е необходимо да има създаден екземпляр. Дефинира се с `class property` вместо само с `property` и с методи _getter_ и / или _setter_, които обаче трябва да са _статични клас-методи_. Виж <<Static class methods>>.  
 
-A _class variable_ is, you guessed it, like a regular field but you don't need a class instance to access it. In effect, it's just like a global variable, but with the namespace limited to the containing class. It can be declared within the `class var` section of the class. Alternatively
-//(in FPC) ??
-// See https://freepascal.org/docs-html/ref/refse30.html
-it can be declared by following the normal field definition with the keyword `static`.
-
-And a _static class method_ is just like a global procedure / function, but with the namespace limited to the containing class. More about static class methods in the section above, see <<Static class methods>>.
+По аналогия с обикновените свойства (see <<Properties>>), вместо да се укаже _статичен клас-метод_, може да се укаже и име на поле. То също трябва да бъде _поле на клас_. 
 
 [source,pascal]
 ----
 include::code-samples/class_properties.lpr[]
 ----
- да се сп
 // NOTE: Why the _class properties_ have to be backed by _static class methods_, not _normal class methods_? Noone really knows (see http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050131.html , http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050135.html , https://www.mail-archive.com/fpc-devel@lists.freepascal.org/msg30511.html ), the initial implementation (Delphi) made it like that. Presumably for speed, or ease of implementation of the compiler.
 
-### Class helpers
+### Помощници за клас
 
-The _method_ is just a procedure or function inside a class. From the outside of the class, you call it with a special syntax `MyInstance.MyMethod(...)`. After a while you grow accustomed to thinking that _if I want to make action Action on instance X, I write `X.Action(...)`_.
+_Методът_ е просто процедура или функция вътре в класa. Извън класа го извиквате със специален синтаксис `MyInstance.MyMethod(...)`. След известно време привиквате да мислите, че _ако искам да извърша действие Action с инстанция X, пиша `X.Action(...)`_.
 
-But sometimes, you need to implement something that conceptually is _an action on class TMyClass_ without modifying the _TMyClass_ source code. Sometimes it's because it's not your source code, and you don't want to change it. Sometimes it's because of the dependencies -- adding a method like `Render` to a class like `TMy3DObject` seems like a straightforward idea, but maybe the base implementation of class `TMy3DObject` should be kept independent from the rendering code? It would be better to "enhance" an existing class, to add functionality to it without changing its source code.
+Но понякога трябва да кодирате нещо, което по смисъла си е _действие върху клас TMyClass_, но без да модифицирате изходния код на _TMyClass_. Понякога това е така, защото изходния код не е ваш и не искате да го променяте. Понякога това се дължи на някакви зависимости -- добавянето на нов метод като `Render` към клас `TMy3DObject` изглежда проста идея, но може би базовата реализация на класа `TMy3DObject` трябва да се поддържа независима от кода за изобразяване? Би било по-добре да "подобрите" съществуващ клас, да добавите функционалност към него, без да променяте изходния му код.
 
-Simple way to do it is then to create a global procedure that takes an instance of `TMy3DObject` as its 1st parameter.
- да се сп
+Простия начин да го направите е да създадете глобална процедура, която приема екземпляр на `TMy3DObject` като свой първи параметър.
+ 
 [source,pascal]
 ----
 procedure Render(const Obj1: TMy3DObject; const Color: TColor);
@@ -2367,9 +2361,9 @@ begin
 end;
 ----
 
-This works perfectly, but the downside is that calling it looks a little ugly. While usually you call actions like `X.Action(...)`, in this case you have to call them like `Render(X, ...)`. It would be cool to be able to just write `X.Render(...)`, even when `Render` is not implemented in the same unit as `TMy3DObject`.
+Това работи идеално, но недостатъкът е, че извикването изглежда малко грозно. Докато обикновено извиквате действия като `X.Action(...)`, в този случай трябва да ги извиквате като `Render(X, ...)`. Би било добре да можете просто да напишете `X.Render(...)`, дори когато `Render` не е имплементирано в същия модул като `TMy3DObject`.
 
-And this is where you use class helpers. They are just a way to implement procedures / functions that operate on given class, and that are called like methods, but are not in fact normal methods -- they were added outside of the `TMy3DObject` definition.
+За това са пригодени _помощниците за клас_. Те са просто начин за прилагане на процедури / функции, които работят върху даден клас и които се извикват като нормални методи, но всъщност не са такива - те са добавени отвън към дефиницията на `TMy3DObject`.
 
 [source,pascal]
 ----
@@ -2388,44 +2382,44 @@ begin
 end;
 ----
 
-NOTE: The more general concept is _"type helper"_. Using them you can add methods even to primitive types, like integers or enums. You can also add _"record helpers_" to (you guessed it...) records. See http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
+NOTE: По-общото понятие е _"Помощник за тип"_. Чрез тях можете да добавяте методи дори към примитивни типове, като цели числа или enum. Можете също да добавите _"помощници за запис"_ към (познахте...) записи. Вижте http://lists.freepascal.org/fpc-announce/2013-February/000587.html .
 //And of course to records and old-style objects (both of them can also have regular methods, they are much like classes in this regard).
 
-### Virtual constructors, destructors
+### Виртуални конструктори, деструктори
 
-Destructor name is always `Destroy`, it is virtual (since you can call it without knowing the exact class at compile-time) and parameter-less.
+Името на деструктора е винаги `Destroy`, той е виртуален (защото трябва да се извика по време на изпълнение без да е известен точния клас) и е без параметри.
 
-Constructor name is by convention `Create`.
+По конвенция името на конструктора е `Create`.
 
-You can change this name, although be careful with this -- if you define `CreateMy`, always redefine also the name `Create`, otherwise the user can still access the constructor `Create` of the ancestor, bypassing your `CreateMy` constructor.
+Можете да промените това име, но бъдете внимателни -- ако дефинирате `CreateMy`, винаги предефинирайте `Create`, в противен случай потребителят все още ще може да извика `Create` на предшественика, заобикаляйки по този начин вашия `CreateMy` конструктор.
 
-In the base `TObject` it is not virtual, and when creating descendants you're free to change the parameters. The new constructor will hide the constructor in ancestor (note: don't put here `overload`, unless you want to break it).
+В `TObject` той не е виртуален и когато създавате наследници, можете свободно да променяте параметрите му. Новият конструктор ще скрие конструктора в предшественика (забележка: не поставяйте `overload`, освен ако не искате да се счупи).
 
-In the `TComponent` descendants, you should override its `constructor Create(AOwner: TComponent);`. For streaming functionality, to create a class without knowing its type at compile time, having virtual constructors is very useful (see <<Class references>> above).
+В наследниците на `TComponent` трябва да замените неговия `constructor Create(AOwner: TComponent);`. При сериализацията, за да създадете клас, без да знаете неговия тип по време на компилиране, наличието на виртуални конструктори е много полезно (виж <<Class references>> по-горе).
 
-### An exception in constructor
+### Изключение в конструктор
 
-What happens if an exception happens during a constructor? The line
+Какво се случва, ако възникне изключение по време на изпълнението на конструктор? Редът:
 
 [source,pascal]
 ----
 X := TMyClass.Create;
 ----
 
-does not execute to the end in this case, `X` cannot be assigned, so who will cleanup after a partially-constructed class?
+в този случай не се изпълнява докрай, на `X` не може да се присвои стойност ... кой тогава ще почисти полусъздадената инстанция? 
 
-The solution of Object Pascal is that, in case an exception occurs within a constructor, then the destructor is called. This is a reason why _your destructor must be robust_, which means it should work in any circumstances, even on a half-created class instance. Usually this is easy if you release everything safely, like by `FreeAndNil`.
+Решението в Object Pascal е, че в случай, че възникне изключение в рамките на конструктор, тогава се извиква деструкторът. Това е причина, поради която _вашият деструктор трябва да е стабилен_, т.е. трябва да работи при всякакви обстоятелства, дори на полусъздадена инстанция на клас. Обикновено това е лесно, ако освобождавате всичко безопасно, като например чрез `FreeAndNil`.
 
-We also have to depend in such cases that _the memory of the class is guaranteed to be zeroed right before the constructor code is executed_. So we know that at the beginning, all class references are `nil`, all integers are `0` and so on.
+Ние също трябва да разчитаме в такива случаи, че _паметта на класа е гарантирано нулирана точно преди кодът на конструктора да бъде изпълнен_. Знаем, че в началото всички препратки към клас са `nil`, всички цели числа са `0` и така нататък.
 
-So below works without any memory leaks:
+Така че долното ще работи без изтичане на памет:
 
 [source,pascal]
 ----
 include::code-samples/exception_in_constructor_test.lpr[]
 ----
 
-## Interfaces
+## Интерфейси
 
 ### Bare (CORBA) interfaces
 
