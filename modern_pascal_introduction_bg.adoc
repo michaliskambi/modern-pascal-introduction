@@ -2172,7 +2172,7 @@ end;
 
 ### Препратки към клас
 
-_Препратките към клас_ ви позволява да изберете класа по време на изпълнение, например да извикате метод на клас или конструктор, без да знаете точния клас по време на компилация. Това е тип, деклариран като `class of TMyClass`.
+_Препратките към клас_ ви позволяват да изберете класа по време на изпълнение, например да извикате метод на клас или конструктор, без да знаете точния клас по време на компилация. Това е тип, деклариран като `class of TMyClass`.
 
 [source,pascal]
 ----
@@ -2247,11 +2247,11 @@ begin
 end;
 ----
 
-If you have an instance, and you would like to get a reference to its class (not the declared class, but the final descendant class used at its construction), you can use the `ClassType` property. The declared type of `ClassType` is `TClass`, which stands for `class of TObject`. Often you can safely typecast it to something more specific, when you know that the instance is something more specific than `TObject`.
+Ако имате екземпляр и искате да получите препратка към неговия клас (не декларирания клас, а същинския клас използван при неговото конструиране), можете да използвате свойството `ClassType`. Типа на `ClassType` е `TClass`, който е деклариран като `class of TObject`. Често можете без проблем да го преобразувате към по-конкретен клас, ако ви е известно, че е екземплярът е нещо по-специфично от `TObject`.
 
-In particular, you can use the `ClassType` reference to call virtual methods, including virtual constructors. This allows you to create a method like `Clone` that constructs an instance of _the exact run-time class of the current object_. You can combine it with <<Cloning: TPersistent.Assign>> to have a method that returns a newly-constructed clone of the current instance.
+Можете да използвате препратката от `ClassType` за извикване на виртуални методи, в това число виртуални конструктори. Това ви позволява да създадете метод `Clone`, който създава екземпляр от _точния клас на текущия обект_. Може да го комбинирате с <<Cloning: TPersistent.Assign>> за да получите метод, който връща нов "клонинг" на инстанцията от която е извикан. 
 
-Remember that it only works when the constructor of your class is virtual. For example, it can be used with the standard `TComponent` descendants, since they all must override `TComponent.Create(AOwner: TComponent)` virtual constructor.
+Не забравяйте, че това ще работи само когато конструкторът на вашия клас е виртуален. Например, може да се използва със стандартните наследници на `TComponent`, тъй като всички те трябва да заменят виртуалния конструктор `TComponent.Create(AOwner: TComponent)`.
 
 [source,pascal]
 ----
@@ -2280,13 +2280,13 @@ end;
 // Poor example actually, since compiler could prevent "ClassRef := TMyClass"
 // in this case?
 
-### Static class methods
+### Статични методи на клас
 
-To understand the _static class methods_, you have to understand how the _normal class methods_ (described in the previous sections) work. Internally, _normal class methods_ receive a _class reference_ of their class (it is passed through a hidden, implicitly added 1st parameter of the method). This class reference can be even accessed explicitly using the `Self` keyword inside the class method. Usually, it's a good thing: this class reference allows you to call _virtual class methods_ (through the _virtual method table_ of the class).
+За да разберете _статичните методи на клас_, трябва да разберете как работят _нормалните методи на клас_ (описани в предишните раздели). Вътрешно, _нормалните методи на клас_ получават _референция_ към своя клас (тя се предава през скрит, неявно добавен параметър на метода). Тази препратка може да се използва с помощта на ключовата дума `Self` в метода на класа. Обикновено това е полезно: тази препратка към клас ви позволява да извиквате _виртуалните методи на класа_ (чрез _таблицата с виртуални методи_ на класа).
 
 // Just like _instance virtual methods_, the _virtual class methods_ use some
 
-While this is nice, it makes the _normal class methods_ incompatible when assigning to a _global procedure pointer_. That is, *this will not compile*:
+Наличието на скрита препратка обаче, прави _методите на класа_ несъвместими с _процедурните променливи_. Следната програма *няма да може да се компилира*:
 
 [source,pascal]
 ----
@@ -2312,16 +2312,16 @@ end.
 
 [NOTE]
 ====
-In the _Delphi mode_ you would be able to write `TMyClass.Foo` instead of an ugly `TMyClass(nil).Foo` in the example above. Admittedly, the `TMyClass.Foo` looks much more elegant, and it is also better checked by the compiler. Using the `TMyClass(nil).Foo` is a hack... unfortunately, necessary (for now) in the _ObjFpc mode_ which is presented throughout this book.
+Ако сте в режим _Delphi_ тогава ще можете да напишете `TMyClass.Foo` вместо грозното `TMyClass(nil).Foo` което е в горния пример. Трябва да се признае, че `TMyClass.Foo` изглежда много по-елегантно и също така се проверява по-добре от компилатора. Използването на `TMyClass(nil).Foo` е хак... за съжаление необходим (засега) в режима _ObjFpc_, който е представен в тази книга.
 
-In any case, assigning the `TMyClass.Foo` to the `Callback` above would _still fail_ in the Delphi mode, for exactly the same reasons.
+Във всеки случай, присвояването на `TMyClass.Foo` на `Callback` по-горе би _било неуспешно_ и в режим Delphi, поради абсолютно същите причини.
 ====
 
-The above example fails to compile, because the `Callback` is incompatible with the class method `Foo`. And it's incompatible because internally the class method has that special hidden _implicit_ parameter to pass a class reference.
+Горният пример не се компилира, защото типа на `Callback` не е съвместим с метода на класа `Foo`. Това е така, защото вътрешно методът `Foo` има този специален скрит _implicit_ параметър за препратката към класа.
 
-One way to fix the above example is to change the definition of `TMyCallback`. It will work if it is a method callback, declared as `TMyCallback = procedure (A: Integer) of object;`. But sometimes, it's not desirable.
+Един от начините да коригирате горния пример е да  да се сппромените дефиницията на `TMyCallback` на следната: `TMyCallback = procedure (A: Integer) of object;`. Но понякога това не е желателно.
 
-Here comes the `static` class method. It is, in essence, just a global procedure / function, but its namespace is limited inside the class. It _does not_ have any implicit class reference (and so, _it cannot be virtual_ and _it cannot call virtual class methods_). On the upside, it is compatible with normal (non-object) callbacks. So this will work:
+Другият начин е метода да се укаже като `static`. По същество такъв метод е просто глобална процедура / функция, с тази разлика, че видимостта му е ограничена вътре в класа. Той _няма_ такава скрита препратка към клас (по този начин _не може да бъде виртуален_ и _не може да извиква виртуални методи_). От друга страна, той е съвместим с нормалните (необектни) процедурни променливи. Така че това ще работи:
 
 [source,pascal]
 ----
@@ -2345,7 +2345,7 @@ And a _static class method_ is just like a global procedure / function, but with
 ----
 include::code-samples/class_properties.lpr[]
 ----
-
+ да се сп
 // NOTE: Why the _class properties_ have to be backed by _static class methods_, not _normal class methods_? Noone really knows (see http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050131.html , http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050135.html , https://www.mail-archive.com/fpc-devel@lists.freepascal.org/msg30511.html ), the initial implementation (Delphi) made it like that. Presumably for speed, or ease of implementation of the compiler.
 
 ### Class helpers
@@ -2355,7 +2355,7 @@ The _method_ is just a procedure or function inside a class. From the outside of
 But sometimes, you need to implement something that conceptually is _an action on class TMyClass_ without modifying the _TMyClass_ source code. Sometimes it's because it's not your source code, and you don't want to change it. Sometimes it's because of the dependencies -- adding a method like `Render` to a class like `TMy3DObject` seems like a straightforward idea, but maybe the base implementation of class `TMy3DObject` should be kept independent from the rendering code? It would be better to "enhance" an existing class, to add functionality to it without changing its source code.
 
 Simple way to do it is then to create a global procedure that takes an instance of `TMy3DObject` as its 1st parameter.
-
+ да се сп
 [source,pascal]
 ----
 procedure Render(const Obj1: TMy3DObject; const Color: TColor);
