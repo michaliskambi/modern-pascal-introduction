@@ -2452,164 +2452,164 @@ include::code-samples/interfaces_corba_test.lpr[]
 //(if we would omit the `{$interfaces corba}` directive)
  се създават _COM интерфейси_. Това може да се укаже изрично с `{$interfaces com}`, но обикновено не е необходимо защото това е направено по подразбиране.
 +
-Не препоръчвам да се използват  _COM интерфейси_, особено ако търсите нещо еквивалентно на интерфейсите в други езици. _CORBA интерфейсите_ в Паскал са точно каквото очаквате от интерфейсите в C# или Java. _COM интерфейси_ от друга страна имат допълнителни възможности, които вероятно не бихте желали в случая.
+Не препоръчвам да се използват  _COM интерфейси_, особено ако търсите нещо еквивалентно като в други езици. _CORBA интерфейсите_ в Паскал са точно каквото очаквате от интерфейсите в C# или Java. _COM интерфейсите_ от друга страна имат допълнителни възможности, които вероятно не бихте желали в случая.
 +
 Забележете, че директивата `{$interfaces xxx}` се отразява само на интерфейсите, които нямат предшественик (само с ключовата дума `interface` а не `interface(ISomeAncestor)`, т.е. не са наследили друг интерфейс) Ако интерфейса е наследник на друг интерфейс, той ще бъде от същия тип като предшественика независимо от директивата `{$interfaces xxx}`.
 
 Какво е COM интерфейс?::
 
-  The _COM interface_ is synonymous with _an interface descending from a special `IUnknown` interface_. Descending from `IUnknown`:
+   _COM интерфейс_ представлява _интерфейс наследяващ специалния интерфейс `IUnknown`_. Наследяването на `IUnknown`:
 +
-* Requires that your classes define the `_AddRef` and `_ReleaseRef` methods. Proper implementation of these methods can manage the lifetime of your objects using the reference-counting.
-* Adds the `QueryInterface` method.
-* Allows to interact with the _COM (Component Object Model) technology_.
+* Изисква вашите класове да дефинират методите `_AddRef` и `_ReleaseRef`. Правилното имплементиране на тези методи може да управлява жизнения цикъл на вашите обекти с помощта на броене на препратки (reference-counting).
+* Добавя метода `QueryInterface`.
+* Позволява взаимодействие с  _технологията COM (Component Object Model)_.
 
-Why do you advise to not use the COM interfaces?::
+Защо не препоръчвам използването на COM интерфейси?::
 
-  Because _COM interfaces_ "entangle" two features that should be unrelated (orthogonal) in my view: _multiple inheritance_ and _reference counting_. Other programming languages rightly use separate concepts for these two features.
+  Тъй като _COM интерфейсите_ "съвместяват" две функции, които според мен не бива да са свързани (а "ортогонални"): _множествено наследяване_ и _броене на препратки_. Други езици за програмиране използват отделни механизми за тези две функции.
 +
-To be clear: *reference-counting*, that provides an automatic memory management (in simple situations, i.e. without cycles), *is a very useful concept*. But *entangling this feature with interfaces (instead of making them orthogonal features) is unclean in my eyes*. It definitely doesn't match my use cases.
+За да бъде ясно: *reference-counting*, което служи за автоматично управление на паметта (в прости ситуации и без цикли), е *много полезна функция*. Но *обвързването и с интерфейсите (вместо да се реализират ортогонално) в моите очи е много неподходящо*. Определено не отговаря на моята практика.
 +
 --
-* Sometimes I want to cast my (otherwise unrelated) classes to a common interface.
-* Sometimes I want to manage memory using the reference counting approach.
-* _Maybe_ some day I will want to interact with the _COM technology_.
+* Понякога ми е нужно да преобразувам някои от моите (несвързани един с друг) класове към общ интерфейс. 
+* Понякога ми е нужно автоматично да освобождавам паметта заета от обектите с помощта на броене на препратки.
+* _Може би_ някой ден ще ми се прииска да използвам  _технологията COM_.
 --
 +
-But these are all separate, unrelated needs. Entangling them in a single language feature is counter-useful in my experience. It does cause actual problems:
+Но това са различни и несвързани изисквания. Съвместяването им в едно по мое мнение е контра-продуктивно, защото създава следните проблеми:
 +
 --
-* If I want the feature of _casting classes to a common interface API_, but I don't want the reference-counting mechanism (I want to manually free objects), then the COM interfaces are problematic. Even when reference-counting is disabled by a special `_AddRef` and `_ReleaseRef` implementation, you still need to be careful to never have a temporary interface reference hanging, after you have freed the class instance. More details about it in the next section.
-* If I want the feature of _reference counting_, but I have no need for an interface hierarchy to represent something different than the class hierarchy, then I have to duplicate my classes API in interfaces. Thus creating a single interface for each class. This is counter-productive. I would much rather have _smart pointers_ as a separate language feature, not entangled with interfaces (and luckily, it's coming:).
+* Ако искам да _преобразувам класове към общ API интерфейс_, но не искам автоматично да освобождавам паметта на обектите с помощта на броене на препратки (искам да го правя ръчно), тогава _COM интерфейсите_ са проблем. Дори броенето на препратки да се забрани със специални `_AddRef` и `_ReleaseRef` реализации, все пак трябва да внимавате никога да не виси временна препратка към интерфейс, след като сте освободили екземпляра на класа. Повече подробности за това в следващия раздел.
+* Ако искам да имам _броене на препратки_, но нямам нужда от допълнително API към това на класа, тогава трябва да изкопирам декларациите на методи в интерфейси, т.е. да направя по един интерфейс за всеки клас.  Това е е контра-продуктивно. Бих предпочел да имам _умни указатели_ (smart pointers) като отделна езикова функция, която да не е обвързана с интерфейси (тя за щастие идва:).
 --
 +
-That is why I advise to use _CORBA_ style interfaces, and the `{$interfaces corba}` directive, in all modern code dealing with interfaces.
+Ето защо съветвам да използвате _CORBA интерфейси_ и директивата `{$interfaces corba}` във всички съвременни кодове, които използват интерфейси.
 +
-_Only if you need both "reference counting" and "multiple inheritance" at the same time, then use COM interfaces_. Also, Delphi has only COM interfaces for now, so you need to use COM interfaces if your code must be compatible with Delphi.
+Delphi засега има само COM интерфейси, така че трябва да използвате COM интерфейси, ако вашият код трябва да е съвместим с Delphi.
 
-Can we have reference-counting with CORBA interfaces?::
+Можем ли да имаме броене на препратки с интерфейси CORBA?::
 
-  Yeah. Just add `_AddRef` / `_ReleaseRef` methods. There's no need to descend from the `IUnknown` interface. Although in most cases, if you want reference-counting with your interfaces, you may as well just use COM interfaces.
+  Да. Просто добавете методи `_AddRef` / `_ReleaseRef`. Няма нужда да се наследява `IUnknown`. Въпреки че в повечето случаи, ако искате броене на препратки с вашите интерфейси, можете просто да използвате COM интерфейси.
 //    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that IUnknown doesn't just do ref-counting though, it also plays a part in identity (QueryInterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
 
-### Interfaces GUIDs
+### Интерфейсни GUIDs
 
-GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see placed at every interface definition. Yes, they are just random. Unfortunately, they are necessary.
+GUID са привидно поредици от произволни символи `['{ABCD1234-...}']`, които виждате поставени във всяка дефиниция на интерфейс. Да, те са случайни. За съжаление са необходими.
 
 //Yes, they look ugly.
 //, and I wish they would not be necessary.
-The GUIDs have no meaning if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_. But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
+GUID са без значение, ако не планирате да се интегрирате с технологии като _COM_ или _CORBA_. Но те са необходими за правилното изпълнение. Не се заблуждавайте от компилатора, който за съжаление ви позволява да декларирате интерфейси без GUID.
 
-Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID. This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
+Без (уникалните) GUID, вашите интерфейси ще бъдат третирани еднакво от оператора `is`. В действителност, той ще върне `true`, ако вашият клас поддържа _който и да е_ от вашите интерфейси. Магическата функция `Supports(ObjectInstance, IMyInterface)` се държи малко по-добре, тъй като отказва да бъде компилирана за интерфейси без GUID. Това важи както за интерфейсите CORBA, така и за COM, от FPC 3.0.0.
 
-So, to be on the safe side, you should always declare a GUID for your interface. You can use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor). Or you can use an online service like https://www.guidgenerator.com/ .
+Така че, за да сте сигурни, винаги трябва да декларирате GUID за вашия интерфейс. Можете да използвате _Lazarus_ генератора на GUID (натиснете `Ctrl + Shift + G` в редактора). Или можете да използвате онлайн услуга като https://www.guidgenerator.com/ .
 
-Or you can write your own tool for this, using the `CreateGUID` and `GUIDToString` functions in RTL. See the example below:
+Или можете да напишете свой собствен инструмент за това, като използвате функциите `CreateGUID` и `GUIDToString` в RTL. Вижте примера по-долу:
 
 [source,pascal]
 ----
 include::code-samples/gen_guid.lpr[]
 ----
 
-### Reference-counted (COM) interfaces
+### Интерфейси с броене на препратки (COM) 
 
-The _COM interfaces_ bring two additional features:
+_COM интерфейсите_ добавят две допълнителни функции:
 
-. integration with COM (a technology from Windows, also available on Unix through _XPCOM_, used by Mozilla),
-. reference counting (which gives you automatic destruction when all the interface references go out of scope).
+. интеграция с COM (технология от Windows, достъпна и на Unix чрез _XPCOM_, използвана от Mozilla),
+. броене на препратки (което води до автоматично унищожаване, когато всички препратки към интерфейса излязат от обхват).
 
 // In my eyes, it was rather ugly to entangle _interfaces_ with such features. It complicates using the interfaces for the simple purpose: when multiple classes implement the same API, but cannot descend from a common class.
-When using _COM interfaces_, you need to be aware of their _automatic destruction_ mechanism and relation to COM technology.
+Когато използвате _COM интерфейси_, трябва да сте наясно с техния механизъм за _автоматично унищожаване_ и връзката им с COM технологията.
 
-In practice, this means that:
+На практика това означава, че:
 
 // +
 // The relation to COM technology has . The reference counting idea is baffling. Why would you connect one language feature, _interfaces_, with something so unrelated like _reference counting_? It seems, because the COM technology required it...
 
-* Your class needs to implement a magic `_AddRef`, `_Release`, and `QueryInterface` methods. Or descend from something that already implements them. A particular implementation of these methods may actually enable or disable the __reference-counting__ feature of COM interfaces (although disabling it is somewhat dangerous -- see the next point).
+* Вашият клас трябва да имплементира магическите методи `_AddRef`, `_Release` и `QueryInterface`. Или да наследи нещо, което вече ги е имплементирало. Конкретно изпълнение на тези методи може на практика да активира или деактивира функцията __reference-counting__ на COM интерфейсите (въпреки че деактивирането й е донякъде опасно - вижте следващата точка).
 
-** The standard class `TInterfacedObject` implements these methods to _enable_ the reference-counting.
-** The standard class `TComponent` implements these methods to _disable_ the reference-counting. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/0519585abc13e8386cdae5f7dfef6f9659dc9b57/src/base/castleinterfaces.pas .
+** Стандартният клас `TInterfacedObject` имплементира тези методи за да _разреши_ преброяването на препратки.
+** Стандартният клас `TComponent` имплементира тези методи за да _забрани_ преброяването на препратки. В *Castle Game Engine* ние ви даваме допълнителните полезни класове за наследяване `TNonRefCountedInterfacedObject` и `TNonRefCountedInterfacedPersistent` за тази цел, вижте https://github.com/castle-engine/castle-engine/blob/0519585abc13e8386cdae5f7dfef6f9659dc9b57/src/base/castleinterfaces.pas .
 
 //* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
-* You need to be careful of freeing the class, when it may be referenced by some interface variables. Because the interface is released using a virtual method (because it _may be reference-counted, even if you hack the _AddRef method to not be reference-counted..._), you cannot free the underlying object instance as long as some interface variable may point to it. See _"7.7 Reference counting"_ in the FPC manual (http://freepascal.org/docs-html/ref/refse47.html).
+* Трябва да внимавате да не освобождавате класа, когато той може да бъде сочен от някои интерфейсни променливи. Понеже интерфейсът се освобождава с помощта на виртуален метод (тъй като _може да бъде reference-counted, дори и при хакнат метод _AddRef за да не се брои..._), не можете да освободите основния екземпляр на обекта, докато някаква интерфейсна променлива сочи към него. Вижте _"7.7 Броене на препратки"_ в ръководството на FPC (http://freepascal.org/docs-html/ref/refse47.html).
 //, http://bugs.freepascal.org/view.php?id=10374 .
 
-The safest approach to using _COM interfaces_ is to
+Най-безопасният подход за използване на _COM интерфейси_ е: 
 
-* accept the fact that they are reference-counted,
-* derive the appropriate classes from `TInterfacedObject`,
-* and avoid using the class instance, instead accessing the instance always through the interface, letting reference-counting manage the deallocation.
+* да приемете факта, че са reference-counted,
+* данаследите подходящите класове от `TInterfacedObject`,
+* и да избягвате използването на истинския екземпляра на класа, вместо това винаги осъществявайте достъп до екземпляра през интерфейс, оставяйки броенето на референции да извърши освобождаването.
 
-This is an example of such interface use:
+Това е пример за използване на такъв интерфейс:
 
 [source,pascal]
 ----
 include::code-samples/interfaces_com_with_ref_counting.lpr[]
 ----
 
-### Using COM interfaces with reference-counting disabled
+### Използване на COM интерфейси с изключено броене
 
-As mentioned in the previous section, your class can descend from `TComponent` (or a similar class like `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent`) which disables reference-counting for COM interfaces. This allows you to use COM interfaces, and still free the class instance manually.
+Както бе споменато в предишния раздел, вашият клас може да произхожда от `TComponent` (или подобен клас като `TNonRefCountedInterfacedObject` и `TNonRefCountedInterfacedPersistent`), който деактивира броенето на препратки за COM интерфейси. Това ви позволява да използвате тези интерфейси и въпреки това да освободите екземпляра на класа ръчно.
 
-You need to be careful in this case to not free the class instance when some interface variable may refer to it. Remember that every typecast `Cx as IMyInterface` also creates a temporary interface variable, which may be present even until the end of the current procedure. For this reason, the example below uses a `UseInterfaces` procedure, and it frees the class instances _outside_ of this procedure (when we can be sure that temporary interface variables are out of scope).
+Трябва да внимавате в този случай да не освободите екземпляра на класа, когато някаква интерфейсна променлива сочи към него. Запомнете, че всеки typecast `Cx as IMyInterface` също създава временна интерфейсна променлива, която може да присъства дори до края на текущата процедура. Поради тази причина примерът по-долу използва процедура `UseInterfaces` и освобождава екземплярите на класа _извън_ на тази процедура (когато можем да сме сигурни, че временните интерфейсни променливи са извън обхвата).
 
-To avoid this mess, it's usually better to use CORBA interfaces, if you don't want reference-counting with your interfaces.
+За да избегнете тази бъркотия, обикновено е по-добре да използвате CORBA интерфейси, ако не искате да броите препратки.
 
 [source,pascal]
 ----
 include::code-samples/interfaces_com_test.lpr[]
 ----
 
-### Typecasting interfaces
+### Преобразуване на интерфейси
 
-This section applies to both _CORBA_ and _COM_ interfaces (however, it has some explicit exceptions for CORBA).
+Този раздел се отнася както за интерфейсите _CORBA_, така и за _COM_ (все пак има някои изрични изключения за CORBA).
 
-1. Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
+1. Прехвърлянето към тип интерфейс с помощта на оператора `as` прави проверка по време на изпълнение. Разгледайте следния код:
 +
 [source,pascal]
 ----
 UseThroughInterface(Cx as IMyInterface);
 ----
 +
-It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface`.
+Работи за всички случаи на `C1`, `C2`, `C3` в примерите в предишните раздели. Ако се изпълни, това ще доведе до грешка по време на изпълнение в случая на `C3`, който не имплементира `IMyInterface`.
 +
-Using `as` operator works consistently regardless if `Cx` is declared as a class instance (like `TMyClass2`) or interface (like `IMyInterface2`).
+Използването на оператор `as` работи правилно, независимо дали `Cx` е деклариран като екземпляр на клас (като `TMyClass2`) или интерфейс (като `IMyInterface2`).
 +
-However, it is not allowed for CORBA interfaces.
+Това обаче не е разрешено за CORBA интерфейси.
 
-2. You can instead cast the instance as an interface implicitly:
+2. Вместо това можете изрично да конвертирате екземпляра до интерфейс:
 +
 [source,pascal]
 ----
 UseThroughInterface(Cx);
 ----
 +
-In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
+В този случай конверсията трябва да е валидна по време на компилация. Така че това ще се компилира за `C1` и `C2` (които са декларирани като класове, които имплементират `IMyInterface`). Но няма да се компилира за `C3`.
 +
-In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
+По същество тazi konwersiq изглежда и работи точно като за обикновени класове. Където и да е необходим екземпляр на клас `TMyClass`, винаги можете да използвате там променлива, която е декларирана с клас на `TMyClass`, *или `TMyClass` потомък*. Същото правило важи и за интерфейсите. Няма нужда от изрично преобразуване на типа в такива ситуации.
 
-3. You can also typecast using `IMyInterface(Cx)`. Like this:
+3. Можете също така да използвате `IMyInterface(Cx)`:
 +
 [source,pascal]
 ----
 UseThroughInterface(IMyInterface(Cx));
 ----
 +
-Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad things will happen if you cast to an incorrect interface. And that's true, if you cast _a class to a class_, or _an interface to an interface_, using this syntax.
+Обикновено такъв синтаксис за преобразуване на типове показва _опасно, непроверено_ преобразуване на типове. Ще се случат лоши неща, ако конвертирате към неправилен интерфейс. И това е вярно, ако преобразувате _клас към клас_ или _интерфейс към интерфейс_, използвайки този синтаксис.
 +
-There is a small exception here: if `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
+Тук има малко изключение: ако `Cx` е деклариран като клас (като `TMyClass2`), тогава това е тип, който трябва да е валиден по време на компилация. Така че прехвърлянето на _на клас към интерфейс_ по този начин е безопасно, бързо (проверено по време на компилиране) преобразуване на типа.
 
-To test it all, play around with this example code:
+За да тествате всичко това, поиграйте си с този примерен код:
 
 [source,pascal]
 ----
 include::code-samples/interface_casting.lpr[]
 ----
 
-## About this document
+## Относно този документ
 
 Copyright Michalis Kamburelis.
 
