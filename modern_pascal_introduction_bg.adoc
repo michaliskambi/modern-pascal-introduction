@@ -2421,13 +2421,13 @@ include::code-samples/exception_in_constructor_test.lpr[]
 
 ## Интерфейси
 
-### Bare (CORBA) interfaces
+### Голи (CORBA) интерфейси
 
-_An interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have one ancestor class.
+_Интерфейсът_ декларира набор от методи (APIfootnote:api[API = Application Program Interface]), по подобие на клас, но не дефинира тяхната реализация. Даден клас може да бъде наследник само на един предшестващ клас, но пък може да имплементира много интерфейси.
 
-You can cast a class to any interface it supports, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. Useful when a simple class inheritance is not enough.
+Може да преобразувате типово клас до всеки от интерфейсите, които той имплементира и после да _извикате методите през този интерфейс_. Това позволява по еднакъв начин да третирате класове, които не произлизат един от друг, но все пак имат някаква обща функционалност. Това е алтернативно решение на множественото наследяване в езика C++.  
 
-The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) or C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
+_CORBA интерфейсите_ в Обектния Паскал действат много подобно на интерфейсите в Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) или C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
 
 //This is much like Java, where interfaces are used whenever you think of multiple inheritance.
 
@@ -2436,27 +2436,27 @@ The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java
 include::code-samples/interfaces_corba_test.lpr[]
 ----
 
-### CORBA and COM types of interfaces
+### Интерфейси CORBA и COM
 
-Why are the interfaces (presented above) called "CORBA"?::
+Защо представените по-горе интерфейси са наречени "CORBA"?::
 
-  The name *CORBA* is unfortunate. A better name would be *bare interfaces*. These interfaces are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API.
+  Името *CORBA* е неудачно. По-добро име би било *голи интерфейси*. Тези интерфейси са _"`изцяло езикова функционалност`"_. Използвайте ги когато искате да приравните различни класове, но искате де да споделят едно и също API.
 +
 //The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
 //+
-While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), they are _not_ tied to this technology in any way.
+Въпреки, че тези интерфейси могат да се използват заедно с _технологията CORBA (Common Object Request Broker Architecture)_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), те _не са_ свързани по никакъв друг начин с нея.
 
-Is the `{$interfaces corba}` declaration needed?::
+Необходима ли е директивата `{$interfaces corba}`?::
 
-  Yes, because by default
+  Необходима е, защото иначе 
 //(if we would omit the `{$interfaces corba}` directive)
-  you create _COM interfaces_. This can be stated explicitly by saying `{$interfaces com}`, but usually it's not needed since it's the default state.
+ се създават _COM интерфейси_. Това може да се укаже изрично с `{$interfaces com}`, но обикновено не е необходимо защото това е направено по подразбиране.
 +
-And I don't advise using _COM interfaces_, especially if you're looking for something equivalent to interfaces from other programming languages. The _CORBA interfaces_ in Pascal are exactly what you expect if you're looking for something equivalent to the interfaces in C# and Java. While the _COM interfaces_ bring additional features that you possibly don't want.
+Не препоръчвам да се използват  _COM интерфейси_, особено ако търсите нещо еквивалентно на интерфейсите в други езици. _CORBA интерфейсите_ в Паскал са точно каквото очаквате от интерфейсите в C# или Java. _COM интерфейси_ от друга страна имат допълнителни възможности, които вероятно не бихте желали в случая.
 +
-Note that the `{$interfaces xxx}` declaration only affects the interfaces that do not have any explicit ancestor (just the keyword `interface`, not `interface(ISomeAncestor)`). When an interface has an ancestor, it has the same type as the ancestor, regardless of the `{$interfaces xxx}` declaration.
+Забележете, че директивата `{$interfaces xxx}` се отразява само на интерфейсите, които нямат предшественик (само с ключовата дума `interface` а не `interface(ISomeAncestor)`, т.е. не са наследили друг интерфейс) Ако интерфейса е наследник на друг интерфейс, той ще бъде от същия тип като предшественика независимо от директивата `{$interfaces xxx}`.
 
-What are COM interfaces?::
+Какво е COM интерфейс?::
 
   The _COM interface_ is synonymous with _an interface descending from a special `IUnknown` interface_. Descending from `IUnknown`:
 +
