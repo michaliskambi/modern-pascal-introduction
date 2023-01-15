@@ -2611,11 +2611,14 @@ include::code-samples_bg/interface_casting.lpr[]
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis@castle-engine.io. My homepage is https://michalis.xyz/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
+Изходният код на този документ е във формат AsciiDoc на https://github.com/michaliskambi/modern-pascal-introduction. Предложения за корекции и допълнения, кръпки и заявки за изтегляне са винаги добре дошли:) Можете да се свържете с мен чрез GitHub или да изпратите имейл на michalis@castle-engine.io. Моята WEB страница е https://michalis.xyz/. Този документ е свързан в секция _Documentation_ на _Castle Game Engine_ website https://castle-engine.io/.
 
-You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
+Можете да разпространявате и дори да променяте този документ свободно, под същите лицензи като Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
 * _Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA)_
 * or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
 
 Thank you for reading!
+
+Превод на Български език:
+Юлиян Иванов, 2023
