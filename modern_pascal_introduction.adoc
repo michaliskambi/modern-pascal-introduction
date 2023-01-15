@@ -1899,7 +1899,7 @@ procedure Foo;
 
 { Define a NewLine constant. Here you can see how the normal syntax of Pascal
   is "broken" by preprocessor directives. When you compile on Unix
-  (includes Linux, Android, Mac OS X), the compiler sees this:
+  (includes Linux, Android, macOS), the compiler sees this:
 
     const NewLine = #10;
 
