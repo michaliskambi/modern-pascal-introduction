@@ -2,9 +2,9 @@
 # See the "upload-all" below for examples how to use them.
 #
 # Suffix added to input and output filenames.
-LANGUAGE_SUFFIX:=_bg
+LANGUAGE_SUFFIX:=
 # Language parameters to AsciiDoctor, see https://asciidoctor.org/docs/user-manual/#language-support
-ASCIIDOCTOR_LANGUAGE:=bg
+ASCIIDOCTOR_LANGUAGE:=
 
 NAME:=modern_pascal_introduction$(LANGUAGE_SUFFIX)
 ALL_OUTPUT:=$(NAME).html $(NAME).pdf $(NAME).xml
