@@ -38,6 +38,7 @@ records
 static_class_method
 with_virtual_methods
 without_virtual_methods
+method_with_self_nil
 lazarus/*.bak
 lazarus/*.lps
 lazarus/lib/
