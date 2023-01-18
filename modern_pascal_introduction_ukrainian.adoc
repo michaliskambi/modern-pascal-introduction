@@ -85,7 +85,7 @@ begin
 end;
 ----
 
-You can call `Exit` to end the execution of the procedure or function before it reaches the final `end;`. If you call parameter-less `Exit` in a function, it will return the last thing you set as `Result`. You can also use `Exit(X)` construct, to set the function result and exit *now* -- this is just like `return X` construct in C-like languages.
+Ви можете викликати `Exit`, щоб завершити виконання процедури або функції до того, як вона досягне остаточного `end;`. Якщо ви викликаєте `Exit` без параметрів у функції, вона поверне останнє, що ви встановили як `Result`. Ви також можете використовувати конструкцію `Exit(X)`, щоб установити результат функції та вийти *зараз* -- це так само, як конструкція `return X` у C-подібних мовах.
 
 [source,pascal]
 ----
@@ -97,7 +97,7 @@ begin
 end;
 ----
 
-Note that the function result can be discarded. Any function may be used just like a procedure. This makes sense if the function has some _side effect_ (e.g. it modifies a global variable) besides calculating the result. For example:
+Зверніть увагу, що результат функції можна відхилити. Будь-яку функцію можна використовувати як процедуру. Це має сенс, якщо функція має якийсь _побічний ефект_ (наприклад, вона змінює глобальну змінну), крім обчислення результату. Наприклад:
 
 [source,pascal]
 ----
@@ -113,8 +113,8 @@ end;
 
 begin
   Count := 10;
-  CountMe; // the function result is discarded, but the function is executed, Count is now 11
-  MyCount := CountMe; // use the result of the function, MyCount equals to Count which is now 12
+  CountMe; // результат функції відкидається, але функція виконується, Count тепер дорівнює 11
+  MyCount := CountMe; // використовуйте результат функції, MyCount дорівнює Count, який тепер дорівнює 12
 end.
 ----
 
