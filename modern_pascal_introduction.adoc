@@ -2442,7 +2442,7 @@ Why are the interfaces (presented above) called "CORBA"?::
 +
 //The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
 //+
-While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), they are _not_ tied to this technology in any way.
+While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture[wikipedia about CORBA]), they are _not_ tied to this technology in any way.
 
 Is the `{$interfaces corba}` declaration needed?::
 
@@ -2528,7 +2528,7 @@ In practice, this means that:
 * Your class needs to implement a magic `_AddRef`, `_Release`, and `QueryInterface` methods. Or descend from something that already implements them. A particular implementation of these methods may actually enable or disable the __reference-counting__ feature of COM interfaces (although disabling it is somewhat dangerous -- see the next point).
 
 ** The standard class `TInterfacedObject` implements these methods to _enable_ the reference-counting.
-** The standard class `TComponent` implements these methods to _disable_ the reference-counting. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/0519585abc13e8386cdae5f7dfef6f9659dc9b57/src/base/castleinterfaces.pas .
+** The standard class `TComponent` implements these methods to _disable_ the reference-counting.
 
 //* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
