@@ -940,7 +940,9 @@ if A <> nil then
 
 This frees the `A`, unless it's `nil`.
 
-Note that in normal circumstances, you should never call a method on an instance which may be `nil`. So the call `A.Free` may look suspicious at the first sight, if `A` can be `nil`. However, the `Free` method is an exception to this rule. It does something dirty in the implementation -- namely, checks whether `Self <> nil`. This dirty trick works only in non-virtual methods (that don't call any virtual methods and don't access any fields).
+Note that in normal circumstances, you should never call a method on an instance which may be `nil`. So the call `A.Free` may look suspicious at the first sight, if `A` can be `nil`. However, the `Free` method is an exception to this rule. It does something dirty in the implementation -- namely, checks whether `Self <> nil`.
+
+NOTE: This dirty trick (officially allowing the method to be used with `Self` equal `nil`) is possible only for non-virtual methods. And as long as `Self = nil` is possible, the method cannot call any virtual methods or access any fields, as these would crash with acces violation when called on a `nil` pointer. See the sample code https://github.com/michaliskambi/modern-pascal-introduction/blob/master/code-samples/method_with_self_nil.lpr[method_with_self_nil.lpr]. We discourage from using this trick in your own code (for virtual or non-virtual methods) as it is counter-intuitive to normal usage, in general all instance methods should be able to assume that they work on valid (non-nil) instance and can access fields and call any other methods (virtual or not).
 
 I advise using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_.
 
@@ -1899,7 +1901,7 @@ procedure Foo;
 
 { Define a NewLine constant. Here you can see how the normal syntax of Pascal
   is "broken" by preprocessor directives. When you compile on Unix
-  (includes Linux, Android, Mac OS X), the compiler sees this:
+  (includes Linux, Android, macOS), the compiler sees this:
 
     const NewLine = #10;
 
@@ -2442,7 +2444,7 @@ Why are the interfaces (presented above) called "CORBA"?::
 +
 //The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
 //+
-While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture), they are _not_ tied to this technology in any way.
+While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture[wikipedia about CORBA]), they are _not_ tied to this technology in any way.
 
 Is the `{$interfaces corba}` declaration needed?::
 
@@ -2528,7 +2530,7 @@ In practice, this means that:
 * Your class needs to implement a magic `_AddRef`, `_Release`, and `QueryInterface` methods. Or descend from something that already implements them. A particular implementation of these methods may actually enable or disable the __reference-counting__ feature of COM interfaces (although disabling it is somewhat dangerous -- see the next point).
 
 ** The standard class `TInterfacedObject` implements these methods to _enable_ the reference-counting.
-** The standard class `TComponent` implements these methods to _disable_ the reference-counting. *In the Castle Game Engine* we give you additional useful ancestors `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` for this purpose, see https://github.com/castle-engine/castle-engine/blob/0519585abc13e8386cdae5f7dfef6f9659dc9b57/src/base/castleinterfaces.pas .
+** The standard class `TComponent` implements these methods to _disable_ the reference-counting.
 
 //* You can turn off the reference-counting mechanism by simple `_AddRef`, `_Release` implementations that always return `-1`. Actually, the standard implementation of these methods in `TComponent`, `TNonRefCountedInterfacedObject` and `TNonRefCountedInterfacedPersistent` already does this for you.
 
