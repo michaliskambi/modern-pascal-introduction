@@ -118,9 +118,9 @@ begin
 end.
 ----
 
-### Testing (if)
+### Тестування (if)
 
-Use `if .. then` or `if .. then .. else` to run some code when some condition is satisfied. Unlike in the C-like languages, in Pascal you don't have to wrap the condition in parenthesis.
+Використовуйте кострукції `if .. then` чи `if .. then .. else` щоб виконати певний код коли задоволена певна умова. На відміну від C-подібних мов, у Pascal вам не потрібно закривати умову в дужки.
 
 [source,pascal]
 ----
@@ -142,7 +142,7 @@ begin
   else
     DoSomethingElse;
 
-  // equivalent to above
+  // еквівалент вище
   B := A > 10;
   if B then
     DoSomething
@@ -151,7 +151,7 @@ begin
 end;
 ----
 
-The `else` is paired with the last `if`. So this works as you expect:
+"else" поєднується з останнім "if". Отже, це працює так, як ви очікуєте:
 
 [source,pascal]
 ----
@@ -162,7 +162,7 @@ if A <> 0 then
     AIsNonzeroButBIsZero;
 ----
 
-While the example with nested `if` above is correct, it is often better to place the nested `if` inside a `begin` ... `end` block in such cases. This makes the code more obvious to the reader, and it will remain obvious even if you mess up the indentation. The improved version of the example is below. When you add or remove some `else` clause in the code below, it's obvious to which condition it will apply (to the `A` test or the `B` test), so it's less error-prone.
+Хоча наведений вище приклад із вкладеним `if` правильний, у таких випадках часто краще розмістити вкладений `if` всередині блоку `begin` ... `end`. Це робить код більш очевидним для читача, і він залишатиметься очевидним, навіть якщо ви зіпсуєте відступ. Покращена версія прикладу наведена нижче. Коли ви додаєте або видаляєте речення `else` у наведеному нижче коді, очевидно, до якої умови воно застосовуватиметься (до тесту `A` чи `B`), тому воно менш схильне до помилок.
 
 [source,pascal]
 ----
@@ -175,27 +175,27 @@ begin
 end;
 ----
 
-### Logical, relational and bit-wise operators
+### Логічні, реляційні та побітові оператори
 
-The _logical operators_ are called `and`, `or`, `not`, `xor`. Their meaning is probably obvious (search for _"exclusive or"_ if you're unsure what _xor_ does:)). They take _boolean arguments_, and return a _boolean_. They can also act as _bit-wise operators_ when both arguments are integer values, in which case they return an integer.
+_Логічні оператори_ називаються `and`, `or`, `not`, `xor`. Їх сенс, мабуть, очевидний (пошукайте _"exclusive or"_ якщо Ви не впевннені що виконує _xor_ :)). Вони приймають _логічні аргументи_, і повертають результат типу _boolean_. Вони також можуть виконувати роль _побітових операторів_ у випадку коли обидва аргументи - цілочисельні значення, у цьому випадку вони повертають ціле число.
 
-The _relational (comparison)_ operators are `=`, `<>`, `>`, `<`, `\<=`, `>=`. If you're accustomed to C-like languages, note that in Pascal you compare two values (check are they equal) using a single equality character `A = B` (unlike in C where you use `A == B`). The special _assignment_ operator in Pascal is `:=`.
+Оператори _відношення (порівняння)_ наступні: `=`, `<>`, `>`, `<`, `\<=`, `>=`. Якщо ви звикли до C-подібних мов, зауважте, що в Pascal ви порівнюєте два значення (перевіряєте, чи вони рівні) за допомогою одного символу рівності `A = B` (на відміну від C, де ви використовуєте `A == B`). Спеціальним оператором _присвоєння_ в Pascal є `:=`.
 
-The _logical (or bit-wise) operators have a higher precedence than relational operators_. You may need to use parenthesis around some expressions to have the desired order of the calculations.
+_Логічні (або побітові) оператори мають вищий пріоритет, ніж оператори відношення_. Вам може знадобитися використовувати дужки навколо деяких виразів, щоб мати потрібний порядок обчислень.
 
-For example this is a compilation error:
+Ось, наприклад, помилка компіляції:
 
 [source,pascal]
 ----
 var
   A, B: Integer;
 begin
-  if A = 0 and B <> 0 then ... // INCORRECT example
+  if A = 0 and B <> 0 then ... // НЕПРАВИЛЬНИЙ приклад
 ----
 
-The above fails to compile, because the compiler first wants to perform a bit-wise `and` in the middle of the expression: `(0 and B)`. This is a bit-wise operation which returns an integer value. Then the compiler applies `=` operator which yields a boolean value `A = (0 and B)`. And finally the _"type mismatch"_ error is risen after trying to compare the boolean value `A = (0 and B)` and integer value `0`.
+Наведене вище не компілюється, тому що компілятор спочатку хоче виконати побітове `and` в середині виразу: `(0 and B)`. Це побітова операція, яка повертає ціле значення. Потім компілятор застосовує оператор `=`, який дає логічне значення `A = (0 and B)`. І, нарешті, помилка _"невідповідність типу"_ виникає після спроби порівняти логічне значення `A = (0 and B)` і ціле значення `0`.
 
-This is correct:
+Ось це правильно:
 
 [source,pascal]
 ----
@@ -205,24 +205,24 @@ begin
   if (A = 0) and (B <> 0) then ...
 ----
 
-The _short-circuit evaluation_ is used. Consider this expression:
+Використовується _оцінка короткого замикання_. Розглянемо такий вираз:
 
 [source,pascal]
 ----
 if MyFunction(X) and MyOtherFunction(Y) then...
 ----
 
-* It's guaranteed that `MyFunction(X)` will be evaluated first.
-* And if `MyFunction(X)` returns `false`, then the value of expression is known (the value of `false and whatever` is always `false`), and `MyOtherFunction(Y)` will not be executed at all.
-* Analogous rule is for `or` expression. There, if the expression is known to be `true` (because the 1st operand is `true`), the 2nd operand is not evaluated.
-* This is particularly useful when writing expressions like
+* Гарантується, що спершу буде обчислено функцію `MyFunction(X)`.
+* І якщо `MyFunction(X)` поверне `false`, тоді значення виразу відоме (значення `false and що-завгодно` завжди є `false`), і `MyOtherFunction(Y)` не буде виконано взагалі.
+* Аналогічне правило для виразу `або`. Там, якщо відомо, що вираз має значення `true` (оскільки 1-й операнд має значення `true`), другий операнд не обчислюється.
+* Це особливо корисно під час написання таких виразів, як
 +
 [source,pascal]
 ----
 if (A <> nil) and A.IsValid then...
 ----
 +
-This will work OK, even when `A` is `nil`. The keyword `nil` is a pointer equal to zero (when represented as a number). It is called a _null pointer_ in many other programming languages.
+Це буде нормально, навіть якщо `A` дорівнює `nil`. Ключове слово `nil` — це вказівник, що дорівнює нулю (коли представлено у вигляді числа). Це називається _нульовим покажчиком_ у багатьох інших мовах програмування.
 
 // * Using `and` between two boolean values is a logical `and`, and the result is boolean. In other words, the result is `true` only if both operands are `true`, otherwise it's `false`.
 
