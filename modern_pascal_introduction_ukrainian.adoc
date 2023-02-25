@@ -228,9 +228,9 @@ if (A <> nil) and A.IsValid then...
 
 // * Using `and` between two integer values is a bit-wise `and`, and the result is integer. The operands are converted to have the same number of bits, and a similar rule is performed bit-by-bit, setting each bit to `0` or `1`. If you do this with potentially negative integer values, you should understand how negative numbers are encoded in memory (_"two's complement"_).
 
-### Testing single expression for multiple values (case)
+### Перевірка одного виразу для кількох значень (case)
 
-If a different action should be executed depending on the value of some expression, then the `case .. of .. end` statement is useful.
+Якщо необхідно виконати іншу дію залежно від значення якогось виразу, тоді корисним буде оператор `case .. of .. end`.
 
 [source,pascal]
 ----
@@ -247,13 +247,13 @@ case SomeValue of
 end;
 ----
 
-The `else` clause is optional (and corresponds to `default` in C-like languages). When no condition matches, and there's no `else`, then nothing happens.
+Речення `else` є необов’язковим (і відповідає `default` у C-подібних мовах). Якщо жодна умова не відповідає, і немає `else`, нічого не відбувається.
 
-In you come from C-like languages, and compare this with `switch` statement in these languages, you will notice that there is no automatic _fall-through_. This is a deliberate blessing in Pascal. You don't have to remember to place `break` instructions. In every execution, _at most one_ branch of the `case` is executed, that's it.
+Якщо ви походите з C-подібних мов, і порівняйте це з інструкцією `switch` у цих мовах, ви помітите, що немає автоматичного _провалу_. Це свідоме благословення в Паскалі. Вам не потрібно пам’ятати про розміщення інструкцій `break`. Під час кожного виконання виконується _щонайбільше одна_ гілка `case`, і все.
 
-### Enumerated and ordinal types and sets and constant-length arrays
+### Перелічувані та порядкові типи, множини та масиви постійної довжини
 
-Enumerated type in Pascal is a very nice, opaque type. You will probably use it much more often than enums in other languages:)
+Перелічуваний тип у Паскалі — дуже гарний, непрозорий тип. Ймовірно, ви використовуватимете його набагато частіше, ніж переліки в інших мовах:)
 
 [source,pascal]
 ----
@@ -261,15 +261,15 @@ type
   TAnimalKind = (akDuck, akCat, akDog);
 ----
 
-The convention is to prefix the enum names with a two-letter shortcut of type name, hence `ak` = shortcut for _"Animal Kind"_. This is a useful convention, since the enum names are in the unit (global) namespace. So by prefixing them with `ak` prefix, you minimize the chances of collisions with other identifiers.
+Згідно з домовленістю до імен enum ставиться дволітерне скорочення імені типу, отже `ak` = скорочення для _"Animal Kind"_. Це корисна домовленість, оскільки імена enum знаходяться в просторі імен модуля (глобальному). Таким чином, додавши до них префікс `ak`, ви мінімізуєте ймовірність конфліктів з іншими ідентифікаторами.
 
-NOTE: The collisions in names are not a show-stopper. It's Ok for different units to define the same identifier. But it's a good idea to try to avoid the collisions anyway, to keep code simple to understand and grep.
+NOTE: Зіткнення в іменах не перешкода. Це нормально, якщо різні модулі визначають той самий ідентифікатор. Але було б гарною ідеєю все одно намагатися уникнути колізій, щоб код був простим для розуміння та пошуку.
 
-NOTE: You can avoid placing enum names in the global namespace by compiler directive `{$scopedenums on}`. This means you will have to access them qualified by a type name, like `TAnimalKind.akDuck`. The need for `ak` prefix disappears in this situation, and you will probably just call the enums `Duck, Cat, Dog`. This is similar to C# enums.
+NOTE: Ви можете уникнути розміщення імен enum у глобальному просторі імен за допомогою директиви компілятора `{$scopedenums on}`. Це означає, що вам доведеться отримати до них доступ, визначивши назву типу, як-от `TAnimalKind.akDuck`. У цій ситуації потреба в префіксі `ak` зникає, і ви, ймовірно, просто називатимете переліки `Duck, Cat, Dog`. Це схоже на перерахування C#.
 
-The fact that enumerated type is _opaque_ means that it cannot be just assigned to and from an integer. However, for special use, you can use `Ord(MyAnimalKind)` to forcefully convert enum to int, or typecast `TAnimalKind(MyInteger)` to forcefully convert int to enum. In the latter case, make sure to check first whether `MyInteger` is in good range (0 to `Ord(High(TAnimalKind))`).
+Той факт, що перерахований тип є _непрозорим_, означає, що його не можна просто призначити цілому числу. Однак для спеціального використання ви можете використати `Ord(MyAnimalKind)` для примусового перетворення enum на int або приведення типу `TAnimalKind(MyInteger)` для примусового перетворення int на enum. В останньому випадку переконайтеся, що спершу перевірте, чи `MyInteger` знаходиться в належному діапазоні (від 0 до `Ord(High(TAnimalKind))`).
 
-Enumerated and ordinal types can be used as array indexes:
+Перелічувані та порядкові типи можуть використовуватися як індекси масиву:
 
 [source,pascal]
 ----
@@ -284,7 +284,7 @@ type
   TAnimalNames = array [TAnimalKind] of string;
 ----
 
-They can also be used to create sets (a bit-fields internally):
+Вони також можуть бути використані для створення наборів (внутрішніх бітових полів):
 
 [source,pascal]
 ----
@@ -303,21 +303,21 @@ begin
 end;
 ----
 
-### Loops (for, while, repeat, for .. in)
+### Цикли (for, while, repeat, for .. in)
 
 [source,pascal]
 ----
 include::code-samples_ukrainian/loops.lpr[]
 ----
 
-*About the `repeat` and `while` loops*:
+*Про цикли `repeat` і `while`*:
 
 There are two differences between these loop types:
 
 1. The loop condition has an opposite meaning. In `while .. do` you tell it _when to continue_, but in `repeat .. until` you tell it _when to stop_.
 2. In case of `repeat`, _the condition is not checked at the beginning_. So the `repeat` loop always runs at least once.
 
-*About the `for I := ...` loops*:
+*About the `for I := ...` loops`*:
 
 The `for I := .. to .. do ...` construction it similar to the C-like `for` loop. However, it's more constrained, as you cannot specify arbitrary actions/tests to control the loop iteration. This is strictly for iterating over a consecutive numbers (or other ordinal types). The only flexibility you have is that you can use `downto` instead of `to`, to make numbers go downward.
 
