@@ -52,3 +52,4 @@ upload: test clean all
 upload-all:
 	$(MAKE) upload
 	$(MAKE) upload LANGUAGE_SUFFIX=_russian ASCIIDOCTOR_LANGUAGE='-a lang=ru'
+	$(MAKE) upload LANGUAGE_SUFFIX=_bg ASCIIDOCTOR_LANGUAGE='-a lang=bg'
