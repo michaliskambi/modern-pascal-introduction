@@ -408,7 +408,7 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 * The `Format` function, used like `Format('%d %f %s', [MyInt, MyFloat, MyString])`. This is like `sprintf` function in the C-like languages. It inserts the arguments into the placeholders in the pattern. The placeholders may use special syntax to influence formatting, e.g. `%.4f` results in a floating-point format with 4 digits after the decimal point.
 ** _Advantage_: The separation of _pattern_ string from _arguments_ looks clean. If you need to change the pattern string without touching the arguments (e.g. when translating), you can do it easily.
 ** _Another advantage_: No compiler magic. You can use the same syntax to pass any number of arguments of an arbitrary type in your own routines (declare parameter as an `array of const`). You can then pass these arguments downward to `Format`, or deconstruct the list of parameters and do anything you like with them.
-** _Disadvantage_: Compiler does not check whether the pattern matches the arguments. Using a wrong placeholder type will result in an exception at runtime (`EConvertError` exception, not anything nasty like a segmentation fault).
+** _Disadvantage_: Compiler does not check whether the pattern matches the arguments. Using a wrong placeholder type will result in an exception at runtime (`EConvertError` exception, not anything nasty like _Access Violation (Segmentation Fault)_ error).
 //Note that, unlike the C `sprintf`, the correctness at runtime can be completely verified (there are no dirty pointer tricks inside
 
 * `WriteStr(TargetString, ...)` routine behaves much like `Write(...)`, except that the result is saved to the `TargetString`.
@@ -942,9 +942,30 @@ This frees the `A`, unless it's `nil`.
 
 Note that in normal circumstances, you should never call a method on an instance which may be `nil`. So the call `A.Free` may look suspicious at the first sight, if `A` can be `nil`. However, the `Free` method is an exception to this rule. It does something dirty in the implementation -- namely, checks whether `Self <> nil`.
 
-NOTE: This dirty trick (officially allowing the method to be used with `Self` equal `nil`) is possible only for non-virtual methods. And as long as `Self = nil` is possible, the method cannot call any virtual methods or access any fields, as these would crash with acces violation when called on a `nil` pointer. See the sample code https://github.com/michaliskambi/modern-pascal-introduction/blob/master/code-samples/method_with_self_nil.lpr[method_with_self_nil.lpr]. We discourage from using this trick in your own code (for virtual or non-virtual methods) as it is counter-intuitive to normal usage, in general all instance methods should be able to assume that they work on valid (non-nil) instance and can access fields and call any other methods (virtual or not).
+[NOTE]
+====
+This trick (officially allowing the method to be used with `Self` equal `nil`) is possible only in non-virtual methods.
 
-I advise using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor. The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_.
+In the implementation of such method, as long as `Self = nil` is possible, the method cannot call any virtual methods or access any fields, as these would cause _Access Violation (Segmentation Fault)_ error when called on a `nil` instance. See the sample code https://github.com/michaliskambi/modern-pascal-introduction/blob/master/code-samples/method_with_self_nil.lpr[method_with_self_nil.lpr].
+
+We discourage from using this trick in your own code (for virtual or non-virtual methods) as it is counter-intuitive to normal usage. In general all instance methods should be able to assume that they work on valid (non-nil) instance and can access fields and call any other methods (virtual or not).
+====
+
+We advise using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor.
+
+The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_. But note that using `FreeAndNil(A)`  doesn't *guarantee* this assertion. For example, if you copy the instance reference, and call `FreeAndNil(A)` on one copy, the other copy will be a non-nil dangling pointer.
+
+[source,pascal]
+----
+A := TMyClass.Create;
+B := A;
+FreeAndNil(A);
+// B now contains a dangling pointer
+----
+
+More about dealing with this in the later section about _"Free notification"_.
+
+Still, `FreeAndNil(A)` takes care of the most trivial cases, so it's a good habit to use it IMHO. You will appreciate it when debuggging some errors, it is nice to easily observe _"``X`` is already freed, because `X` is `nil` now"_.
 
 ### Manual and automatic freeing
 
@@ -1460,7 +1481,7 @@ begin
 end;
 ----
 
-The above example is not valid: if an exception occurs within `TMyClass.Create` (a constructor may also raise an exception), or within the `CallSomeOtherProcedure`, then the `MyInstance` variable is not initialized. Calling `FreeAndNil(MyInstance)` will try to call destructor of `MyInstance`, which will most likely crash with _Access Violation (Segmentation Fault)_. In effect, one exception causes another exception, which will make the error report not very useful: you will not see the message of the original exception.
+The above example is not valid: if an exception occurs within `TMyClass.Create` (a constructor may also raise an exception), or within the `CallSomeOtherProcedure`, then the `MyInstance` variable is not initialized. Calling `FreeAndNil(MyInstance)` will try to call destructor of `MyInstance`, which will most likely crash with _Access Violation (Segmentation Fault)_ error. In effect, one exception causes another exception, which will make the error report not very useful: you will not see the message of the original exception.
 
 Sometimes it is justified to fix the above code by first initializing all local variables to `nil` (on which calling `FreeAndNil` is safe, and will not do anything). This makes sense if you free a *lot* of class instances. So the two code examples below work equally well:
 
