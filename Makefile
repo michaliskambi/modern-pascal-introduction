@@ -54,3 +54,4 @@ upload-all:
 	$(MAKE) upload LANGUAGE_SUFFIX=_russian ASCIIDOCTOR_LANGUAGE='-a lang=ru'
 	$(MAKE) upload LANGUAGE_SUFFIX=_bg ASCIIDOCTOR_LANGUAGE='-a lang=bg'
 	$(MAKE) upload LANGUAGE_SUFFIX=_ukrainian ASCIIDOCTOR_LANGUAGE='-a lang=ua'
+	scp modern_pascal_introduction_chinese.pdf $(SCP_TARGET)
