@@ -61,3 +61,5 @@ modern_pascal_introduction_ukrainian.xml
 /code-samples*/lazarus/lib/
 /code-samples*/*.dproj.local
 /code-samples*/*.res
+/code-samples*/*.identcache
+/code-samples*/__recovery
