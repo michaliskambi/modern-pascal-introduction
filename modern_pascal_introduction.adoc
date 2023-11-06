@@ -19,7 +19,7 @@ So I wrote this quick introduction to what I call *modern Object Pascal*. Most o
 * It's very type safe,
 * High-level but can also be low-level if you need it to be.
 
-It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . Myself, I'm the creator of _Castle Game Engine_, https://castle-engine.io/ , which is an open-source 3D and 2D game engine using modern Pascal to create games on many platforms (Windows, Linux, macOS, Android, iOS, Nintendo Switch; also WebGL is coming).
+It also has excellent, portable and open-source compiler called the _Free Pascal Compiler_, http://freepascal.org/ . And an accompanying IDE (editor, debugger, a library of visual components, form designer) called _Lazarus_ http://lazarus.freepascal.org/ . There's also a proprietary and commercial compiler and IDE _Delphi_ https://www.embarcadero.com/products/Delphi . There's a lot of libraries (for both FPC and Delphi) available, see https://github.com/Fr0sT-Brutal/awesome-pascal . We also support existing editors like _VS Code_, see https://castle-engine.io/vscode . Myself, I'm the creator of _Castle Game Engine_, https://castle-engine.io/ , which is an open-source 3D and 2D game engine using modern Pascal to create games on many platforms (Windows, Linux, macOS, Android, iOS, Nintendo Switch; also WebGL is coming).
 
 This introduction is mostly directed at programmers who already have experience in other languages. We will not cover here the meanings of some universal concepts, like _"what is a class"_, we'll only show how to do them in Pascal.
 
