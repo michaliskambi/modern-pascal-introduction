@@ -1548,6 +1548,23 @@ end;
 
 NOTE: In this simple example, you could also make a valid argument that the code should be split into 3 separate procedures, one calling each other.
 
+The first big difference between `try..except` and `try..finally` is that `try..except` "catches" the exception allowing you to handle the situation while `try..finally` will re-raise the exception after it has finished the execution. Another big difference is that `try..finally` executes in most possible scenarios of "leaving" the code block, not only through exceptions. E.g. consider the following code:
+
+[source,pascal]
+----
+procedure MyProcedure;
+begin
+  try
+    WriteLn('Do something');
+    Exit;
+    WriteLn('This will not happen');
+  finally
+    WriteLn('This will happen regardless if we have left the block through Exception, Exit, Continue, Break, etc.');
+  end;
+  WriteLn('This will not happen');
+end;
+----
+
 ### How the exceptions are displayed by various libraries
 
 - In case of Lazarus LCL, the exceptions raised during events (various callbacks assigned to `OnXxx` properties of LCL components) will be captured and will result in a nice dialog message, that allows the user to continue and stop the application. This means that your own exceptions do not "get out" from `Application.ProcessMessages`, so they do not automatically break the application. You can configure what happens using `TApplicationProperties.OnException`.
