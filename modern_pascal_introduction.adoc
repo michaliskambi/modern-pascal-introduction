@@ -842,12 +842,12 @@ Note 1: The `inherited;` is really just a shortcut for calling the ancestor's me
 ----
 procedure TMyClass2.MyMethod(A: Integer);
 begin
-  Writeln('TMyClass2.MyMethod beginning ', A);
+  WriteLn('TMyClass2.MyMethod beginning ', A);
   A := 456;
   { This calls TMyClass1.MyMethod with A = 456,
     regardless of the A value passed to this method (TMyClass2.MyMethod). }
   inherited;
-  Writeln('TMyClass2.MyMethod ending ', A);
+  WriteLn('TMyClass2.MyMethod ending ', A);
 end;
 ----
 
@@ -1333,16 +1333,16 @@ var
   Parameter1, Parameter2, Parameter3: String;
 begin
   try
-    Writeln('Input 1st parameter:');
+    WriteLn('Input 1st parameter:');
     Parameter1 := ReadParameter;
-    Writeln('Input 2nd parameter:');
+    WriteLn('Input 2nd parameter:');
     Parameter2 := ReadParameter;
-    Writeln('Input 3rd parameter:');
+    WriteLn('Input 3rd parameter:');
     Parameter3 := ReadParameter;
   except
     // capture EInvalidParameter raised by one of the above ReadParameter calls
     on EInvalidParameter do
-      Writeln('EInvalidParameter exception occurred');
+      WriteLn('EInvalidParameter exception occurred');
   end;
 end;
 ----
@@ -1355,7 +1355,7 @@ try
 ...
 except
   on E: EInvalidParameter do
-    Writeln('EInvalidParameter exception occurred with message: ' + E.Message);
+    WriteLn('EInvalidParameter exception occurred with message: ' + E.Message);
 end;
 ----
 
@@ -1367,9 +1367,9 @@ try
 ...
 except
   on E: EInvalidParameter do
-    Writeln('EInvalidParameter exception occurred with message: ' + E.Message);
+    WriteLn('EInvalidParameter exception occurred with message: ' + E.Message);
   on E: ESomeOtherException do
-    Writeln('ESomeOtherException exception occurred with message: ' + E.Message);
+    WriteLn('ESomeOtherException exception occurred with message: ' + E.Message);
 end;
 ----
 
@@ -1380,7 +1380,7 @@ You can also react to any exception raised, if you don't use any `on` expression
 try
 ...
 except
-  Writeln('Warning: Some exception occurred');
+  WriteLn('Warning: Some exception occurred');
 end;
 // WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING BELOW
 // ABOUT "CAPTURING ALL EXCEPTIONS"
@@ -1400,7 +1400,7 @@ try
 ...
 except
   on E: TObject do
-    Writeln('Warning: Some exception occurred');
+    WriteLn('Warning: Some exception occurred');
 end;
 // WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE
 // ABOUT "CAPTURING ALL EXCEPTIONS"
@@ -1414,7 +1414,7 @@ try
 ...
 except
   on E: Exception do
-    Writeln('Warning: Some exception occurred: ' + E.ClassName + ', message: ' + E.Message);
+    WriteLn('Warning: Some exception occurred: ' + E.ClassName + ', message: ' + E.Message);
 end;
 // WARNING: DO NOT FOLLOW THIS EXAMPLE WITHOUT READING A WARNING ABOVE
 // ABOUT "CAPTURING ALL EXCEPTIONS"
@@ -1430,7 +1430,7 @@ except
   on E: EInvalidSoundFile do
   begin
     if E.InvalidUrl = 'http://example.com/blablah.wav' then
-      Writeln('Warning: loading http://example.com/blablah.wav failed, ignore it')
+      WriteLn('Warning: loading http://example.com/blablah.wav failed, ignore it')
     else
       raise;
   end;
