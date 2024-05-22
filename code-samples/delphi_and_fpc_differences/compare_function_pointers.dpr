@@ -11,7 +11,7 @@ type
 
 function MyFunction: Integer;
 begin
-  Result := Random(10000000000);
+  Result := Random(1000 * 1000 * 1000);
 end;
 
 var
@@ -32,7 +32,43 @@ begin
       since they return just random value.
   }
   if X = Y then
-    Writeln('Equal')
+    Writeln('X = Y: Equal')
   else
-    Writeln('Not equal');
+    Writeln('X = Y: Not equal');
+
+  { This is again valid in both modes, but means something different.
+
+    - In FPC ObjFpc, @ gets the address of the variable.
+      So it compares the address of X and Y, which are different.
+
+    - In Delphi (or FPC Delphi mode), it compares the values of X and Y.
+      Since they are function pointers, they are equal.
+
+    So in Delphi "if @X = @Y then" is equal to FPC ObjFpc "if X = Y then".
+  }
+  if @X = @Y then
+    Writeln('@X = @Y: Equal')
+  else
+    Writeln('@X = @Y: Not equal');
+
+  {$ifndef FPC}
+  { In Delphi, this allows to compare "the address of X" with "the address of Y".
+    So "if @@X = @@Y then" in Delphi means the same thing
+    as "if @X = @Y then" in FPC ObjFpc.
+
+    In FPC ObjFpc, this is invalid, makes no sense -- @@X would mean we want
+    an address of temporary value @X. }
+  if @@X = @@Y then
+    Writeln('@@X = @@Y: Equal')
+  else
+    Writeln('@@X = @@Y: Not equal');
+  {$endif}
+
+  { Finally, this is valid in both modes and does the same:
+    compares the values of X and Y. Using () forces the call of parameterless
+    function. }
+  if X() = Y() then
+    Writeln('X() or Y(): Equal')
+  else
+    Writeln('X() or Y(): Not equal');
 end.
