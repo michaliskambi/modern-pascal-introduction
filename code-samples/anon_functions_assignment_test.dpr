@@ -1,7 +1,5 @@
 { Working example adjusted from
-  https://forum.lazarus.freepascal.org/index.php?topic=59468.0
-  Compiling with latest FPC 3.3.1, just "fpc anon_functions_assignment_test.dpr", works.
-}
+  https://forum.lazarus.freepascal.org/index.php?topic=59468.0 }
 
 {$ifdef FPC}
   {$mode objfpc}{$H+}{$J-}

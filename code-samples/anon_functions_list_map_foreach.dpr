@@ -1,6 +1,4 @@
-{ Example of Map, ForEach methods and processing list with anonymous functions.
-  Compiles with FPC 3.3.1
-  (see https://forum.lazarus.freepascal.org/index.php?topic=59468.0 ). }
+{ Example of Map, ForEach methods and processing list with anonymous functions. }
 
 {$ifdef FPC}
   {$mode objfpc}{$H+}{$J-}
@@ -56,15 +54,29 @@ end;
 var
   MyList: TMyInts;
   I: Integer;
+  F: TIntMapFunc;
 begin
   MyList := TMyInts.Create;
   try
     for I := 0 to 10 do
       MyList.Add(I);
+
+    F := function(const Index, Item: Integer): Integer
+      begin
+        Result := Item + 1;
+      end;
+    // effectively this increases all numbers on the list by 3
+    MyList.Map(F);
+    MyList.Map(F);
+    MyList.Map(F);
+
+    // change all items to their squares
     MyList.Map(function(const Index, Item: Integer): Integer
       begin
         Result := Item * Item;
       end);
+
+    // print all items
     MyList.ForEach(procedure(const Index, Item: Integer)
       begin
         WriteLn('Index: ', Index, ', Item: ', Item);
