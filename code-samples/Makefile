@@ -1,6 +1,11 @@
 UNIT_SOURCES:=$(wildcard *.pas)
-PROGRAM_SOURCES:=$(wildcard *.lpr)
-PROGRAM_BINARIES:=$(PROGRAM_SOURCES:.lpr=)
+PROGRAM_SOURCES:=$(wildcard *.lpr) $(wildcard *.dpr)
+
+PROGRAM_UNIX_BINARIES:=$(PROGRAM_SOURCES:.lpr=)
+PROGRAM_UNIX_BINARIES:=$(PROGRAM_UNIX_BINARIES:.dpr=)
+
+PROGRAM_WINDOWS_BINARIES:=$(PROGRAM_SOURCES:.lpr=.exe)
+PROGRAM_WINDOWS_BINARIES:=$(PROGRAM_WINDOWS_BINARIES:.dpr=.exe)
 
 .PHONY: all
 all:
@@ -9,4 +14,4 @@ all:
 
 .PHONY: clean
 clean:
-	rm -Rf *.o *.ppu $(PROGRAM_BINARIES)
+	echo rm -Rf *.o *.ppu $(PROGRAM_UNIX_BINARIES) $(PROGRAM_WINDOWS_BINARIES)
