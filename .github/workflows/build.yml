@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+# GitHub Actions workflow to test building all code samples.
+#
+# See docs:
+# - https://castle-engine.io/github_actions
+# - https://docs.github.com/en/actions
+# ----------------------------------------------------------------------------
+
+name: Test Code Samples
+
+on: [push, pull_request]
+
+jobs:
+  build-using-docker:
+    name: Test Code Samples with FPC 3.3.1
+    runs-on: ubuntu-latest
+    # Using FPC 3.3.1, as some examples (anonymous functions, some generics)
+    # require it, FPC 3.2.0 is not enough.
+    container: kambi/castle-engine-cloud-builds-tools:cge-none-fpc331
+    steps:
+    - uses: actions/checkout@v4
+    - run: cd code-samples/ && make
