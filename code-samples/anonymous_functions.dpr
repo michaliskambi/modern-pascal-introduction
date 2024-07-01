@@ -8,7 +8,11 @@
     https://forum.lazarus.freepascal.org/index.php/topic,59468.0.html
 }
 
-{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef FPC}
+  {$mode objfpc}{$H+}{$J-}
+  {$modeswitch functionreferences}
+  {$modeswitch anonymousfunctions}
+{$endif}
 {$apptype CONSOLE}
 
 type
