@@ -14,4 +14,4 @@ all:
 
 .PHONY: clean
 clean:
-	echo rm -Rf *.o *.ppu $(PROGRAM_UNIX_BINARIES) $(PROGRAM_WINDOWS_BINARIES)
+	rm -Rf *.o *.ppu $(PROGRAM_UNIX_BINARIES) $(PROGRAM_WINDOWS_BINARIES)
