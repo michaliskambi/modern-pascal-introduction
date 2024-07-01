@@ -1,0 +1,4 @@
+# Modern Object Pascal Introduction for Programmers
+include::common.adoc[]
+:description: Modern Object Pascal Introduction: units, classes, generics, memory management, exceptions and more.
+:cge-social-share-image: pascal_code_sample.png
