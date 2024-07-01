@@ -1911,6 +1911,27 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 * A (possibly) local routine: declare with `is nested` at the end, and make sure to use `{$modeswitch nestedprocvars}` directive for the code. These go hand-in-hand with <<Local (nested) routines>>.
 
+### Anonymous functions
+
+Delphi and new FPC versions (>= 3.3.1) support anynomous functions.
+
+Example:
+
+[source,pascal]
+----
+include::code-samples/anon_functions_list_map_foreach.dpr[]
+----
+
+More information:
+
+- Delphi documentation: https://docwiki.embarcadero.com/RADStudio/Sydney/en/Anonymous_Methods_in_Delphi
+
+- FPC forum post: https://forum.lazarus.freepascal.org/index.php/topic,59468.0.html
+
+- FPC feature changelog: https://wiki.freepascal.org/FPC_New_Features_Trunk#Support_for_Function_References_and_Anonymous_Functions
+
+To get FPC 3.3.1, we recommend to use FpcUpDeluxe: https://castle-engine.io/fpcupdeluxe .
+
 ### Generics
 
 A powerful feature of any modern language. The definition of something (typically, of a class) can be parameterized with another type. The most typical example is when you need to create a container (a list, dictionary, tree, graph...): you can define _a list of type T_, and then _specialize_ it to instantly get _a list of integers_, _a list of strings_, _a list of TMyRecord_, and so on.
