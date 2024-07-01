@@ -9,17 +9,26 @@
 uses SysUtils, Generics.Collections;
 
 type
+  { Note about below TIntMapFunc and TIntMapProc definition, what to use?
+
+    For anonymous functions all 3 versions will compile.
+    You can assign anonymous function to any of them.
+
+    Decide of the version based on what you want to assign to them *aside*
+    from anonymous functions:
+
+    - The 1st version (without "of object", without "reference to")
+      allows to store a reference to a global function,
+
+    - The 2nd (with "of object")
+      allows to store a reference to a method of an object,
+
+    - The 3rd (with "reference to") is the most universal,
+      allows a lot of things --
+      see https://forum.lazarus.freepascal.org/index.php?topic=59468.0 .
+  }
+
   TIntMapFunc =
-    { All the following are valid function types, and they all will compile,
-      that is: you can pass anonymous function to them.
-
-      - The 1st (without "of object", without "reference to")
-        allows to stores a reference to a global function,
-      - The 2nd (with "of object") allows stores a reference to a method of an object,
-
-      - The 3rd (with "reference to") allows a lot of things -- see
-        https://forum.lazarus.freepascal.org/index.php?topic=59468.0 .
-    }
     //function(const Index, Item: Integer): Integer;
     //function(const Index, Item: Integer): Integer of object;
     reference to function(const Index, Item: Integer): Integer;
