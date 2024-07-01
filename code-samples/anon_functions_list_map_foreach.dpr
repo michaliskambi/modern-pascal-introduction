@@ -5,16 +5,22 @@
   {$modeswitch functionreferences}
   {$modeswitch anonymousfunctions}
 {$endif}
+{$apptype CONSOLE}
 
 uses SysUtils, Generics.Collections;
 
 type
   { Note about below TIntMapFunc and TIntMapProc definition, what to use?
 
-    For anonymous functions all 3 versions will compile.
-    You can assign anonymous function to any of them.
+    In short, use "reference to". You can assign to them anonymous functions
+    reliably in both Delphi and FPC.
 
-    Decide of the version based on what you want to assign to them *aside*
+    With Delphi 12.1, only the "reference to" version will compile.
+
+    With FPC 3.3.1, other variants will also compile.
+    You can assign anonymous function to any of them.
+    So if you only target FPC, you can decide which version to use
+    based on what you want to assign to them *aside*
     from anonymous functions:
 
     - The 1st version (without "of object", without "reference to")
@@ -37,7 +43,7 @@ type
     //procedure(const Index, Item: Integer) of object;
     reference to procedure(const Index, Item: Integer);
 
-  TMyInts = class(specialize TList<Integer>)
+  TMyInts = class({$ifdef FPC}specialize{$endif} TList<Integer>)
     { Change every item in the list using AFunc. }
     procedure Map(const AFunc: TIntMapFunc);
     { Call AProc for every item in the list. }
