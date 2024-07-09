@@ -55,8 +55,6 @@ CGE_SAMPLES_PATH:=$(CGE_WWW_PATH)/htdocs/doc/modern_pascal_code_samples/
 .PHONY: copy-one-language
 copy-one-language: test clean all
 	cp -f $(NAME).html $(NAME).pdf patreon-wordmark.png $(CGE_WWW_PATH)htdocs/
-	$(TEST_BROWSER) $(HTML_BASE)$(NAME).html &
-	$(TEST_BROWSER) $(HTML_BASE)$(NAME).pdf &
 
 # Copy from here to cge-www all languages' versions.
 .PHONY: copy-all
