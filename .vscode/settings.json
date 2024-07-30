@@ -1,3 +1,29 @@
 {
-    "asciidoc.antora.enableAntoraSupport": false
+    "asciidoc.antora.enableAntoraSupport": false,
+    "cSpell.enabled": true,
+    "cSpell.words": [
+        "adoc",
+        "advancedrecords",
+        "apptype",
+        "coderay",
+        "corba",
+        "deallocation",
+        "docinfo",
+        "downto",
+        "dylib",
+        "Kamburelis",
+        "logcat",
+        "Michalis",
+        "modeswitch",
+        "myprogram",
+        "myunit",
+        "scopedenums",
+        "sectnums",
+        "sprintf",
+        "TFPG",
+        "toclevels",
+        "typecasted",
+        "Unported",
+        "unversioned"
+    ]
 }

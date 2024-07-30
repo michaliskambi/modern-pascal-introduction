@@ -72,7 +72,7 @@ function SumIntegersUntilZero: Integer;
 var
   I: Integer;
 begin
-  Readln(I);
+  ReadLn(I);
   Result := I;
   if I <> 0 then
     Result := Result + SumIntegersUntilZero();
@@ -417,14 +417,14 @@ To convert an arbitrary number of arguments to a string (instead of just directl
 
 ## Units
 
-Units allow you to group common stuff (anything that can be declared), for usage by other units and programs. They are equivalent to _modules_ and _packages_ in other languages. They have an interface section, where you declare what is available for other units and programs, and then the implementation. Save unit `MyUnit` as `myunit.pas` (lowercase with `.pas` extension).
+### Overview
+
+Units allow you to group common stuff (anything that can be declared), for usage by other units and programs. They are equivalent to _modules_ and _packages_ in other languages. They have an interface section, where you declare what is available for other units and programs, and then the implementation.
 
 [source,pascal]
 ----
 include::code-samples/myunit.pas[]
 ----
-
-Final programs are saved as `myprogram.lpr` files (`lpr` = Lazarus program file; in Delphi you would use `.dpr`). Note that other conventions are possible here, e.g. some projects just use `.pas` for main program file, some use `.pp` for units or programs. I advise using `.pas` for units and `.lpr` for FPC/Lazarus programs.
 
 A program can use a unit by a `uses` keyword:
 
@@ -432,6 +432,31 @@ A program can use a unit by a `uses` keyword:
 ----
 include::code-samples/myunit_test.lpr[]
 ----
+
+### Extensions used for units and programs
+
+Save the unit file `MyUnit` as `myunit.pas`. That is, lowercase with `.pas` extension.
+
+[NOTE]
+====
+Other conventions are possible.
+
+E.g. FPC allows other file extensions for units. And some people use `.pp` for unit files, like `myunit.pp`.
+
+Using a different case is also possible. On Windows file systems, the letter case doesn't matter. But on Unix file systems is does matter and FPC allows only to use _the exact same case as was specified in Pascal `uses` clause_ (so `MyUnit.pas`) or _all lowercase_ (so `myunit.pas`). Since Pascal is case-insensitive, the first rule sometimes causes issues when people specify unit names with different case in different places.
+
+All in all, we recommend the simple above rule _all lowercase, `.pas` extension_ for your projects. This matches the most common established practices and works with all compilers and file systems without issues.
+====
+
+Save the `program` to a file with:
+
+- `.dpr` extension (short for _"Delphi Project"_), if you want the project to be compatible with both _FPC/Lazarus_ and _Delphi_,
+
+- `.lpr` extension (short for _"Lazarus Project"_), if you want to use only _FPC/Lazarus_.
+
+NOTE: Other conventions are possible and used by some projects. E.g. some projects use `.pas` for main program file. Some projects use `.pp` for units or programs. There are reasonable reasons for this (e.g. for FPC programs, that don't use Lazarus LCL, neither description _"Lazarus Project"_ nor _"Delphi Project"_ are strictly correct)... But for the sake of simplicity, we recommend the above conventions (`.dpr` or `.lpr`), as they cover the most common established practices.
+
+### Initialization and finalization
 
 A unit may also contain `initialization` and `finalization` sections. This is the code executed when the program starts and ends.
 
@@ -2108,7 +2133,7 @@ The effect is a bit similar to scripting programming languages with dynamic typi
 
 Do not use them without consideration: things are a bit less safe (you don't control types, conversions happen implicitly). Also there's a small performance hit, since all operations need to check and synchronize the types at run-time.
 
-But sometimes it is makes sense. Namely, when you have to process data that intrinsically indeed may have different types, and you only know those types at runtime. E.g. when you want to process result of SQL `select * from sometable` in a generic database viewer (not knowing table structure at compile-time).
+But sometimes it does make sense. Namely, when you have to process data that intrinsically indeed may have different types, and you only know those types at runtime. E.g. when you want to process result of SQL `select * from some_table` in a generic database viewer (not knowing table structure at compile-time).
 
 [source,pascal]
 ----
