@@ -2083,6 +2083,55 @@ But records are still very useful when you need speed or a predictable memory la
 ** to make dirty low-level tricks (like unsafe typecasting one type to another, being aware of their memory representation).
 * Records can also have `case` parts, which work like _unions_ in C-like languages. They allows to treat the same memory piece as a different type, depending on your needs. As such, this allows for greater memory efficiency in some cases. And it allows for more _dirty, low-level unsafe tricks_:)
 
+### Variant records and related concepts
+
+The concept _variant_ may refer to 3 distinct (though, deep down related) things in Pascal:
+
+#### Variant records
+
+_Variant records_ allow to define a section at the end of your record where the same memory can be accessed by a few different names/types.
+
+This is described on https://en.wikipedia.org/wiki/Tagged_union on Wikipedia. _"Union"_ is more common name for this in other languages. See also https://www.freepascal.org/docs-html/ref/refsu15.html .
+
+Example:
+
+[source,pascal]
+----
+include::code-samples/variant_in_record.dpr[]
+----
+
+#### Variant type
+
+`Variant` is a special type in Pascal that underneath can hold values of various types. Moreover, operators are defined to allow operating on them and converting their values at run-time.
+
+The effect is a bit similar to scripting programming languages with dynamic typing.
+
+Do not use them without consideration: things are a bit less safe (you don't control types, conversions happen implicitly). Also there's a small performance hit, since all operations need to check and synchronize the types at run-time.
+
+But sometimes it is makes sense. Namely, when you have to process data that intrinsically indeed may have different types, and you only know those types at runtime. E.g. when you want to process result of SQL `select * from sometable` in a generic database viewer (not knowing table structure at compile-time).
+
+[source,pascal]
+----
+include::code-samples/variant_types.dpr[]
+----
+
+NOTE: Technically, `Variant` is realized using `TVarData` internal type, which is a record with variants. So these concepts are connected. But you should *not need to know this*, you should not use `TVarData` explicitly.
+
+#### TVarRec in array of const
+
+When you use `array of const` special parameter type, it is passed as an array of `TVarRec`. See
+
+- `TVarRec` in FPC: https://www.freepascal.org/docs-html/rtl/system/tvarrec.html
+
+- `TVarRec` in Delphi: https://docwiki.embarcadero.com/Libraries/Sydney/en/System.TVarRec
+
+This is useful to pass to a routine parameters of arbitrary (not known at compile-time) types. For example, to implement routines like standard `Format` (similar to `sprintf` in C) or _Castle Game Game_ `WriteLnLog` / `WriteLnWarning`.
+
+[source,pascal]
+----
+include::code-samples/array_of_const.dpr[]
+----
+
 ### Old-style objects
 
 In the old days, Turbo Pascal introduced another syntax for class-like functionality, using the `object` keyword. It's somewhat of a blend between the concept of a `record` and a modern `class`.

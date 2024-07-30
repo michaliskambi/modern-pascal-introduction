@@ -19,6 +19,7 @@ modern_pascal_introduction_ukrainian.xml
 /code-samples*/*.o
 /code-samples*/*.exe
 /code-samples*/anonymous_functions
+/code-samples*/array_of_const
 /code-samples*/anon_functions_list_map_foreach
 /code-samples*/anon_functions_assignment_test
 /code-samples*/callbacks
@@ -56,6 +57,8 @@ modern_pascal_introduction_ukrainian.xml
 /code-samples*/persistent
 /code-samples*/records
 /code-samples*/static_class_method
+/code-samples*/variant_in_record
+/code-samples*/variant_types
 /code-samples*/with_virtual_methods
 /code-samples*/without_virtual_methods
 /code-samples*/method_with_self_nil
