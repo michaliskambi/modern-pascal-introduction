@@ -2615,7 +2615,7 @@ Suppose we have a procedure with the following signature:
 procedure UseThroughInterface(I: IMyInterface);
 ----
 
-When invoking it with a variable which is not exactly of type `IMyInterface`, we have to typecast. There are a couple of options to choose from:
+When calling it with a variable `InterfacedVariable` which is not exactly of type `IMyInterface`, we have to typecast. There are a couple of options to choose from:
 
 1. Casting using the `as` operator
 +
