@@ -1,5 +1,5 @@
 {$mode objfpc}{$H+}{$J-}
-{$interfaces corba}
+{$interfaces corba} // Another line to use in all modern sources
 
 uses
   SysUtils, Classes;
@@ -66,3 +66,4 @@ begin
     FreeAndNil(C3);
   end;
 end.
+
