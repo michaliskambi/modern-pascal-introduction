@@ -1,6 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
 
-// {$interfaces corba} // note that "as" typecasts for CORBA will not compile
+// {$interfaces corba} // note that "as" typecasts will not compile with CORBA interfaces
 
 uses Classes;
 
@@ -58,10 +58,10 @@ begin
 end;
 
 var
-  My: IMyInterface;
+  MyInterface: IMyInterface;
   MyClass: TMyClass;
 begin
-  My := TMyClass2.Create(nil);
+  MyInterface := TMyClass2.Create(nil);
   MyClass := TMyClass2.Create(nil);
 
   // This doesn't compile, since at compile-time it's unknown if My is IMyInterface2.
@@ -69,12 +69,12 @@ begin
   // UseInterface2(MyClass);
 
   // This compiles and works OK.
-  UseInterface2(IMyInterface2(My));
+  UseInterface2(IMyInterface2(MyInterface));
   // This does not compile. Casting InterfaceType(ClassType) is checked at compile-time.
   // UseInterface2(IMyInterface2(MyClass));
 
   // This compiles and works OK.
-  UseInterface2(My as IMyInterface2);
+  UseInterface2(MyInterface as IMyInterface2);
   // This compiles and works OK.
   UseInterface2(MyClass as IMyInterface2);
 

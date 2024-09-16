@@ -1,5 +1,5 @@
 {$mode objfpc}{$H+}{$J-}
-{$interfaces corba}
+{$interfaces corba} // See below why we recommend CORBA interfaces
 
 uses
   SysUtils, Classes;
@@ -66,3 +66,4 @@ begin
     FreeAndNil(C3);
   end;
 end.
+

@@ -2577,13 +2577,9 @@ include::code-samples/exception_in_constructor_test.lpr[]
 
 ## Interfaces
 
-### Bare (CORBA) interfaces
+_An interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have one ancestor class. By convention, we start interface type names with letter `I`, like `IMyInterface`.
 
-_An interface_ declares an API, much like a class, but it does not define the implementation. A class can implement many interfaces, but it can only have one ancestor class.
-
-You can cast a class to any interface it supports, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. Useful when a simple class inheritance is not enough.
-
-The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) or C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
+You can cast a class to any interface it implements, and then _call the methods through that interface_. This allows to treat in a uniform fashion the classes that don't descend from each other, but still share some common functionality. Useful when a simple class inheritance is not enough.
 
 //This is much like Java, where interfaces are used whenever you think of multiple inheritance.
 
@@ -2592,15 +2588,92 @@ The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java
 include::code-samples/interfaces_corba_test.lpr[]
 ----
 
+### Interfaces GUIDs
+
+GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see placed at every interface definition. Yes, they are just random. Unfortunately, they are necessary.
+
+//Yes, they look ugly.
+//, and I wish they would not be necessary.
+The GUIDs have no meaning if you don't plan on integrating with communication technologies like _COM_. But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs. Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID.
+
+//FPC3.0.0 aired in 2015, so this note may no longer be needed:
+//This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
+
+To make inserting GUIDs easier, you can use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor). Alternatively, you can use `uuidgen` program on Unix or use an online service like https://www.guidgenerator.com/ . Or you can write your own tool for this, using the `CreateGUID` and `GUIDToString` functions in RTL. See the example below:
+
+[source,pascal]
+----
+include::code-samples/gen_guid.lpr[]
+----
+
+### Typecasting interfaces
+
+Suppose we have a procedure with the following signature:
+
+[source,pascal]
+----
+procedure UseThroughInterface(I: IMyInterface);
+----
+
+When calling it with a variable `InterfacedVariable` which is not exactly of type `IMyInterface`, we have to typecast. There are a couple of options to choose from:
+
+1. Casting using the `as` operator:
++
+[source,pascal]
+----
+UseThroughInterface(InterfacedVariable as IMyInterface);
+----
++
+If executed, it would make a run-time check and raise an exception if `InterfacedVariable` does not implement `IMyInterface`.
++
+Using `as` operator works consistently regardless if `InterfacedVarialbe` is declared as a class instance (like `TSomeClass`) or interface (like `ISomeInterface`). However, casting an interface to another interface this way is not allowed under `{$interfaces corba}` - we will cover that topic later.
+
+2. Explicit typecasting:
++
+[source,pascal]
+----
+UseThroughInterface(IMyInterface(InterfacedVariable));
+----
++
+Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad things will happen if you cast to an incorrect interface. And that's true, if you cast _a class to a class_, or _an interface to an interface_, using this syntax.
++
+There is a small exception here: if `InterfacedVariable` is declared as a class (like `TSomeClass`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
+
+3. Implicit typecasting:
++
+[source,pascal]
+----
+UseThroughInterface(InterfacedVariable);
+----
++
+In this case, the typecast must be valid at compile-time. This will compile only if the type of `InterfacedVariable` (either class or an interface) is implementing `IMyInterface`.
++
+In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TSomeClass` is required, you can always use there a variable that is declared with a class of `TSomeClass`, *or `TSomeClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
+
+To test it all, play around with this example code:
+
+[source,pascal]
+----
+include::code-samples/interface_casting.lpr[]
+----
+
 ### CORBA and COM types of interfaces
 
 Why are the interfaces (presented above) called "CORBA"?::
 
-  The name *CORBA* is unfortunate. A better name would be *bare interfaces*. These interfaces are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API.
-+
 //The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
 //+
-While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture[wikipedia about CORBA]), they are _not_ tied to this technology in any way.
+Because these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture[wikipedia about CORBA]).
++
+But they are _not really_ tied to the CORBA technology.
++
+The name *CORBA* is perhaps unfortunate. A better name would be *bare interfaces*. The point of these interfaces is that they are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API, and you don't want other features (life reference-counting or COM integration).
+
+How do these compare with other programming languages?::
+
+The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) or C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
++
+Although Java and C# languages have _garbage collection_, so comparison is somewhat flawed, regardless if you compare with CORBA or COM interfaces. In our experience, the CORBA interfaces in Pascal are similar to Java and C# interfaces _in the way they are used_. That is, you use CORBA interfaces when you _want unrelated (not descending from each other) classes to share a common API_ and you don't want anything else to change.
 
 Is the `{$interfaces corba}` declaration needed?::
 
@@ -2648,25 +2721,6 @@ Can we have reference-counting with CORBA interfaces?::
   Yeah. Just add `_AddRef` / `_ReleaseRef` methods. There's no need to descend from the `IUnknown` interface. Although in most cases, if you want reference-counting with your interfaces, you may as well just use COM interfaces.
 //    Stress that non reference counted interfaces are more "bare" and deemphasize the link to corba and java. Note that IUnknown doesn't just do ref-counting though, it also plays a part in identity (QueryInterface) that allows to get other interfaces supported by the object from the object. (e.g. to see if you can "upcast" an interface to a newer version)
 //  Roger. The way I understand, the better names would be "always-descend-from-IUnknown" vs "don't-always-descend-from-iUnknown", not "COM" vs "CORBA". That would certainly be clearer for someone who is not interested in interacting with outside services (neither COM nor CORBA) and just wants a language feature (with the purpose of casting two classes to a common interface, because they share a common API, similar to interfaces in Java/C#).
-
-### Interfaces GUIDs
-
-GUIDs are the seemingly random characters `['{ABCD1234-...}']` that you see placed at every interface definition. Yes, they are just random. Unfortunately, they are necessary.
-
-//Yes, they look ugly.
-//, and I wish they would not be necessary.
-The GUIDs have no meaning if you don't plan on integrating with communication technologies like _COM_ nor _CORBA_. But they are necessary, for implementation reasons. Don't be fooled by the compiler, that unfortunately allows you to declare interfaces without GUIDs.
-
-Without the (unique) GUIDs, your interfaces will be treated equal by the `is` operator. In effect, it will return `true` if your class supports _any_ of your interfaces. The magic function `Supports(ObjectInstance, IMyInterface)` behaves slightly better here, as it refuses to be compiled for interfaces without a GUID. This is true for both CORBA and COM interfaces, as of FPC 3.0.0.
-
-So, to be on the safe side, you should always declare a GUID for your interface. You can use _Lazarus_ GUID generator (`Ctrl + Shift + G` shortcut in the editor). Or you can use an online service like https://www.guidgenerator.com/ .
-
-Or you can write your own tool for this, using the `CreateGUID` and `GUIDToString` functions in RTL. See the example below:
-
-[source,pascal]
-----
-include::code-samples/gen_guid.lpr[]
-----
 
 ### Reference-counted (COM) interfaces
 
@@ -2717,52 +2771,6 @@ To avoid this mess, it's usually better to use CORBA interfaces, if you don't wa
 [source,pascal]
 ----
 include::code-samples/interfaces_com_test.lpr[]
-----
-
-### Typecasting interfaces
-
-This section applies to both _CORBA_ and _COM_ interfaces (however, it has some explicit exceptions for CORBA).
-
-1. Casting to an interface type using the `as` operator makes a check at run-time. Consider this code:
-+
-[source,pascal]
-----
-UseThroughInterface(Cx as IMyInterface);
-----
-+
-It works for all `C1`, `C2`, `C3` instances in the examples in previous sections. If executed, it would make a run-time error in case of `C3`, that does not implement `IMyInterface`.
-+
-Using `as` operator works consistently regardless if `Cx` is declared as a class instance (like `TMyClass2`) or interface (like `IMyInterface2`).
-+
-However, it is not allowed for CORBA interfaces.
-
-2. You can instead cast the instance as an interface implicitly:
-+
-[source,pascal]
-----
-UseThroughInterface(Cx);
-----
-+
-In this case, the typecast must be valid at compile-time. So this will compile for `C1` and `C2` (that are declared as classes that implement `IMyInterface`). But it will not compile for `C3`.
-+
-In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TMyClass` is required, you can always use there a variable that is declared with a class of `TMyClass`, *or `TMyClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
-
-3. You can also typecast using `IMyInterface(Cx)`. Like this:
-+
-[source,pascal]
-----
-UseThroughInterface(IMyInterface(Cx));
-----
-+
-Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad things will happen if you cast to an incorrect interface. And that's true, if you cast _a class to a class_, or _an interface to an interface_, using this syntax.
-+
-There is a small exception here: if `Cx` is declared as a class (like `TMyClass2`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
-
-To test it all, play around with this example code:
-
-[source,pascal]
-----
-include::code-samples/interface_casting.lpr[]
 ----
 
 ## About this document
