@@ -1,6 +1,6 @@
 {$mode objfpc}{$H+}{$J-}
 
-// {$interfaces corba} // note that "as" typecasts will not compile with this
+// {$interfaces corba} // note that "as" typecasts will not compile with CORBA interfaces
 
 uses Classes;
 
@@ -90,4 +90,3 @@ begin
 
   Writeln('Finished');
 end.
-

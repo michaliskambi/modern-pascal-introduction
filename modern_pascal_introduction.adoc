@@ -2617,7 +2617,7 @@ procedure UseThroughInterface(I: IMyInterface);
 
 When calling it with a variable `InterfacedVariable` which is not exactly of type `IMyInterface`, we have to typecast. There are a couple of options to choose from:
 
-1. Casting using the `as` operator
+1. Casting using the `as` operator:
 +
 [source,pascal]
 ----
@@ -2628,7 +2628,7 @@ If executed, it would make a run-time check and raise an exception if `Interface
 +
 Using `as` operator works consistently regardless if `InterfacedVarialbe` is declared as a class instance (like `TSomeClass`) or interface (like `ISomeInterface`). However, casting an interface to another interface this way is not allowed under `{$interfaces corba}` - we will cover that topic later.
 
-2. Explicit typecasting
+2. Explicit typecasting:
 +
 [source,pascal]
 ----
@@ -2639,14 +2639,14 @@ Usually, such typecasting syntax indicates an _unsafe, unchecked_ typecast. Bad 
 +
 There is a small exception here: if `InterfacedVariable` is declared as a class (like `TSomeClass`), then this is a typecast that must be valid at compile-time. So casting _a class to an interface_ this way is a safe, fast (checked at compile-time) typecast.
 
-3. Implicit typecasting
+3. Implicit typecasting:
 +
 [source,pascal]
 ----
 UseThroughInterface(InterfacedVariable);
 ----
 +
-In this case, the typecast must be valid at compile-time. This will compile only if the type of `InterfacedVariable` (either class of an interface) is implementing `IMyInterface`.
+In this case, the typecast must be valid at compile-time. This will compile only if the type of `InterfacedVariable` (either class or an interface) is implementing `IMyInterface`.
 +
 In essence, this typecast looks and works just like for regular classes. Wherever an instance of a class `TSomeClass` is required, you can always use there a variable that is declared with a class of `TSomeClass`, *or `TSomeClass` descendant*. The same rule applies to interfaces. No need for any explicit typecast in such situations.
 
@@ -2661,13 +2661,19 @@ include::code-samples/interface_casting.lpr[]
 
 Why are the interfaces (presented above) called "CORBA"?::
 
-The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) or C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
-
-  The name *CORBA* is unfortunate. A better name would be *bare interfaces*. These interfaces are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API.
-+
 //The declaration `{$interface corba}` simply means that the declared interfaces *do not* automatically descend from the special `IUnknown` interface. Which in turn means that they *do not* by default have any extra baggage (like reference-counting found in the *COM* interfaces).
 //+
-While these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture[wikipedia about CORBA]), they are _not_ tied to this technology in any way.
+Because these types of interfaces can be used together with the _CORBA (Common Object Request Broker Architecture) technology_ (see https://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture[wikipedia about CORBA]).
++
+But they are _not really_ tied to the CORBA technology.
++
+The name *CORBA* is perhaps unfortunate. A better name would be *bare interfaces*. The point of these interfaces is that they are a _"pure language feature"_. Use them when you want to cast various classes as the same interface, because they share a common API, and you don't want other features (life reference-counting or COM integration).
+
+How do these compare with other programming languages?::
+
+The _CORBA interfaces_ in Object Pascal work pretty much like interfaces in Java (https://docs.oracle.com/javase/tutorial/java/concepts/interface.html) or C# (https://msdn.microsoft.com/en-us/library/ms173156.aspx).
++
+Although Java and C# languages have _garbage collection_, so comparison is somewhat flawed, regardless if you compare with CORBA or COM interfaces. In our experience, the CORBA interfaces in Pascal are similar to Java and C# interfaces _in the way they are used_. That is, you use CORBA interfaces when you _want unrelated (not descending from each other) classes to share a common API_ and you don't want anything else to change.
 
 Is the `{$interfaces corba}` declaration needed?::
 
@@ -2779,4 +2785,3 @@ You can redistribute and even modify this document freely, under the same licens
 * or the _GNU Free Documentation License (GFDL) (unversioned, with no invariant sections, front-cover texts, or back-cover texts)_ .
 
 Thank you for reading!
-

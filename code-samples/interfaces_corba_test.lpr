@@ -1,5 +1,5 @@
 {$mode objfpc}{$H+}{$J-}
-{$interfaces corba} // Another line to use in all modern sources
+{$interfaces corba} // See below why we recommend CORBA interfaces
 
 uses
   SysUtils, Classes;
