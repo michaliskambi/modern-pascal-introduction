@@ -934,9 +934,17 @@ If you don't use the `override` keyword, the compiler will warn you that you're 
 
 ### Remember to free the class instances
 
-The class instances have to be manually freed, otherwise you get memory leaks. I advise using FPC `-gl -gh` options to detect memory leaks (see https://castle-engine.io/manual_optimization.php#section_memory ).
+The class instances have to be manually freed, otherwise you get memory leaks.
 
-Note that this doesn't concern raised exceptions. Although you do create a class when raising an exception (and it's a perfectly normal class, and you can create your own classes for this purpose too). But this class instance is freed automatically.
+We advise to automatically detect memory leaks using:
+
+- FPC command-line options `-gl -gh`
+- Delphi `ReportMemoryLeaksOnShutdown := true`
+- Castle Game Engine `detect_memory_leaks="true"` in `CastleEngineManifest.xml`
+
+See https://castle-engine.io/memory_leaks for more information.
+
+NOTE: You don't need to free the instances of raised exceptions. Although you do create an instance when raising an exception (and it's a perfectly normal class instance). But this class instance is freed automatically.
 
 ### How to free
 
@@ -978,7 +986,7 @@ We discourage from using this trick in your own code (for virtual or non-virtual
 
 We advise using `FreeAndNil(A)` always, without exceptions, and never to call directly the `Free` method or `Destroy` destructor.
 
-The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_. But note that using `FreeAndNil(A)`  doesn't *guarantee* this assertion. For example, if you copy the instance reference, and call `FreeAndNil(A)` on one copy, the other copy will be a non-nil dangling pointer.
+The _Castle Game Engine_ does it like that. It helps to keep a nice assertion that _all references are either nil, or point to valid instances_. Though note that using `FreeAndNil(A)`  doesn't *guarantee* this assertion, it only helps with this. For example, if you copy the instance reference, and call `FreeAndNil(A)` on one copy, the other copy will be a non-nil dangling pointer.
 
 [source,pascal]
 ----
@@ -990,7 +998,7 @@ FreeAndNil(A);
 
 More about dealing with this in the later section about _"Free notification"_.
 
-Still, `FreeAndNil(A)` takes care of the most trivial cases, so it's a good habit to use it IMHO. You will appreciate it when debuggging some errors, it is nice to easily observe _"``X`` is already freed, because `X` is `nil` now"_.
+Still, `FreeAndNil(A)` takes care of the most trivial cases, so it's a good habit to use it IMHO. You will appreciate it when debugging some errors, it is nice to easily observe _"``X`` is already freed, because `X` is `nil` now"_.
 
 ### Manual and automatic freeing
 
