@@ -2617,7 +2617,7 @@ include::code-samples_ukrainian/interface_casting.lpr[]
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis@castle-engine.io. My homepage is https://michalis.xyz/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
+The source code of this document is in AsciiDoc on https://github.com/modern-pascal/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis@castle-engine.io. My homepage is https://michalis.xyz/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
 
 You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 

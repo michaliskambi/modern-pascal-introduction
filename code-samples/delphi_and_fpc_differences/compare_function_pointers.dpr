@@ -1,6 +1,6 @@
 { Demonstrates how using @ in FPC ObjFpc makes some expressions
-  unambigous. See
-  https://github.com/michaliskambi/modern-pascal-introduction/wiki/Some-differences-betwen-FPC-ObjFpc-mode-and-Delphi-(and-FPC-Delphi-mode)
+  unambiguous. See
+  https://github.com/modern-pascal/modern-pascal-introduction/wiki/Some-differences-betwen-FPC-ObjFpc-mode-and-Delphi-(and-FPC-Delphi-mode)
   for information. }
 
 {$ifdef FPC} {$mode objfpc}{$H+} {$endif}

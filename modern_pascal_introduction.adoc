@@ -979,7 +979,7 @@ Note that in normal circumstances, you should never call a method on an instance
 ====
 This trick (officially allowing the method to be used with `Self` equal `nil`) is possible only in non-virtual methods.
 
-In the implementation of such method, as long as `Self = nil` is possible, the method cannot call any virtual methods or access any fields, as these would cause _Access Violation (Segmentation Fault)_ error when called on a `nil` instance. See the sample code https://github.com/michaliskambi/modern-pascal-introduction/blob/master/code-samples/method_with_self_nil.lpr[method_with_self_nil.lpr].
+In the implementation of such method, as long as `Self = nil` is possible, the method cannot call any virtual methods or access any fields, as these would cause _Access Violation (Segmentation Fault)_ error when called on a `nil` instance. See the sample code https://github.com/modern-pascal/modern-pascal-introduction/blob/master/code-samples/method_with_self_nil.lpr[method_with_self_nil.lpr].
 
 We discourage from using this trick in your own code (for virtual or non-virtual methods) as it is counter-intuitive to normal usage. In general all instance methods should be able to assume that they work on valid (non-nil) instance and can access fields and call any other methods (virtual or not).
 ====
@@ -2785,7 +2785,7 @@ include::code-samples/interfaces_com_test.lpr[]
 
 Copyright Michalis Kamburelis.
 
-The source code of this document is in AsciiDoc on https://github.com/michaliskambi/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis@castle-engine.io. My homepage is https://michalis.xyz/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
+The source code of this document is in AsciiDoc on https://github.com/modern-pascal/modern-pascal-introduction. Suggestions for corrections and additions, and patches and pull requests, are always very welcome:) You can reach me through GitHub or email michalis@castle-engine.io. My homepage is https://michalis.xyz/. This document is linked under the _Documentation_ section of the _Castle Game Engine_ website https://castle-engine.io/.
 
 You can redistribute and even modify this document freely, under the same licenses as Wikipedia https://en.wikipedia.org/wiki/Wikipedia:Copyrights :
 
