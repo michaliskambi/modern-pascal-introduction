@@ -95,7 +95,7 @@ begin
     MyList.ForEach(procedure(const Index, Item: Integer)
       begin
         WriteLn('Index: ', Index, ', Item: ', Item);
-        WriteLn('  If we would proces it by F: ', F(Index, Item));
+        WriteLn('  If we would process it by F: ', F(Index, Item));
       end);
   finally FreeAndNil(MyList) end;
 end.

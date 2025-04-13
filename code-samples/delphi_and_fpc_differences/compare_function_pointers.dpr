@@ -65,7 +65,7 @@ begin
   {$endif}
 
   { Finally, this is valid in both modes and does the same:
-    compares the values of X and Y. Using () forces the call of parameterless
+    compares the values of X and Y. Using () forces the call of parameter-less
     function. }
   if X() = Y() then
     Writeln('X() or Y(): Equal')

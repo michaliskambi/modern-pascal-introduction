@@ -1946,7 +1946,10 @@ Unfortunately, you need to write ugly `@TMyClass(nil).Add` instead of just `@TMy
 
 ### Anonymous functions
 
-Delphi and new FPC versions (>= 3.3.1) support anynomous functions.
+Delphi and new FPC versions (>= 3.3.1) support:
+
+- anonymous functions (define function implementation right when you assign it to a variable or pass as an argument),
+- and function references (a new type of "function callback" that can accept a wide range of function types, including global functions, methods and anonymous functions).
 
 Example:
 
