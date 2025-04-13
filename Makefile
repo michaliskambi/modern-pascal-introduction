@@ -15,7 +15,7 @@ all: $(ALL_OUTPUT)
 
 $(NAME).html: $(NAME).adoc
 	asciidoctor $< -o $@
-	fpc -gl -gh patreon-link-insert.lpr
+	fpc -gl -gh patreon-link-insert.dpr
 	./patreon-link-insert $@
 	$(TEST_BROWSER) $@ &
 
