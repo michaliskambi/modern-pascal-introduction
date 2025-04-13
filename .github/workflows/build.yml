@@ -20,3 +20,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: cd code-samples/ && make
+
+  delphi_test:
+    name: Delphi
+    strategy:
+      matrix:
+        host-label: [
+          delphi_12
+        ]
+    runs-on: ${{ matrix.host-label }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delphi Build (Win32)
+        run: cd code-samples/ && make all-delphi-win32
+      - name: Delphi Build (Win64)
+        run: cd code-samples/ && make all-delphi-win64
