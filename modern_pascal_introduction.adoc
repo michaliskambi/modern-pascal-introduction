@@ -2086,13 +2086,7 @@ Include files have commonly the `.inc` extension, and are used for two purposes:
 +
 [source,pascal]
 ----
-{$mode objfpc}
-{$H+}
-{$J-}
-{$modeswitch advancedrecords}
-{$ifndef VER3}
-  {$error This code can only be compiled using FPC version at least 3.x.}
-{$endif}
+include::code-samples/myconfig.inc[]
 ----
 +
 Now you can include this file using `{$I myconfig.inc}` in all your sources.
@@ -2684,6 +2678,8 @@ include::code-samples/interface_casting.dpr[]
 ----
 
 ### CORBA and COM types of interfaces
+
+NOTE: This section is only relevant for FPC. Delphi has only _COM_ interfaces.
 
 Why are the interfaces (presented above) called "CORBA"?::
 

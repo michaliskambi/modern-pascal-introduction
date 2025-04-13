@@ -1971,13 +1971,7 @@ end.
 +
 [source,pascal]
 ----
-{$mode objfpc}
-{$H+}
-{$J-}
-{$modeswitch advancedrecords}
-{$ifndef VER3}
-  {$error Този код може да се компилира само с FPC версия 3.x. или по-висока}
-{$endif}
+include::code-samples/myconfig.inc[]
 ----
 +
 Сега можете да включите този файл с помощта на `{$I myconfig.inc}` във всички ваши изходни файлове.
