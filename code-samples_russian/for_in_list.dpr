@@ -8,7 +8,7 @@ type
   TMyClass = class
     I, Square: Integer;
   end;
-  TMyClassList = specialize TFPGObjectList<TMyClass>;
+  TMyClassList = {$ifdef FPC}specialize{$endif} TFPGObjectList<TMyClass>;
 
 var
   List: TMyClassList;

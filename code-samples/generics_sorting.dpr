@@ -18,7 +18,7 @@ type
     Name: string;
   end;
 
-  TAppleList = {$ifdef FPC_OBJFPC}specialize{$endif} TObjectList<TApple>;
+  TAppleList = {$ifdef FPC}specialize{$endif} TObjectList<TApple>;
 
 function CompareApples(
   {$ifdef GENERICS_CONSTREF}constref{$else}const{$endif}
@@ -28,7 +28,7 @@ begin
 end;
 
 type
-  TAppleComparer = {$ifdef FPC_OBJFPC}specialize{$endif} TComparer<TApple>;
+  TAppleComparer = {$ifdef FPC}specialize{$endif} TComparer<TApple>;
 var
   A: TApple;
   L: TAppleList;
@@ -47,7 +47,7 @@ begin
     A.Name := '22';
     L.Add(A);
 
-    L.Sort(TAppleComparer.Construct({$ifdef FPC_OBJFPC}@{$endif} CompareApples));
+    L.Sort(TAppleComparer.Construct({$ifdef FPC}@{$endif} CompareApples));
 
     Writeln('Count: ', L.Count);
     Writeln(L[0].Name);

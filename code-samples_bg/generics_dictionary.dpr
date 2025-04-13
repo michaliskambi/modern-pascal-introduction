@@ -6,7 +6,7 @@ type
     Name: string;
   end;
 
-  TAppleDictionary = specialize TDictionary<string, TApple>;
+  TAppleDictionary = {$ifdef FPC}specialize{$endif} TDictionary<string, TApple>;
 
 var
   Apples: TAppleDictionary;
@@ -32,7 +32,7 @@ begin
       Writeln('Намерен ключ за ябълка->име на ябълка: ' +
         ApplePair.Key + '->' + ApplePair.Value.Name);
 
-    { Долният ред също работи, но може да се използва само да 
+    { Долният ред също работи, но може да се използва само да
       зададе стойност на *съществуващ* ключ в речника.
       Вместо това обикновено се използва AddOrSetValue
       за да се зададе или добави нов ключ ако е необходимо. }

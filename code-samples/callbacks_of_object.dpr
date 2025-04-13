@@ -38,10 +38,10 @@ var
 begin
   C := TMyClass.Create;
   try
-    C.ProcessTheList(@C.Add);
+    C.ProcessTheList({$ifdef FPC}@{$endif} C.Add);
     WriteLn('1 + 2 + 3 ... + 10 = ', C.CurrentValue);
 
-    C.ProcessTheList(@C.Multiply);
+    C.ProcessTheList({$ifdef FPC}@{$endif} C.Multiply);
     WriteLn('1 * 2 * 3 ... * 10 = ', C.CurrentValue);
   finally
     FreeAndNil(C);

@@ -1,8 +1,12 @@
 {$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 {$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
-uses
-  SysUtils;
+{$ifndef FPC}
+  {$message warn 'Delphi does not allow addition on types that are generic parameters'}
+  begin end.
+{$endif}
+
+uses SysUtils;
 
 type
   generic TMyCalculator<T> = class
@@ -16,8 +20,8 @@ begin
 end;
 
 type
-  TMyFloatCalculator = specialize TMyCalculator<Single>;
-  TMyStringCalculator = specialize TMyCalculator<string>;
+  TMyFloatCalculator = {$ifdef FPC}specialize{$endif} TMyCalculator<Single>;
+  TMyStringCalculator = {$ifdef FPC}specialize{$endif} TMyCalculator<string>;
 
 var
   FloatCalc: TMyFloatCalculator;

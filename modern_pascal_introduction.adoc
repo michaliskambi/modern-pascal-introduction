@@ -63,7 +63,7 @@ To complicate matters a bit, FPC compiler has multiple "syntax modes". In this b
 
 But you don't want to read about these differences now, if you're just starting to learn Pascal!
 
-The differences are minor, both between compilers and between FPC _ObjFpc_ mode and _Delphi_ mode. Just be aware you may see some `{$ifdef FPC} ... {$endif}` clauses in the examples, that make the code valid for both FPC and Delphi. If your project targets only one of these compilers, you can simplify your code, just pick the variant for your compiler.
+The differences are minor, both between compilers and between FPC _ObjFpc_ mode and _Delphi_ mode. Just be aware you may see some `{$ifdef FPC} ... {$endif}` clauses in the examples, that make the code valid for both _FPC ObjFpc mode_ and _Delphi_. Using `{$ifdef FPC_OBJFPC} ... {$endif}` in some of these cases could be more precise, but look even more complicated. If your project targets only one of these compilers, you can simplify your code, just pick the variant for your compiler and remove the `{$ifdef ...}`, `{$endif}` stuff.
 
 ### Functions, procedures, primitive types
 
@@ -1100,7 +1100,7 @@ type
   TGun = class
   end;
 
-  TGunList = specialize TFPGObjectList<TGun>;
+  TGunList = {$ifdef FPC}specialize{$endif} TFPGObjectList<TGun>;
 
   TPlayer = class
     Guns: TGunList;

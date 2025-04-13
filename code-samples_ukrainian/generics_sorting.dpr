@@ -18,7 +18,7 @@ type
     Name: string;
   end;
 
-  TAppleList = specialize TObjectList<TApple>;
+  TAppleList = {$ifdef FPC}specialize{$endif} TObjectList<TApple>;
 
 function CompareApples(
   {$ifdef GENERICS_CONSTREF}constref{$else}const{$endif}
@@ -28,7 +28,7 @@ begin
 end;
 
 type
-  TAppleComparer = specialize TComparer<TApple>;
+  TAppleComparer = {$ifdef FPC}specialize{$endif} TComparer<TApple>;
 var
   A: TApple;
   L: TAppleList;

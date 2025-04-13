@@ -25,7 +25,7 @@ begin
 end;
 
 type
-  TMyRecordList = specialize TFPGList<TMyRecord>;
+  TMyRecordList = {$ifdef FPC}specialize{$endif} TFPGList<TMyRecord>;
 
 var
   R, ListItem: TMyRecord;

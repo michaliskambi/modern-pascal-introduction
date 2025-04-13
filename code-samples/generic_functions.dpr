@@ -1,8 +1,12 @@
 {$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 {$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
-uses
-  SysUtils;
+{$ifndef FPC}
+  {$message warn 'Delphi does not support global generic functions'}
+  begin end.
+{$endif}
+
+uses SysUtils;
 
 { Note: this example requires FPC 3.1.1 (will not compile with FPC 3.0.0 or older). }
 

@@ -8,7 +8,7 @@ type
     Name: string;
   end;
 
-  TAppleDictionary = specialize TDictionary<string, TApple>;
+  TAppleDictionary = {$ifdef FPC}specialize{$endif} TDictionary<string, TApple>;
 
 var
   Apples: TAppleDictionary;

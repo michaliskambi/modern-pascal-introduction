@@ -8,7 +8,7 @@ type
     Name: string;
   end;
 
-  TAppleList = specialize TObjectList<TApple>;
+  TAppleList = {$ifdef FPC}specialize{$endif} TObjectList<TApple>;
 
 var
   A: TApple;

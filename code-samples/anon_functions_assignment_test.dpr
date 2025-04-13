@@ -11,17 +11,25 @@
 uses Classes;
 
 type
+  {$ifdef FPC}
   TFunc = function: LongInt;
+  {$else}
+  TFunc = reference to function: LongInt;
+  TProcedure = reference to procedure;
+  TNotifyEvent = reference to procedure(aSender: TObject);
+  {$endif}
 
 var
   p: TProcedure;
   f: TFunc;
   n: TNotifyEvent;
 begin
+  {$ifdef FPC} // Delphi doesn't allow to invoke like this
   procedure(const aArg: String)
   begin
     Writeln(aArg);
   end('Hello World');
+  {$endif}
 
   p := procedure
        begin
@@ -29,15 +37,15 @@ begin
        end;
   p();
 
-  n := procedure(aSender: TObject)
+  n := procedure(Sender: TObject)
        begin
-         Writeln(HexStr(Pointer(aSender)));
+         Writeln(Sender.ClassName);
        end;
   n(Nil);
 
-  f := function MyRes : LongInt
+  f := function: LongInt
        begin
-         MyRes := 42;
+         Result := 42;
        end;
   Writeln(f());
 end.

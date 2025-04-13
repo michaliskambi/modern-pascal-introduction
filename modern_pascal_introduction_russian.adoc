@@ -875,7 +875,7 @@ type
   TGun = class
   end;
 
-  TGunList = specialize TFPGObjectList<TGun>;
+  TGunList = {$ifdef FPC}specialize{$endif} TFPGObjectList<TGun>;
 
   TPlayer = class
     Guns: TGunList;

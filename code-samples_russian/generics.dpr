@@ -15,8 +15,8 @@ begin
 end;
 
 type
-  TMyFloatCalculator = specialize TMyCalculator<Single>;
-  TMyStringCalculator = specialize TMyCalculator<string>;
+  TMyFloatCalculator = {$ifdef FPC}specialize{$endif} TMyCalculator<Single>;
+  TMyStringCalculator = {$ifdef FPC}specialize{$endif} TMyCalculator<string>;
 
 var
   FloatCalc: TMyFloatCalculator;
