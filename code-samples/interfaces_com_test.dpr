@@ -53,12 +53,14 @@ var
 
 procedure UseInterfaces;
 begin
-  if C1 is IMyInterface then
-  //if Supports(C1, IMyInterface) then // equivalent to "is" check above
+  // In FPC, you could also check using "is", like:
+  //if C1 is IMyInterface then ...
+
+  if Supports(C1, IMyInterface) then
     UseThroughInterface(C1 as IMyInterface);
-  if C2 is IMyInterface then
+  if Supports(C2, IMyInterface) then
     UseThroughInterface(C2 as IMyInterface);
-  if C3 is IMyInterface then
+  if Supports(C3, IMyInterface) then
     UseThroughInterface(C3 as IMyInterface);
 end;
 
