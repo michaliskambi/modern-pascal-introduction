@@ -49,6 +49,22 @@ The rest of this article talks about the Object Pascal language, so don't expect
 Voila -- a working GUI application, cross-platform, with native look everywhere, using a comfortable visual component library. The Pascal compilers come with lots of standard units for networking, GUI, database, file formats (XML, json, images...), threading and everything else you may need. I already mentioned my cool _Castle Game Engine_ earlier:)
 // The libraries created in other languages (dll, so, dylib) can be easily used from FPC too (and for most of them, you'll find ready "header" units, and even units that wrap them in more modern object-oriented API).
 
+### Compilers and FPC "syntax modes"
+
+This book, all the text and Pascal examples, has been written to support two modern Pascal compilers:
+
+1. _Free Pascal Compiler (FPC)_, open-source Pascal compiler, used also by the _Lazarus_ IDE.
+
+2. _Delphi_, a proprietary Pascal compiler from Embarcadero.
+
+In this book, we chose to support both compilers, fully. Just like in _Castle Game Engine_, we support them both, and it's your choice which one do you prefer. Our _continuous integration_ (see https://castle-engine.io/github_actions) makes sure all samples really compile with both compilers.
+
+To complicate matters a bit, FPC compiler has multiple "syntax modes". In this book, we decided to show the _ObjFpc_ syntax mode, which is recommended by the FPC developers and is the default for new Pascal projects created using _Lazarus_ or _Castle Game Engine_. It's a bit different from the _Delphi_ syntax mode, which is most compatible with Pascal language as implemented by _Delphi_. We https://github.com/modern-pascal/modern-pascal-introduction/wiki/Some-differences-betwen-FPC-ObjFpc-mode-and-Delphi-(and-FPC-Delphi-mode)[wrote a detailed comparison here].
+
+But you don't want to read about these differences now, if you're just starting to learn Pascal!
+
+The differences are minor, both between compilers and between FPC _ObjFpc_ mode and _Delphi_ mode. Just be aware you may see some `{$ifdef FPC} ... {$endif}` clauses in the examples, that make the code valid for both FPC and Delphi. If your project targets only one of these compilers, you can simplify your code, just pick the variant for your compiler.
+
 ### Functions, procedures, primitive types
 
 [source,pascal]
