@@ -1,8 +1,12 @@
 {$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 {$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
-uses
-  SysUtils;
+{$ifndef FPC}
+  {$message warn 'Delphi does not support global operator overloading'}
+  begin end.
+{$endif}
+
+uses SysUtils;
 
 type
   TMyRecord = record

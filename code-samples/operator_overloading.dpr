@@ -1,6 +1,11 @@
 {$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 {$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
+{$ifndef FPC}
+  {$message warn 'Delphi does not support global operator overloading'}
+  begin end.
+{$endif}
+
 uses
   StrUtils;
 

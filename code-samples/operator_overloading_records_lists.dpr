@@ -4,6 +4,11 @@
 {$endif}
 {$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
+{$ifndef FPC}
+  {$message warn 'Delphi does not have FGL unit'}
+  begin end.
+{$endif}
+
 uses
   SysUtils, FGL;
 

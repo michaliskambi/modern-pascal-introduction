@@ -8,12 +8,12 @@ type
     Name: string;
   end;
 
-  TAppleDictionary = {$ifdef FPC}specialize{$endif} TObjectDictionary<string, TApple>;
+  TAppleDictionary = {$ifdef FPC}specialize{$endif} TObjectDictionary<String, TApple>;
 
 var
   Apples: TAppleDictionary;
   A: TApple;
-  ApplePair: TAppleDictionary.TDictionaryPair;
+  ApplePair: {$ifdef FPC} TAppleDictionary.TDictionaryPair {$else} TPair<String, TApple> {$endif};
 begin
   Apples := TAppleDictionary.Create([doOwnsValues]);
   try

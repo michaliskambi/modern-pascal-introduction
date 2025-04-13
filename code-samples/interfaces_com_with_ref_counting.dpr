@@ -57,7 +57,7 @@ begin
   try
     UseThroughInterface(C1); // no need to use "as" operator
     UseThroughInterface(C2);
-    if C3 is IMyInterface then
+    if Supports(C3, IMyInterface) then
       UseThroughInterface(C3 as IMyInterface); // this will not execute
   finally
     { C1 and C2 variables go out of scope and will be auto-destroyed now.

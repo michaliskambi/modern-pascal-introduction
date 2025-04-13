@@ -1,6 +1,9 @@
 {$ifdef FPC}
   {$mode objfpc}{$H+}{$J-}
   {$interfaces corba} // See below why we recommend CORBA interfaces
+{$else}
+  {$message warn 'Delphi does not support CORBA interfaces, only COM, that change how memory is managed. This example is not valid in Delphi.'}
+  begin end.
 {$endif}
 {$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 

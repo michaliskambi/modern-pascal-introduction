@@ -8,12 +8,12 @@ type
     Name: string;
   end;
 
-  TAppleDictionary = {$ifdef FPC}specialize{$endif} TDictionary<string, TApple>;
+  TAppleDictionary = {$ifdef FPC}specialize{$endif} TDictionary<String, TApple>;
 
 var
   Apples: TAppleDictionary;
   A, FoundA: TApple;
-  ApplePair: TAppleDictionary.TDictionaryPair;
+  ApplePair: {$ifdef FPC} TAppleDictionary.TDictionaryPair {$else} TPair<String, TApple> {$endif};
   AppleKey: string;
 begin
   Apples := TAppleDictionary.Create;
