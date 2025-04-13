@@ -1,6 +1,7 @@
-﻿{$mode objfpc}{$H+}{$J-}
+﻿program MyProgram;
 
-program MyProgram;
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses
   SysUtils;

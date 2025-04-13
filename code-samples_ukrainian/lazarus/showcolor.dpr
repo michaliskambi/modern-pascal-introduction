@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
 program showcolor;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 // Обидва модулі - Graphics й GoogleMapsEngine визначають тип TColor.
 uses

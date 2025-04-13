@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 {$R+} // перевірку діапазону ввімкнено – добре для налагодження
+
 var
   MyArray: array [0..9] of Integer;
   I: Integer;

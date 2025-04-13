@@ -1,5 +1,8 @@
-{$mode objfpc}{$H+}{$J-}
-{$interfaces corba} // See below why we recommend CORBA interfaces
+{$ifdef FPC}
+  {$mode objfpc}{$H+}{$J-}
+  {$interfaces corba} // See below why we recommend CORBA interfaces
+{$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses
   SysUtils, Classes;

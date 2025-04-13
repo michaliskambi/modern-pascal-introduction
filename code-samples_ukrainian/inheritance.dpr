@@ -1,8 +1,9 @@
-{$mode objfpc}{$H+}{$J-}
 program MyProgram;
 
-uses
-  SysUtils;
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
+uses SysUtils;
 
 type
   TMyClass = class

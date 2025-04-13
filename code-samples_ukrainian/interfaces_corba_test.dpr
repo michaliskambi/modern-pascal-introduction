@@ -1,5 +1,8 @@
-{$mode objfpc}{$H+}{$J-}
-{$interfaces corba}
+{$ifdef FPC}
+  {$mode objfpc}{$H+}{$J-}
+  {$interfaces corba}
+{$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses
   SysUtils, Classes;

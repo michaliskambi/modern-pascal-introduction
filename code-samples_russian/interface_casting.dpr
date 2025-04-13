@@ -1,5 +1,5 @@
-{$mode objfpc}{$H+}{$J-}
-
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 // {$interfaces corba} // обратите внимание, что приведение типа с помощью "as" для интерфейсов типа CORBA не скомпилируется
 
 uses Classes;

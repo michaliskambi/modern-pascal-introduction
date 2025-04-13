@@ -1,4 +1,5 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 // {$interfaces corba} // note that "as" typecasts will not compile with CORBA interfaces
 

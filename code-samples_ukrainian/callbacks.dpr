@@ -1,4 +1,5 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 function Add(const A, B: Integer): Integer;
 begin

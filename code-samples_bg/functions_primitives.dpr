@@ -1,6 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
-
 program MyProgram;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 procedure MyProcedure(const A: Integer);
 begin
@@ -18,7 +19,7 @@ begin
   WriteLn(MyFunction('Забележка: '));
   MyProcedure(5);
 
-  // Делението с "/" винаги дава резултат float, 
+  // Делението с "/" винаги дава резултат float,
   // използвайте "div" за целочислено делене
   X := 15 / 5;
   WriteLn('X сега е: ', X); // научна нотация

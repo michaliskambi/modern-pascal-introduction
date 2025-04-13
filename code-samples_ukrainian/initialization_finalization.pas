@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
 unit initialization_finalization;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 implementation

@@ -1,4 +1,6 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
 uses
   SysUtils, FGL;
 

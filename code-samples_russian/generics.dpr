@@ -1,6 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
-uses
-  SysUtils;
+uses SysUtils;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 type
   generic TMyCalculator<T> = class

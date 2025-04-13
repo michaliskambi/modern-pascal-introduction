@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 {$R+} // range checking on - nice for debugging
+
 var
   MyArray: array [0..9] of Integer;
   I: Integer;

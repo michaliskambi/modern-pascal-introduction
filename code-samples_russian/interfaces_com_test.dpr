@@ -1,5 +1,8 @@
-{$mode objfpc}{$H+}{$J-}
-{$interfaces com}
+{$ifdef FPC}
+  {$mode objfpc}{$H+}{$J-}
+  {$interfaces com}
+{$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses
   SysUtils, Classes;

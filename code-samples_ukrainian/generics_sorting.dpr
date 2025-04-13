@@ -1,4 +1,5 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 { If GENERICS_CONSTREF is defined, then various routines used with Generics.Collections
   (like callbacks we pass to TComparer, or OnNotify callback or Notify virtual method)

@@ -1,4 +1,6 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
 uses
   SysUtils, Classes;
 
@@ -42,7 +44,7 @@ begin
     // Xxx := SourceMyClassDescendant.Xxx; // копирайте още полета ако е необходимо ...
   end;
 
-  { Поради това, че TMyClassDescendant има предшественик, който вече е 
+  { Поради това, че TMyClassDescendant има предшественик, който вече е
     заменил Assign (in TMyClass.Assign), той извиква inherited ВИНАГИ,
     за да позволи TMyClass.Assign да копира останалите полета.
     Виж кометарите по-долу за детайлно обяснение. }

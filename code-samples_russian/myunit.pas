@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
 unit MyUnit;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 procedure MyProcedure(const A: Integer);

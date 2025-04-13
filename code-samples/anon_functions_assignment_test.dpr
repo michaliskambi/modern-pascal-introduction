@@ -6,6 +6,7 @@
   {$modeswitch functionreferences}
   {$modeswitch anonymousfunctions}
 {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses Classes;
 

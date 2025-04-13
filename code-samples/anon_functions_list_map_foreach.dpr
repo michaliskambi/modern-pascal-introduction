@@ -5,7 +5,7 @@
   {$modeswitch functionreferences}
   {$modeswitch anonymousfunctions}
 {$endif}
-{$apptype CONSOLE}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses SysUtils, Generics.Collections;
 

@@ -1,4 +1,5 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 // {$interfaces corba} // забележете, че "as" конверсии за CORBA няма да се компилират
 

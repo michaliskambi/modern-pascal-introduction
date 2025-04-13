@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
 unit AnotherUnit;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 uses Classes;
@@ -15,7 +17,7 @@ uses SysUtils;
 procedure DoSomethingWithComponent(var C: TComponent);
 begin
   { Процедурата FreeAndNil е дефинирана в unit SysUtils.
-    Тъй като го използваме само в реализацията а не в интерфейсната част, 
+    Тъй като го използваме само в реализацията а не в интерфейсната част,
     достатъчно е да използваме uses SysUtils; в секция "implementation". }
   FreeAndNil(C);
 end;

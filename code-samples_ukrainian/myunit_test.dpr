@@ -1,9 +1,9 @@
-{$mode objfpc}{$H+}{$J-}
-
 program MyProgram;
 
-uses
-  MyUnit;
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
+uses MyUnit;
 
 begin
   WriteLn(MyFunction('Note: '));

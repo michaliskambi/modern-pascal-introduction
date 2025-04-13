@@ -1,5 +1,7 @@
-﻿{$mode objfpc}{$H+}{$J-}
-unit AnotherUnit;
+﻿unit AnotherUnit;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 uses

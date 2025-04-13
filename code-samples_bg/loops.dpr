@@ -1,5 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 {$R+} // включена проверка на диапазона - подходящо за дебъг
+
 var
   MyArray: array [0..9] of Integer;
   I: Integer;

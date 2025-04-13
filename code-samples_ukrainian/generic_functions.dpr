@@ -1,6 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
-uses
-  SysUtils;
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
+uses SysUtils;
 
 { Примітка: для цього прикладу потрібен FPC 3.1.1 (не компілюється з FPC 3.0.0 або старішим). }
 

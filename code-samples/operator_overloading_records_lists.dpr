@@ -1,5 +1,9 @@
-{$mode objfpc}{$H+}{$J-}
-{$modeswitch advancedrecords}
+{$ifdef FPC}
+  {$mode objfpc}{$H+}{$J-}
+  {$modeswitch advancedrecords}
+{$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
 uses
   SysUtils, FGL;
 

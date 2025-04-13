@@ -1,6 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
-uses
-  SysUtils, FGL;
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
+uses SysUtils, FGL;
 
 type
   TMyClass = class

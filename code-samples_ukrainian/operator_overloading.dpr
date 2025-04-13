@@ -1,6 +1,7 @@
-{$mode objfpc}{$H+}{$J-}
-uses
-  StrUtils;
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
+
+uses StrUtils;
 
 operator* (const S: string; const A: Integer): string;
 begin

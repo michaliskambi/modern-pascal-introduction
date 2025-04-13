@@ -1,5 +1,8 @@
-{$mode objfpc}{$H+}{$J-}
-{$interfaces com}
+{$ifdef FPC}
+  {$mode objfpc}{$H+}{$J-}
+  {$interfaces com}
+{$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 uses
   SysUtils, Classes;
@@ -57,7 +60,7 @@ begin
     if C3 is IMyInterface then
       UseThroughInterface(C3 as IMyInterface); // това няма да се изпълни
   finally
-    { Променливи C1 и C2 излизат от обхват и тук би трябвало да се 
+    { Променливи C1 и C2 излизат от обхват и тук би трябвало да се
       унищожат автоматично.
 
       За разлика от тях, C3 е инстанция, която не се управлява от интерфейс
