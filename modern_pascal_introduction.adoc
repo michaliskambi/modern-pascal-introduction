@@ -500,8 +500,10 @@ You can always explicitly define a unit of a given identifier, by using it like 
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 program showcolor;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 // Both Graphics and GoogleMapsEngine units define TColor type.
 uses Graphics, GoogleMapsEngine;
@@ -522,8 +524,9 @@ In case of units, remember that they have two `uses` clauses: one in the interfa
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 // INCORRECT example
 
@@ -549,8 +552,9 @@ The unit `Graphics` (from Lazarus LCL) defines the `TColor` type. But the compil
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 // INCORRECT example.
 // This is what the compiler "sees" when trying to compile previous example
@@ -577,8 +581,9 @@ The solution is trivial in this case, just change the implementation to explicit
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 interface
 
@@ -608,8 +613,9 @@ This can be done by redefining the identifier in your new unit.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit MyUnit;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 interface
 
@@ -2014,8 +2020,10 @@ Note that macros with parameters are not allowed. In general, you should avoid u
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit PreprocessorStuff;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 {$ifdef FPC}
@@ -2457,7 +2465,8 @@ While this is nice, it makes the _normal class methods_ incompatible when assign
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 type
   TMyCallback = procedure (A: Integer);
 
@@ -2473,7 +2482,7 @@ var
   Callback: TMyCallback;
 begin
   // Error: TMyClass.Foo not compatible with TMyCallback
-  Callback := @TMyClass(nil).Foo;
+  Callback := {$ifdef FPC} @TMyClass(nil).Foo {$else} TMyClass.Foo {$endif};
 end.
 ----
 

@@ -450,8 +450,10 @@ include::code-samples_russian/anotherunit.pas[]
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 program showcolor;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 // unit-ы Graphics и GoogleMapsEngine определяют свои типы, которые называются одинаково - TColor.
 uses Graphics, GoogleMapsEngine;
@@ -472,8 +474,9 @@ end.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 // НЕВЕРНЫЙ пример
 
@@ -500,8 +503,9 @@ Unit `Graphics` (из набора библиотек Lazarus LCL) опреде�
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 // НЕВЕРНЫЙ пример
 // демонстрирующий, как предыдущий пример "видит" компилятор
@@ -528,8 +532,9 @@ end.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 interface
 
@@ -558,8 +563,9 @@ end.
 Это может быть осуществлено с помощью повторного объявления идентификатора в новом unit-е.
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit MyUnit;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 interface
 
@@ -1199,8 +1205,10 @@ include::code-samples_russian/generic_functions.dpr[]
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit PreprocessorStuff;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 {$ifdef FPC}

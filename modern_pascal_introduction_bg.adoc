@@ -477,8 +477,10 @@ include::code-samples_bg/anotherunit.pas[]
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 program showcolor;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+{$ifdef MSWINDOWS} {$apptype CONSOLE} {$endif}
 
 // И двата unit-а Graphics и GoogleMapsEngine дефинират тип TColor.
 uses Graphics, GoogleMapsEngine;
@@ -499,8 +501,9 @@ end.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 // НЕКОРЕКТЕН пример
 
@@ -526,8 +529,9 @@ end.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 // НЕКОРЕКТЕН пример
 // Ето какво "вижда" компилатора когато се опитва да компилира предишното
@@ -554,8 +558,9 @@ end.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit UnitUsingColors;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 interface
 
@@ -585,8 +590,9 @@ end.
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit MyUnit;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
 
 interface
 
@@ -1900,8 +1906,10 @@ include::code-samples/generic_functions.dpr[]
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
 unit PreprocessorStuff;
+
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 interface
 
 {$ifdef FPC}
@@ -2292,7 +2300,8 @@ end;
 
 [source,pascal]
 ----
-{$mode objfpc}{$H+}{$J-}
+{$ifdef FPC} {$mode objfpc}{$H+}{$J-} {$endif}
+
 type
   TMyCallback = procedure (A: Integer);
 
@@ -2308,7 +2317,7 @@ var
   Callback: TMyCallback;
 begin
   // Грешка: TMyClass.Foo не е съвместим с TMyCallback
-  Callback := @TMyClass(nil).Foo;
+  Callback := {$ifdef FPC} @TMyClass(nil).Foo {$else} TMyClass.Foo {$endif};
 end.
 ----
 
