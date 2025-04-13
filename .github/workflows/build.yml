@@ -10,6 +10,11 @@ name: Test Code Samples
 
 on: [push, pull_request]
 
+# Necessary to have && working in Windows jobs
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build-using-docker:
     name: Test Code Samples with FPC 3.3.1
