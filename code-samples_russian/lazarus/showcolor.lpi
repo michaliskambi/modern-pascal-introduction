@@ -37,7 +37,7 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="showcolor.lpr"/>
+        <Filename Value="showcolor.dpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
     </Units>

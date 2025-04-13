@@ -2,7 +2,7 @@
 
 { The expected output:
 
-$ fpc method_with_self_nil.lpr
+$ fpc method_with_self_nil.dpr
 $ ./method_with_self_nil
 WriteSomethig: Self <> nil? FALSE
 Runtime error 216 at $000000000040119D
