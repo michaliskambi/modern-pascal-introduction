@@ -2507,7 +2507,7 @@ And a _static class method_ is just like a global procedure / function, but with
 include::code-samples/class_properties.lpr[]
 ----
 
-// NOTE: Why the _class properties_ have to be backed by _static class methods_, not _normal class methods_? Noone really knows (see http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050131.html , http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050135.html , https://www.mail-archive.com/fpc-devel@lists.freepascal.org/msg30511.html ), the initial implementation (Delphi) made it like that. Presumably for speed, or ease of implementation of the compiler.
+// NOTE: Why the _class properties_ have to be backed by _static class methods_, not _normal class methods_? No one really knows (see http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050131.html , http://lists.freepascal.org/pipermail/fpc-pascal/2017-February/050135.html , https://www.mail-archive.com/fpc-devel@lists.freepascal.org/msg30511.html ), the initial implementation (Delphi) made it like that. Presumably for speed, or ease of implementation of the compiler.
 
 ### Class helpers
 
@@ -2637,7 +2637,7 @@ UseThroughInterface(InterfacedVariable as IMyInterface);
 +
 If executed, it would make a run-time check and raise an exception if `InterfacedVariable` does not implement `IMyInterface`.
 +
-Using `as` operator works consistently regardless if `InterfacedVarialbe` is declared as a class instance (like `TSomeClass`) or interface (like `ISomeInterface`). However, casting an interface to another interface this way is not allowed under `{$interfaces corba}` - we will cover that topic later.
+Using `as` operator works consistently regardless if `InterfacedVariable` is declared as a class instance (like `TSomeClass`) or interface (like `ISomeInterface`). However, casting an interface to another interface this way is not allowed under `{$interfaces corba}` - we will cover that topic later.
 
 2. Explicit typecasting:
 +

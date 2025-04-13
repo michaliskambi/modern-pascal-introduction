@@ -8,6 +8,7 @@
         "anotherunit",
         "apptype",
         "ASCIIDOCTOR",
+        "cdecl",
         "coderay",
         "Contnrs",
         "corba",
@@ -29,6 +30,7 @@
         "Michalis",
         "modeswitch",
         "MSWINDOWS",
+        "myconfig",
         "myprogram",
         "myunit",
         "nestedprocvars",
@@ -47,7 +49,9 @@
         "typecasted",
         "Unported",
         "unversioned",
+        "uuidgen",
         "wordmark",
-        "Writeln"
+        "Writeln",
+        "XPCOM"
     ]
 }
