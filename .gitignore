@@ -15,10 +15,23 @@ modern_pascal_introduction_ukrainian.html
 modern_pascal_introduction_ukrainian.pdf
 modern_pascal_introduction_ukrainian.xml
 
+# Ignore temp output inside code_samples.
+# Use code-samples* to match code samples in all languages.
 /code-samples*/*.ppu
 /code-samples*/*.dcu
 /code-samples*/*.o
 /code-samples*/*.exe
+/code-samples*/lazarus/*.bak
+/code-samples*/lazarus/*.lps
+/code-samples*/lazarus/lib/
+/code-samples*/*.dproj.local
+/code-samples*/*.res
+/code-samples*/*.identcache
+/code-samples*/__recovery
+/code-samples*/delphi_and_fpc_differences/*.o
+/code-samples*/delphi_and_fpc_differences/*.exe
+
+# Ignore Unix binaries (no extension to detect them nicer) inside code_samples.
 /code-samples*/anonymous_functions
 /code-samples*/array_of_const
 /code-samples*/anon_functions_list_map_foreach
@@ -63,13 +76,6 @@ modern_pascal_introduction_ukrainian.xml
 /code-samples*/with_virtual_methods
 /code-samples*/without_virtual_methods
 /code-samples*/method_with_self_nil
-/code-samples*/lazarus/*.bak
-/code-samples*/lazarus/*.lps
-/code-samples*/lazarus/lib/
-/code-samples*/*.dproj.local
-/code-samples*/*.res
-/code-samples*/*.identcache
-/code-samples*/__recovery
+/code-samples*/operator_overloading_class_operator
+/code-samples*/test_myconfig
 /code-samples*/delphi_and_fpc_differences/compare_function_pointers
-/code-samples*/delphi_and_fpc_differences/*.o
-/code-samples*/delphi_and_fpc_differences/*.exe
