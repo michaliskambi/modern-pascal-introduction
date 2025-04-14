@@ -2238,28 +2238,48 @@ type
 
 ### Operator overloading
 
-You can override the meaning of many language operators, for example to allow addition and multiplication of your custom types. Like this:
+You can override the meaning of many language operators, for example to allow addition and multiplication of your custom types.
+
+Both FPC and Delphi support overloading operators by defining `class operator` methods inside advanced records. Like this:
+
+[source,pascal]
+----
+include::code-samples/operator_overloading_class_operator.dpr[]
+----
+
+NOTE: In case of FPC, make sure to tell the compiler you use "advanced" records' features by `{$modeswitch advancedrecords}`.
+
+Take a look at the documentation to learn all possible operators that can be overloaded:
+
+- https://wiki.freepascal.org/Operator_overloading[FPC operator overloading]
+- https://docwiki.embarcadero.com/RADStudio/Sydney/en/Operator_Overloading_%28Delphi%29[Delphi operator overloading]
+
+FPC supports also an alternative syntax to overload operators, by defining a global function like `operator*`. For example:
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading.dpr[]
 ----
 
-You can override operators on classes too. Since you usually create new instances of your classes inside the operator function, the caller must remember to free the result.
+This approach (global `operator` functions) can be used to define operators on classes too. Since you usually create new instances of your classes inside the operator function, the caller must remember to free the result.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_classes.dpr[]
 ----
 
-You can override operators on records too. This is usually easier than overloading them for classes, as the caller doesn't have to deal then with memory management.
+You can override operators on records too using the global `operator` functions. This is usually easier than overloading them for classes, as the caller doesn't have to deal then with memory management.
 
 [source,pascal]
 ----
 include::code-samples/operator_overloading_records.dpr[]
 ----
 
-For records, it's advised to use `{$modeswitch advancedrecords}` and override operators as `class operator` inside the record. This allows to use generic classes that depend on some operator existence (like `TFPGList`, that depends on equality operator being available) with such records. Otherwise the "global" definition of an operator (not inside the record) would not be found (because it's not available at the code that implements the `TFPGList`), and you could not specialize a list like `specialize TFPGList<TMyRecord>`.
+However, for records, we don't advise to use the global `operator` functions. Instead, use `{$modeswitch advancedrecords}` and override operators as `class operator` inside the record. Reasons:
+
+- This is compatible with Delphi.
+
+- This allows to use generic classes that depend on some operator existence (like `TFPGList`, that depends on equality operator being available) with such records. Otherwise the "global" definition of an operator (not inside the record) would not be found (because it's not available at the code that implements the `TFPGList`), and you could not specialize a list like `specialize TFPGList<TMyRecord>`.
 
 [source,pascal]
 ----
